@@ -11,6 +11,6 @@ public class RESTController
     @GetMapping(name = "/")
     public String home()
     {
-        return "";
+        return "<h1>Welcome to Home Page</h1>";
     }
 }
