@@ -5,12 +5,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
-public class RESTController
+@RequestMapping(value = "/")
+public class HomeController
 {
-    @GetMapping(value = "/public/totalUsers")
+    @GetMapping(value = "/")
     public String home()
     {
-        return "<h1>Public API endpoint displaying totalUser=20130</h1>";
+        return "<h1>Home Page. Available to everyone</h1>";
     }
 }
