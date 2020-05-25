@@ -9,9 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class RESTController
 {
-    @GetMapping(value = "/public/totalUsers", produces = MediaType.TEXT_HTML_VALUE)
-    public String home()
+    @GetMapping(value = "/public/users", produces = MediaType.TEXT_HTML_VALUE)
+    public String totalUsers()
     {
-        return "<h1>Public API endpoint returning totalUser=125</h1>";
+        return "<h1>Public API endpoint returning users=125</h1>";
+    }
+
+    @GetMapping(value = "/public/revenue", produces = MediaType.TEXT_HTML_VALUE)
+    public String totalRevenue()
+    {
+        return "<h1>Another Public API endpoint returning company's revenue</h1>";
     }
 }
