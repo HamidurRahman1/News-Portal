@@ -1,11 +1,16 @@
 package com.hamidur.ss.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         auth
                 .inMemoryAuthentication()
                     .withUser("username1")
-                    .password("{noop}userpass1")
+                    .password(passwordEncoder().encode("userpass1"))
                     .roles("USER");
     }
 
@@ -47,5 +52,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .permitAll()
                     .and()
                 .httpBasic();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder()
+    {
+        /*
+            BCrypt Version (All versions generates the same password), strength in power of 2,
+            SecureRandom to randomize the generated hash
+        */
+        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 10, new SecureRandom());
     }
 }
