@@ -46,15 +46,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         http
                 .authorizeRequests()
-                    .antMatchers(appPath, appPath+"/api/public/**")
-                    .permitAll()
-                    .and()
-                .formLogin()
-                    .permitAll()
-                    .and()
-                .logout()
-                    .permitAll()
-                    .and()
+                    .antMatchers(appPath+"/admin").hasRole("ADMIN")
+                    .antMatchers(appPath+"/user").hasAnyRole("USER", "ADMIN")
+                    .antMatchers(appPath, appPath+"/api/public/**").permitAll()
+                .and()
+                    .formLogin().permitAll()
+                .and()
+                    .logout().permitAll()
+                .and()
                 .httpBasic();
     }
 
