@@ -20,4 +20,16 @@ public class RESTController
     {
         return "<h1>Another Public API endpoint returning company's revenue</h1>";
     }
+
+    @GetMapping(value = "/admin", produces = MediaType.TEXT_HTML_VALUE)
+    public String admin()
+    {
+        return "<h1>Displaying information related to an admin after authentication</h1>";
+    }
+
+    @GetMapping(value = "/user", produces = MediaType.TEXT_HTML_VALUE)
+    public String user()
+    {
+        return "<h1>Displaying information related to a user after authentication</h1>";
+    }
 }
