@@ -16,9 +16,6 @@ import java.security.SecureRandom;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    @Value("${server.servlet.context-path}")
-    private String appPath;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
@@ -46,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     {
         http
                 .authorizeRequests()
-                    .antMatchers(appPath+"/api/admin").hasRole("ADMIN")
-                    .antMatchers(appPath+"/api/user").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(appPath, appPath+"/api/public/**").permitAll()
+                    .antMatchers("/api/admin").hasRole("ADMIN")
+                    .antMatchers("/api/user").hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/public/**").permitAll()
                 .and()
                     .formLogin().permitAll()
                 .and()
