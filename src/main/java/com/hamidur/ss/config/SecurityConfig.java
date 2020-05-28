@@ -49,7 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .and()
                     .formLogin().permitAll()
                 .and()
-                    .logout().permitAll()
+                    .logout()
+                    .logoutSuccessUrl("/")
+                    .clearAuthentication(true)
+                    .invalidateHttpSession(true)
+                    .permitAll()
                 .and()
                 .httpBasic();
     }
