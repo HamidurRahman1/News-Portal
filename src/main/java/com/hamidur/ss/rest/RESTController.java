@@ -2,6 +2,7 @@ package com.hamidur.ss.rest;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,5 +32,11 @@ public class RESTController
     public String user()
     {
         return "<h1>Displaying information related to a user after authentication</h1>";
+    }
+
+    @GetMapping(value = "/user/{id}", produces = MediaType.TEXT_HTML_VALUE)
+    public String userById(@PathVariable Integer id)
+    {
+        return "<h1>Displaying information related to a user="+id+" after authentication</h1>";
     }
 }

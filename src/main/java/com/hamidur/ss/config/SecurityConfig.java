@@ -1,6 +1,5 @@
 package com.hamidur.ss.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -45,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .authorizeRequests()
                     .antMatchers("/api/admin").hasRole("ADMIN")
                     .antMatchers("/api/user").hasAnyRole("USER", "ADMIN")
+                    .antMatchers("/api/user/{id}").hasRole("USER")
                     .antMatchers("/api/public/**").permitAll()
                 .and()
                     .formLogin().permitAll()
