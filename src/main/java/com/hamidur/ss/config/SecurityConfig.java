@@ -55,6 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .invalidateHttpSession(true)
                     .permitAll()
                 .and()
+                .exceptionHandling()
+                    .accessDeniedPage("/access-denied")
+                .and()
                 .httpBasic();
     }
 
