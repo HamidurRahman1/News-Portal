@@ -1,5 +1,6 @@
 package com.hamidur.ss.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,17 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.sql.DataSource;
 import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
+    @Autowired
+    private DataSource dataSource;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
         /*
             - Multiple users defined in-memory.
+            - With H2, it comes with default schema and users from below UserDetails. It can be configured as well too
+                - with default -> withDefaultSchema() must be invoked to use default tables, users
             - Spring Boot > 2.0 requires password to be encoded.
             - If a single user defined in properties, it will be overridden and will no longer work.
             - User(s) defined in configuration must be assigned to some roles, except in properties file. If ignored
@@ -27,7 +34,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
          */
 
         auth
-                .inMemoryAuthentication()
+                .jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder())
+                .withDefaultSchema()
                     .withUser("username1")
                     .password(passwordEncoder().encode("userpass1"))
                     .roles("USER")
