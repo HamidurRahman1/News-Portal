@@ -17,8 +17,13 @@ import java.security.SecureRandom;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
+    private final DataSource dataSource;
+
     @Autowired
-    private DataSource dataSource;
+    public SecurityConfig(final DataSource dataSource)
+    {
+        this.dataSource = dataSource;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
@@ -50,9 +55,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
+        /*
+            -H2
+                - When using H2 with security we must allow the console (if used) to user (with appropriate roles)
+                - We must disable CSRF. csrf().disable()
+                - We must disable frameOptions from headers or restrict it to same origin since H2 runs inside a frame
+         */
+
         http
                 .authorizeRequests()
                     .antMatchers("/api/admin").hasRole("ADMIN")
+                    .antMatchers("/h2-console/**").hasRole("ADMIN")
                     .antMatchers("/api/user").hasAnyRole("USER", "ADMIN")
                     .antMatchers("/api/user/{id}").hasRole("USER")
                     .antMatchers("/api/public/**").permitAll()
@@ -68,9 +81,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .invalidateHttpSession(true)
                     .permitAll()
                 .and()
-                .exceptionHandling()
+                    .exceptionHandling()
                     .accessDeniedPage("/access-denied")
                 .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin()
+                .and()
+                    .csrf()
+                    .disable()
                 .httpBasic();
     }
 
