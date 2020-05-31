@@ -1,16 +1,45 @@
 package com.hamidur.ss.dao;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+@Entity
+@Table(name = "articles")
 public class Article
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "article_id")
     private Integer articleId;
+
+    @Column(name = "article_title")
     private String title;
+
+    @Column(name = "article_body")
     private String body;
+
+    @Column(name = "article_publish_date")
     private LocalDate publishDate;
+
+    @OneToMany(
+            mappedBy = "article",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
     private List<Comment> comments;
+
+    @ManyToMany(mappedBy = "articles")
     private Set<Author> authors;
 
     public Article() {}
