@@ -55,7 +55,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception
     {
         /*
-            -H2
+            - httpBasic() provides very basic http authentication with username and password
+            - formLogin() provides more fine grain control on authentication, should be used over httpBasic() on webapp
+            - H2
                 - When using H2 with security we must allow the console (if used) to user (with appropriate roles)
                 - We must disable CSRF. csrf().disable()
                 - We must disable frameOptions from headers or restrict it to same origin since H2 runs inside a frame
@@ -88,7 +90,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .sameOrigin()
                 .and()
                     .csrf()
-                    .disable()
-                .httpBasic();
+                    .disable();
     }
 }
