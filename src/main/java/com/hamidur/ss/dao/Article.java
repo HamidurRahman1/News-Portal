@@ -2,6 +2,7 @@ package com.hamidur.ss.dao;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class Article
 {
@@ -10,13 +11,17 @@ public class Article
     private String body;
     private LocalDate publishDate;
     private List<Comment> comments;
+    private Set<Author> authors;
 
-    public Article(Integer articleId, String title, String body, LocalDate publishDate, List<Comment> comments) {
+    public Article() {}
+
+    public Article(Integer articleId, String title, String body, LocalDate publishDate, List<Comment> comments, Set<Author> authors) {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
         this.publishDate = publishDate;
         this.comments = comments;
+        this.authors = authors;
     }
 
     public Integer getArticleId() {
@@ -59,6 +64,14 @@ public class Article
         this.comments = comments;
     }
 
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
@@ -67,6 +80,7 @@ public class Article
                 ", body='" + body + '\'' +
                 ", publishDate=" + publishDate +
                 ", comments=" + comments +
+                ", authors=" + authors.size() +
                 '}';
     }
 }

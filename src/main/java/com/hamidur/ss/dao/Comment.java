@@ -8,6 +8,8 @@ public class Comment
     private String comment;
     private Article article;
 
+    public Comment() {}
+
     public Comment(Integer commentId, String comment, Article article) {
         this.commentId = commentId;
         this.comment = comment;
