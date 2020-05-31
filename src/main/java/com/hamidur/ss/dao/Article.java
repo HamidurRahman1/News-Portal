@@ -1,19 +1,22 @@
 package com.hamidur.ss.dao;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.List;
 
 public class Article
 {
     private Integer articleId;
     private String title;
     private String body;
-    private LocalDateTime publishDate;
+    private LocalDate publishDate;
+    private List<Comment> comments;
 
-    public Article(Integer articleId, String title, String body, LocalDateTime publishDate) {
+    public Article(Integer articleId, String title, String body, LocalDate publishDate, List<Comment> comments) {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
         this.publishDate = publishDate;
+        this.comments = comments;
     }
 
     public Integer getArticleId() {
@@ -40,12 +43,20 @@ public class Article
         this.body = body;
     }
 
-    public LocalDateTime getPublishDate() {
+    public LocalDate getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(LocalDateTime publishDate) {
+    public void setPublishDate(LocalDate publishDate) {
         this.publishDate = publishDate;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
@@ -55,6 +66,7 @@ public class Article
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
                 ", publishDate=" + publishDate +
+                ", comments=" + comments +
                 '}';
     }
 }
