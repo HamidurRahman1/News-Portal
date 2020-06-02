@@ -77,7 +77,7 @@ public class PublicRESTController
     }
 
     @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticle(@PathVariable Integer authorId)
+    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@PathVariable Integer authorId)
     {
         Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
         articles.forEach(article ->
@@ -86,5 +86,13 @@ public class PublicRESTController
             article.setComments(null);
         });
         return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Comment>> getCommentsByArticleId(@PathVariable Integer articleId)
+    {
+        List<Comment> comments = commentRepository.getCommentsByArticleId(articleId);
+        comments.forEach(comment -> comment.setArticle(null));
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 }
