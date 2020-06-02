@@ -1,6 +1,8 @@
 package com.hamidur.ss.rest;
 
+import com.hamidur.ss.dao.models.Article;
 import com.hamidur.ss.dao.models.Author;
+import com.hamidur.ss.dao.models.Comment;
 
 import com.hamidur.ss.dao.repos.ArticleRepository;
 import com.hamidur.ss.dao.repos.AuthorRepository;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -39,5 +42,28 @@ public class PublicRESTController
         Set<Author> authors = authorRepository.findAll();
         for(Author author: authors) author.setArticles(null);
         return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Article>> getArticles()
+    {
+        Set<Article> articles = articleRepository.findAll();
+        for(Article article: articles)
+        {
+            article.setAuthors(null);
+            article.setComments(null);
+        }
+        return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Comment>> getComments()
+    {
+        List<Comment> comments = commentRepository.findAll();
+        for(Comment comment: comments)
+        {
+            comment.setArticle(null);
+        }
+        return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 }
