@@ -75,4 +75,16 @@ public class PublicRESTController
         author.setArticles(null);
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Article>> getArticle(@PathVariable Integer authorId)
+    {
+        Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
+        articles.forEach(article ->
+        {
+            article.setAuthors(null);
+            article.setComments(null);
+        });
+        return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
 }
