@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -65,5 +66,13 @@ public class PublicRESTController
             comment.setArticle(null);
         }
         return new ResponseEntity<>(comments, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> getAuthor(@PathVariable Integer authorId)
+    {
+        Author author = authorRepository.findByAuthorId(authorId);
+        author.setArticles(null);
+        return new ResponseEntity<>(author, HttpStatus.OK);
     }
 }

@@ -12,4 +12,7 @@ public interface AuthorRepository extends CrudRepository<Author, Integer>
 {
     // returns all Authors
     Set<Author> findAll();
+
+    // returns a Author associated with the id
+    Author findByAuthorId(Integer authorId);
 }
