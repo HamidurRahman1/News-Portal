@@ -12,16 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/public")
+@Validated
 public class PublicRESTController
 {
     private final AuthorRepository authorRepository;
@@ -69,7 +72,7 @@ public class PublicRESTController
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@PathVariable Integer authorId)
+    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
     {
         Author author = authorRepository.findByAuthorId(authorId);
         author.setArticles(null);
@@ -77,7 +80,7 @@ public class PublicRESTController
     }
 
     @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@PathVariable Integer authorId)
+    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@Size(min = 1) @PathVariable Integer authorId)
     {
         Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
         articles.forEach(article ->
@@ -89,7 +92,7 @@ public class PublicRESTController
     }
 
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Comment>> getCommentsByArticleId(@PathVariable Integer articleId)
+    public ResponseEntity<List<Comment>> getCommentsByArticleId(@Size(min = 1) @PathVariable Integer articleId)
     {
         List<Comment> comments = commentRepository.getCommentsByArticleId(articleId);
         comments.forEach(comment -> comment.setArticle(null));
