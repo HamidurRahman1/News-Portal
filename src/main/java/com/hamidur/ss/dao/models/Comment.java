@@ -1,4 +1,4 @@
-package com.hamidur.ss.dao;
+package com.hamidur.ss.dao.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
