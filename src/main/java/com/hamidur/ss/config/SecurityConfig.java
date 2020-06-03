@@ -4,6 +4,7 @@ import com.hamidur.ss.auth.service.AppUserDetailsServiceImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -68,12 +69,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 - When using H2 with security we must allow the console (if used) to user (with appropriate roles)
                 - We must disable CSRF. csrf().disable()
                 - We must disable frameOptions from headers or restrict it to same origin since H2 runs inside a frame
+            - Method level security
+                - @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) in security config at class level
+                - add @Secured on the desired method
+                - @Secured can be used only with 1 role. or can be used for multiple but another @ can be used easily
+                - @PreAuthorize takes multiple roles with AND keyword in expression
          */
 
         http
                 .authorizeRequests()
                     .antMatchers("/h2-console/**").hasRole("ADMIN")
-                    .antMatchers("/api/v1/r/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/article/{\\d+}").hasAnyRole("ADMIN", "PUBLISHER")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/v1/r/insert/article").hasAnyRole("ADMIN", "PUBLISHER")
+                    .antMatchers(HttpMethod.POST, "/api/v1/r/insert/article/{\\d+}/comment").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.POST, "/api/v1/r/insert/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}/comment").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}").hasAnyRole("ADMIN", "EDITOR")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/**").hasRole("ADMIN")
+                    .antMatchers(HttpMethod.GET, "/api/v1/r/**").hasAnyRole("ADMIN", "PUBLISHER", "EDITOR", "USER")
                     .antMatchers("/api/v1/public/**").permitAll()
                 .and()
                     .formLogin()
