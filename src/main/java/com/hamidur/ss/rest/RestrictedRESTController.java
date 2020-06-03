@@ -16,12 +16,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -39,6 +42,26 @@ public class RestrictedRESTController
         this.authorRepository = authorRepository;
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+    }
+
+    @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> insertAuthor(@RequestBody Author author)
+    {
+        Author newAuthor = authorRepository.save(author);
+        return new ResponseEntity<>(newAuthor, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Article> insertArticle(@RequestBody Article article)
+    {
+        Author retrievedAuthor = authorRepository.findByAuthorId(article.getAuthors().iterator().next().getAuthorId());
+        System.out.println(retrievedAuthor.getArticles());
+        retrievedAuthor.getArticles().add(article);
+        article.getAuthors().add(retrievedAuthor);
+
+        Author a3 = authorRepository.save(retrievedAuthor);
+        System.out.println("Updated: " + a3.getArticles());
+        return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
