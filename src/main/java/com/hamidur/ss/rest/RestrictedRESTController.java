@@ -55,12 +55,8 @@ public class RestrictedRESTController
     public ResponseEntity<Article> insertArticle(@RequestBody Article article)
     {
         Author retrievedAuthor = authorRepository.findByAuthorId(article.getAuthors().iterator().next().getAuthorId());
-        System.out.println(retrievedAuthor.getArticles());
         retrievedAuthor.getArticles().add(article);
         article.getAuthors().add(retrievedAuthor);
-
-        Author a3 = authorRepository.save(retrievedAuthor);
-        System.out.println("Updated: " + a3.getArticles());
         return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
