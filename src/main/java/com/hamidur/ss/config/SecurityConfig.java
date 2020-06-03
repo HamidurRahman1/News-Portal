@@ -1,27 +1,30 @@
 package com.hamidur.ss.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
+import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    private final DataSource dataSource;
-    private final PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public SecurityConfig(final DataSource dataSource, final PasswordEncoder passwordEncoder)
+    @Bean
+    public PasswordEncoder passwordEncoder()
     {
-        this.dataSource = dataSource;
-        this.passwordEncoder = passwordEncoder;
+        /*
+            BCrypt Version (All versions generates the same password), strength in power of 2,
+            SecureRandom to randomize the generated hash
+        */
+        return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 10, new SecureRandom());
     }
 
     @Override
@@ -40,14 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         auth
                 .jdbcAuthentication()
                 .dataSource(this.dataSource)
-                .passwordEncoder(this.passwordEncoder)
+                .passwordEncoder(this.passwordEncoder())
                 .withDefaultSchema()
                     .withUser("u")
-                    .password(this.passwordEncoder.encode("u"))
+                    .password(this.passwordEncoder().encode("u"))
                     .roles("USER")
                 .and()
                     .withUser("a")
-                    .password(this.passwordEncoder.encode("a"))
+                    .password(passwordEncoder().encode("a"))
                     .roles("ADMIN");
     }
 
@@ -69,8 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .antMatchers("/api/v1/restricted/**").hasRole("ADMIN")
                     .antMatchers("/api/v1/public/**").permitAll()
                 .and()
-                    .exceptionHandling()
-                    .accessDeniedPage("/access-denied")
+                    .formLogin()
                 .and()
                     .logout()
                     .logoutUrl("/logout")

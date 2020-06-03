@@ -1,14 +1,31 @@
 package com.hamidur.ss.auth.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "roles")
 public class Role implements Serializable
 {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private Integer roleId;
+
+    @Column(name = "role")
     private String role;
+
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<User> users;
 
     public Role() {}
@@ -49,12 +66,11 @@ public class Role implements Serializable
         if (!(o instanceof Role)) return false;
         Role role1 = (Role) o;
         return Objects.equals(getRoleId(), role1.getRoleId()) &&
-                Objects.equals(getRole(), role1.getRole()) &&
-                Objects.equals(getUsers().size(), role1.getUsers().size());
+                Objects.equals(getRole(), role1.getRole());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRoleId(), getRole(), getUsers().hashCode());
+        return Objects.hash(getRoleId(), getRole());
     }
 }

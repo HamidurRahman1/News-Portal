@@ -1,4 +1,27 @@
 
+create table users
+(
+  user_id int primary key auto_increment,
+  username varchar(50) unique not null,
+  password varchar(70) not null,
+  enabled tinyint not null
+);
+
+create table roles
+(
+  role_id int primary key auto_increment,
+  role varchar(15) unique not null
+);
+
+create table users_roles
+(
+  user_id int not null,
+  role_id int not null,
+
+  foreign key (user_id) references users(user_id),
+  foreign key (role_id) references roles(role_id)
+);
+
 create table authors
 (
   author_id int primary key auto_increment,
