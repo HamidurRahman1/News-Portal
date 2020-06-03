@@ -1,5 +1,7 @@
 package com.hamidur.ss.rest;
 
+import com.hamidur.ss.dao.models.Article;
+import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
 
 import com.hamidur.ss.dao.repos.ArticleRepository;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.Size;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/r")
@@ -35,6 +39,34 @@ public class RestrictedRESTController
         this.authorRepository = authorRepository;
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+    }
+
+    @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Author>> getAuthors()
+    {
+        Set<Author> authors = authorRepository.findAll();
+        for(Author author: authors) author.setArticles(null);
+        return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
+    {
+        Author author = authorRepository.findByAuthorId(authorId);
+        author.setArticles(null);
+        return new ResponseEntity<>(author, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@Size(min = 1) @PathVariable Integer authorId)
+    {
+        Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
+        articles.forEach(article ->
+        {
+            article.setAuthors(null);
+            article.setComments(null);
+        });
+        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)

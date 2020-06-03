@@ -40,14 +40,6 @@ public class PublicRESTController
         this.commentRepository = commentRepository;
     }
 
-    @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Author>> getAuthors()
-    {
-        Set<Author> authors = authorRepository.findAll();
-        for(Author author: authors) author.setArticles(null);
-        return new ResponseEntity<>(authors, HttpStatus.OK);
-    }
-
     @GetMapping(value = "/articles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Article>> getArticles()
     {
@@ -69,26 +61,6 @@ public class PublicRESTController
             comment.setArticle(null);
         }
         return new ResponseEntity<>(comments, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
-    {
-        Author author = authorRepository.findByAuthorId(authorId);
-        author.setArticles(null);
-        return new ResponseEntity<>(author, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@Size(min = 1) @PathVariable Integer authorId)
-    {
-        Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
-        articles.forEach(article ->
-        {
-            article.setAuthors(null);
-            article.setComments(null);
-        });
-        return new ResponseEntity<>(articles, HttpStatus.OK);
     }
 
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
