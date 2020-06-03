@@ -2,6 +2,7 @@ package com.hamidur.ss.auth.service;
 
 import com.hamidur.ss.auth.models.Role;
 import com.hamidur.ss.auth.models.User;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,12 +11,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyAppUserDetails implements UserDetails
+public class AppUserDetails implements UserDetails
 {
     private static final String ROLE_PREFIX = "ROLE_";
     private final User user;
 
-    public MyAppUserDetails(final User user) {
+    public AppUserDetails(final User user) {
         this.user = user;
     }
 
