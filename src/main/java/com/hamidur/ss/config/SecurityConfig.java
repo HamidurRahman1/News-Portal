@@ -1,16 +1,18 @@
 package com.hamidur.ss.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hamidur.ss.auth.service.AppUserDetailsServiceImpl;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.sql.DataSource;
 import java.security.SecureRandom;
 
 @Configuration
@@ -27,6 +29,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         return new BCryptPasswordEncoder(BCryptPasswordEncoder.BCryptVersion.$2B, 10, new SecureRandom());
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new AppUserDetailsServiceImpl();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
@@ -40,18 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 roles in properties, default "USER" will be applied.
          */
 
-        auth
-                .jdbcAuthentication()
-                .dataSource(this.dataSource)
-                .passwordEncoder(this.passwordEncoder())
-                .withDefaultSchema()
-                    .withUser("u")
-                    .password(this.passwordEncoder().encode("u"))
-                    .roles("USER")
-                .and()
-                    .withUser("a")
-                    .password(passwordEncoder().encode("a"))
-                    .roles("ADMIN");
+        auth.authenticationProvider(authenticationProvider());
     }
 
     @Override
@@ -69,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
         http
                 .authorizeRequests()
                     .antMatchers("/h2-console/**").hasRole("ADMIN")
-                    .antMatchers("/api/v1/restricted/**").hasRole("ADMIN")
+                    .antMatchers("/api/v1/r/**").hasRole("ADMIN")
                     .antMatchers("/api/v1/public/**").permitAll()
                 .and()
                     .formLogin()
