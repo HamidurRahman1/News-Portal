@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -102,14 +103,28 @@ public class Article
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Article)) return false;
+        Article article = (Article) o;
+        return Objects.equals(getArticleId(), article.getArticleId()) &&
+                Objects.equals(getTitle(), article.getTitle()) &&
+                Objects.equals(getBody(), article.getBody()) &&
+                Objects.equals(getPublishDate(), article.getPublishDate());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getArticleId(), getTitle(), getBody(), getPublishDate());
+    }
+
+    @Override
     public String toString() {
         return "Article{" +
                 "articleId=" + articleId +
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
                 ", publishDate=" + publishDate +
-                ", comments=" + comments +
-                ", authors=" + authors.size() +
                 '}';
     }
 }

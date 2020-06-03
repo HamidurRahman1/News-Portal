@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -86,6 +87,20 @@ public class Author
         article.getAuthors().remove(this);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Author)) return false;
+        Author author = (Author) o;
+        return Objects.equals(getAuthorId(), author.getAuthorId()) &&
+                Objects.equals(getFirstName(), author.getFirstName()) &&
+                Objects.equals(getLastName(), author.getLastName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAuthorId(), getFirstName(), getLastName());
+    }
 
     @Override
     public String toString() {
@@ -93,7 +108,6 @@ public class Author
                 "authorId=" + authorId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", articles=" + articles +
                 '}';
     }
 }

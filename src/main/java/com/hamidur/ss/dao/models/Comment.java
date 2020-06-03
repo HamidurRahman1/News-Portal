@@ -63,13 +63,14 @@ public class Comment
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Comment)) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(getCommentId(), comment.getCommentId());
+        Comment comment1 = (Comment) o;
+        return Objects.equals(getCommentId(), comment1.getCommentId()) &&
+                Objects.equals(getComment(), comment1.getComment());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCommentId());
+        return Objects.hash(getCommentId(), getComment());
     }
 
     @Override
@@ -77,7 +78,6 @@ public class Comment
         return "Comment{" +
                 "commentId=" + commentId +
                 ", comment='" + comment + '\'' +
-                ", article=" + article.getArticleId() +
                 '}';
     }
 }
