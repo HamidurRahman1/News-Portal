@@ -65,6 +65,33 @@ public class RestrictedRESTController
         return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
+    @PutMapping(value = "/update/article/{articleId}/comment/{commentId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Comment> updateCommentById(@PathVariable Integer articleId,
+                                                     @PathVariable Integer commentId,
+                                                     @RequestBody Comment comment)
+    {
+        Optional<Article> optional = articleRepository.findById(articleId);
+        if(optional.isPresent())
+        {
+            if(optional.get().getArticleId().equals(articleId))
+            {
+                Article article = optional.get();
+                for (int i = 0; i < article.getComments().size(); i++)
+                {
+                    if(comment.getCommentId().equals(article.getComments().get(i).getCommentId())
+                            && comment.getCommentId().equals(commentId)) {
+                        commentRepository.updateCommentByCommentIdAndArticleId(comment.getComment(), commentId, articleId);
+                        break;
+                    }
+                }
+                Comment comment1 = new Comment(commentId, comment.getComment(), null);
+                return new ResponseEntity<>(comment1, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+    }
+
     @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Author> insertAuthor(@RequestBody Author author)
     {
