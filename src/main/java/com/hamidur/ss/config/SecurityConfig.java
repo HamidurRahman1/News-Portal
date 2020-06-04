@@ -88,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
                     .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}").hasAnyRole("ADMIN", "EDITOR")
                     .antMatchers(HttpMethod.PUT, "/api/v1/r/update/**").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.GET, "/api/v1/r/**").hasAnyRole("ADMIN", "PUBLISHER", "EDITOR", "USER")
+                    .antMatchers(HttpMethod.GET, "/api/v1/r/**").permitAll()
                     .antMatchers("/api/v1/public/**").permitAll()
                 .and()
                     .formLogin()
