@@ -33,11 +33,7 @@ public class Article
     @Column(name = "article_publish_date")
     private LocalDate publishDate;
 
-    @OneToMany(
-            mappedBy = "article",
-            orphanRemoval = true,
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToMany(mappedBy = "articles")
