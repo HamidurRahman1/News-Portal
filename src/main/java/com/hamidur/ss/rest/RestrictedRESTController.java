@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,27 @@ public class RestrictedRESTController
         this.authorRepository = authorRepository;
         this.articleRepository = articleRepository;
         this.commentRepository = commentRepository;
+    }
+
+    @PutMapping(value = "/update/article/{articleId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Article> updateArticle(@PathVariable Integer articleId, @RequestBody Article article)
+    {
+        Optional<Article> optional = articleRepository.findById(articleId);
+        if(optional.isPresent())
+        {
+            if(optional.get().getArticleId().equals(article.getArticleId()) && articleId.equals(optional.get().getArticleId()))
+            {
+                Article article1 = optional.get();
+                article1.setTitle(article.getTitle());
+                article1.setBody(article.getBody());
+                article1.setPublishDate(article.getPublishDate());
+                articleRepository.save(article1);
+
+                return new ResponseEntity<>(article, HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

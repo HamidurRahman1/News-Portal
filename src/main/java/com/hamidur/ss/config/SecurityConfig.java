@@ -78,7 +78,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 
         http
                 .authorizeRequests()
-                    .antMatchers("/h2-console/**").hasRole("ADMIN")
+//                    .antMatchers("/h2-console/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/article/{\\d+}").hasAnyRole("ADMIN", "PUBLISHER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/**").hasRole("ADMIN")
