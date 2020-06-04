@@ -44,6 +44,21 @@ public class RestrictedRESTController
         this.commentRepository = commentRepository;
     }
 
+    @PutMapping(value = "/update/author",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> updateAuthor(@RequestBody Author author)
+    {
+        if(author.getAuthorId() != null)
+        {
+            Author author1 = authorRepository.findByAuthorId(author.getAuthorId());
+            author1.setFirstName(author.getFirstName());
+            author1.setLastName(author.getLastName());
+            authorRepository.save(author1);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     @PutMapping(value = "/update/article/{articleId}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Article> updateArticle(@PathVariable Integer articleId, @RequestBody Article article)
