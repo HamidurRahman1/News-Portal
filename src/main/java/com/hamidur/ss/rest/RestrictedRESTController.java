@@ -45,20 +45,110 @@ public class RestrictedRESTController
         this.commentRepository = commentRepository;
     }
 
-    @DeleteMapping(value = "/delete/comment/{commentId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Author>> getAuthors()
+    {
+        Set<Author> authors = authorRepository.findAll();
+        for(Author author: authors) author.setArticles(null);
+        return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
+    {
+        Author author = authorRepository.findByAuthorId(authorId);
+        author.setArticles(null);
+        return new ResponseEntity<>(author, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@Size(min = 1) @PathVariable Integer authorId)
+    {
+        Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
+        articles.forEach(article ->
+        {
+            article.setAuthors(null);
+            article.setComments(null);
+        });
+        return new ResponseEntity<>(articles, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId)
+    {
+        Comment comment = commentRepository.findByCommentId(commentId);
+        comment.setArticle(null);
+        return new ResponseEntity<>(comment, HttpStatus.NOT_FOUND);
+    }
+
+    @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAuthorById(@PathVariable Integer authorId)
+    {
+        authorRepository.deleteById(authorId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/delete/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteCommentById(@PathVariable Integer commentId)
     {
         commentRepository.deleteById(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/article/{articleId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteArticleById(@PathVariable Integer articleId)
     {
         articleRepository.deleteById(articleId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Author> insertAuthor(@RequestBody Author author)
+    {
+        Author newAuthor = authorRepository.save(author);
+        return new ResponseEntity<>(newAuthor, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Article> insertArticle(@RequestBody Article article)
+    {
+        Article retrievedArticle = articleRepository.save(article);
+
+        Set<Integer> authorIds = new HashSet<>();
+        article.getAuthors().forEach(author -> authorIds.add(author.getAuthorId()));
+
+        Iterable<Author> iterables = authorRepository.findAllById(authorIds);
+
+        iterables.forEach(author ->
+        {
+            author.getArticles().add(retrievedArticle);
+            retrievedArticle.getAuthors().add(author);
+        });
+
+        authorRepository.saveAll(iterables);
+
+        Article response = new Article();
+        response.setArticleId(retrievedArticle.getArticleId());
+        response.setTitle(retrievedArticle.getTitle());
+        response.setBody(retrievedArticle.getBody());
+        response.setPublishDate(retrievedArticle.getPublishDate());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/insert/article/{articleId}/comment",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Comment> insertCommentByArticleId(@PathVariable Integer articleId, @RequestBody Comment comment)
+    {
+        Optional<Article> article = articleRepository.findById(articleId);
+        if(article.isPresent())
+        {
+            article.get().getComments().add(comment);
+            comment.setArticle(article.get());
+            articleRepository.save(article.get());
+            return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/author",
@@ -122,91 +212,6 @@ public class RestrictedRESTController
             }
         }
         return new ResponseEntity<>(new Comment(), HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> insertAuthor(@RequestBody Author author)
-    {
-        Author newAuthor = authorRepository.save(author);
-        return new ResponseEntity<>(newAuthor, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> insertArticle(@RequestBody Article article)
-    {
-        Article retrievedArticle = articleRepository.save(article);
-
-        Set<Integer> authorIds = new HashSet<>();
-        article.getAuthors().forEach(author -> authorIds.add(author.getAuthorId()));
-
-        Iterable<Author> iterables = authorRepository.findAllById(authorIds);
-
-        iterables.forEach(author ->
-        {
-            author.getArticles().add(retrievedArticle);
-            retrievedArticle.getAuthors().add(author);
-        });
-
-        authorRepository.saveAll(iterables);
-
-        Article response = new Article();
-        response.setArticleId(retrievedArticle.getArticleId());
-        response.setTitle(retrievedArticle.getTitle());
-        response.setBody(retrievedArticle.getBody());
-        response.setPublishDate(retrievedArticle.getPublishDate());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/insert/article/{articleId}/comment",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> insertCommentByArticleId(@PathVariable Integer articleId, @RequestBody Comment comment)
-    {
-        Optional<Article> article = articleRepository.findById(articleId);
-        if(article.isPresent())
-        {
-            article.get().getComments().add(comment);
-            comment.setArticle(article.get());
-            articleRepository.save(article.get());
-            return new ResponseEntity<>(new Comment(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Author>> getAuthors()
-    {
-        Set<Author> authors = authorRepository.findAll();
-        for(Author author: authors) author.setArticles(null);
-        return new ResponseEntity<>(authors, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
-    {
-        Author author = authorRepository.findByAuthorId(authorId);
-        author.setArticles(null);
-        return new ResponseEntity<>(author, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@Size(min = 1) @PathVariable Integer authorId)
-    {
-        Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
-        articles.forEach(article ->
-        {
-            article.setAuthors(null);
-            article.setComments(null);
-        });
-        return new ResponseEntity<>(articles, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId)
-    {
-        Comment comment = commentRepository.findByCommentId(commentId);
-        comment.setArticle(null);
-        return new ResponseEntity<>(comment, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)

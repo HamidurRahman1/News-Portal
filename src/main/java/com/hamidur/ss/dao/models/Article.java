@@ -98,6 +98,16 @@ public class Article
         this.authors = authors;
     }
 
+    public void addAuthor(Author author) {
+        this.authors.add(author);
+        author.getArticles().add(this);
+    }
+
+    public void removeAuthor(Author author) {
+        this.authors.remove(author);
+        author.getArticles().remove(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
