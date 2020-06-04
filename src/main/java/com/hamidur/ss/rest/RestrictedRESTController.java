@@ -21,10 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @RestController
@@ -78,6 +77,21 @@ public class RestrictedRESTController
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/insert/article/{articleId}/comment",
+            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Comment> insertCommentByArticleId(@PathVariable Integer articleId, @RequestBody Comment comment)
+    {
+        Optional<Article> article = articleRepository.findById(articleId);
+        if(article.isPresent())
+        {
+            article.get().getComments().add(comment);
+            comment.setArticle(article.get());
+            articleRepository.save(article.get());
+            return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Author>> getAuthors()
     {
@@ -115,7 +129,7 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> accessDenied(HttpServletRequest request, HttpServletResponse response)
+    public ResponseEntity<Object> accessDenied()
     {
         StringBuilder stringBuilder = new StringBuilder();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
