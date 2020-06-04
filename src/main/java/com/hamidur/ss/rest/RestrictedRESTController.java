@@ -54,10 +54,28 @@ public class RestrictedRESTController
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Article> insertArticle(@RequestBody Article article)
     {
-        Author retrievedAuthor = authorRepository.findByAuthorId(article.getAuthors().iterator().next().getAuthorId());
-        retrievedAuthor.getArticles().add(article);
-        article.getAuthors().add(retrievedAuthor);
-        return new ResponseEntity<>(new Article(), HttpStatus.OK);
+        Article retrievedArticle = articleRepository.save(article);
+
+        Set<Integer> authorIds = new HashSet<>();
+        article.getAuthors().forEach(author -> authorIds.add(author.getAuthorId()));
+
+        Iterable<Author> iterables = authorRepository.findAllById(authorIds);
+
+        iterables.forEach(author ->
+        {
+            author.getArticles().add(retrievedArticle);
+            retrievedArticle.getAuthors().add(author);
+        });
+
+        authorRepository.saveAll(iterables);
+
+        Article response = new Article();
+        response.setArticleId(retrievedArticle.getArticleId());
+        response.setTitle(retrievedArticle.getTitle());
+        response.setBody(retrievedArticle.getBody());
+        response.setPublishDate(retrievedArticle.getPublishDate());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
