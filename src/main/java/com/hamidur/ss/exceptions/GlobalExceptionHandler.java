@@ -4,6 +4,7 @@ import com.hamidur.ss.exceptions.custom.ErrorResponse;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler
     public ResponseEntity<ErrorResponse> typeMismatchHandler(MethodArgumentTypeMismatchException typeMismatch)
     {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), typeMismatch.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> argumentNotValid(MethodArgumentNotValidException argument)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), argument.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
