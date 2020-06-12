@@ -1,5 +1,7 @@
 package com.hamidur.ss.dao.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,13 +29,21 @@ public class Article
     @Column(name = "article_id")
     private Integer articleId;
 
-    @Column(name = "article_title")
+    @NotNull(message = "title cannot be null")
+    @NotBlank(message = "title cannot be empty")
+    @Size(min = 1, max = 1000, message = "title can only be in length of 25-1000 characters")
+    @Column(name = "article_title", nullable = false, length = 1000)
     private String title;
 
-    @Column(name = "article_body")
+    @NotNull(message = "body cannot be null")
+    @NotBlank(message = "body cannot be empty")
+    @Size(min = 1, max = 10000, message = "body can only be in length of 1000-10000 characters")
+    @Column(name = "article_body", nullable = false, length = 10000)
     private String body;
 
-    @Column(name = "article_publish_date")
+    @NotNull(message = "publish date cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Column(name = "article_publish_date", nullable = false)
     private LocalDate publishDate;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
