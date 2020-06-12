@@ -26,7 +26,7 @@ public class Article
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "article_id")
+    @Column(name = "article_id", nullable = false, updatable = false, unique = true)
     private Integer articleId;
 
     @NotNull(message = "title cannot be null")

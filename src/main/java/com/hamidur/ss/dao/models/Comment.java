@@ -9,6 +9,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -17,10 +20,13 @@ public class Comment
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "comment_id", nullable = false, updatable = false, unique = true)
     private Integer commentId;
 
-    @Column(name = "comment")
+    @NotNull(message = "comment cannot be null")
+    @NotBlank(message = "comment cannot be empty")
+    @Size(min = 1, max = 250, message = "comment can only be in length of 1-250 characters")
+    @Column(name = "comment", nullable = false, length = 250)
     private String comment;
 
     @ManyToOne(fetch = FetchType.LAZY)

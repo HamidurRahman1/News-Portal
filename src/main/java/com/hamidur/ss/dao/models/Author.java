@@ -10,6 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 
@@ -19,21 +22,25 @@ public class Author
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "author_id")
+    @Column(name = "author_id", nullable = false, updatable = false, unique = true)
     private Integer authorId;
 
-    @Column(name = "author_first_name")
+    @NotNull(message = "first name cannot be null")
+    @NotBlank(message = "first name cannot be empty")
+    @Size(min = 2, max = 50, message = "first name can only be in length of 2-50 characters")
+    @Column(name = "author_first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "author_last_name")
+    @NotBlank(message = "last name cannot be empty but optionally can be null")
+    @Size(min = 2, max = 50, message = "last name can only be in length of 2-50 characters, null allowed")
+    @Column(name = "author_last_name", length = 50)
     private String lastName;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "authors_articles",
+    @JoinTable
+            (name = "authors_articles",
             joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "article_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "article_id"))
     private Set<Article> articles;
 
     public Author() {}
