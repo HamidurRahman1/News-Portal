@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Optional;
@@ -30,6 +32,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/r")
+@Validated
 public class RestrictedRESTController
 {
     private final AuthorRepository authorRepository;
@@ -74,7 +77,7 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getCommentById(@PathVariable Integer commentId)
+    public ResponseEntity<Comment> getCommentById(@Size(min = 1) @PathVariable Integer commentId)
     {
         Comment comment = commentRepository.findByCommentId(commentId);
         comment.setArticle(null);
@@ -82,35 +85,35 @@ public class RestrictedRESTController
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAuthorById(@PathVariable Integer authorId)
+    public ResponseEntity<Void> deleteAuthorById(@Size(min = 1) @PathVariable Integer authorId)
     {
         authorRepository.deleteById(authorId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteCommentById(@PathVariable Integer commentId)
+    public ResponseEntity<Void> deleteCommentById(@Size(min = 1) @PathVariable Integer commentId)
     {
         commentRepository.deleteById(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteArticleById(@PathVariable Integer articleId)
+    public ResponseEntity<Void> deleteArticleById(@Size(min = 1) @PathVariable Integer articleId)
     {
         articleRepository.deleteById(articleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> insertAuthor(@RequestBody Author author)
+    public ResponseEntity<Author> insertAuthor(@Valid @RequestBody Author author)
     {
         Author newAuthor = authorRepository.save(author);
         return new ResponseEntity<>(newAuthor, HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> insertArticle(@RequestBody Article article)
+    public ResponseEntity<Article> insertArticle(@Valid @RequestBody Article article)
     {
         Article retrievedArticle = articleRepository.save(article);
 
@@ -138,7 +141,8 @@ public class RestrictedRESTController
 
     @PostMapping(value = "/insert/article/{articleId}/comment",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> insertCommentByArticleId(@PathVariable Integer articleId, @RequestBody Comment comment)
+    public ResponseEntity<Comment> insertCommentByArticleId(@Size(min = 1) @PathVariable Integer articleId,
+                                                            @Valid @RequestBody Comment comment)
     {
         Optional<Article> article = articleRepository.findById(articleId);
         if(article.isPresent())
@@ -153,7 +157,7 @@ public class RestrictedRESTController
 
     @PutMapping(value = "/update/author",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> updateAuthor(@RequestBody Author author)
+    public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author author)
     {
         if(author.getAuthorId() != null)
         {
@@ -168,7 +172,7 @@ public class RestrictedRESTController
 
     @PutMapping(value = "/update/article/{articleId}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> updateArticle(@PathVariable Integer articleId, @RequestBody Article article)
+    public ResponseEntity<Article> updateArticle(@Size(min = 1) @PathVariable Integer articleId, @Valid @RequestBody Article article)
     {
         Optional<Article> optional = articleRepository.findById(articleId);
         if(optional.isPresent())
@@ -189,9 +193,9 @@ public class RestrictedRESTController
 
     @PutMapping(value = "/update/article/{articleId}/comment/{commentId}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> updateCommentById(@PathVariable Integer articleId,
-                                                     @PathVariable Integer commentId,
-                                                     @RequestBody Comment comment)
+    public ResponseEntity<Comment> updateCommentById(@Size(min = 1) @PathVariable Integer articleId,
+                                                     @Size(min = 1) @PathVariable Integer commentId,
+                                                     @Valid @RequestBody Comment comment)
     {
         Optional<Article> optional = articleRepository.findById(articleId);
         if(optional.isPresent())
