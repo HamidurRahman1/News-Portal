@@ -8,6 +8,8 @@ import com.hamidur.ss.dao.repos.ArticleRepository;
 import com.hamidur.ss.dao.repos.AuthorRepository;
 import com.hamidur.ss.dao.repos.CommentRepository;
 
+import com.hamidur.ss.exceptions.custom.NotFoundException;
+import com.hamidur.ss.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Optional;
@@ -37,15 +40,15 @@ public class RestrictedRESTController
 {
     private final AuthorRepository authorRepository;
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Autowired
     public RestrictedRESTController(final AuthorRepository authorRepository,
                                     final ArticleRepository articleRepository,
-                                    final CommentRepository commentRepository) {
+                                    final CommentService commentService) {
         this.authorRepository = authorRepository;
         this.articleRepository = articleRepository;
-        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,11 +80,18 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getCommentById(@Size(min = 1) @PathVariable Integer commentId)
+    public ResponseEntity<Comment> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-        Comment comment = commentRepository.findByCommentId(commentId);
-        comment.setArticle(null);
-        return new ResponseEntity<>(comment, HttpStatus.NOT_FOUND);
+        try
+        {
+            Comment comment = commentService.getCommentById(commentId);
+            comment.setArticle(null);
+            return new ResponseEntity<>(comment, HttpStatus.OK);
+        }
+        catch (NotFoundException ex)
+        {
+            throw new NotFoundException(ex.getErrorMessage(), HttpStatus.NOT_FOUND.value());
+        }
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -207,7 +217,7 @@ public class RestrictedRESTController
                 {
                     if(comment.getCommentId().equals(article.getComments().get(i).getCommentId())
                             && comment.getCommentId().equals(commentId)) {
-                        commentRepository.updateCommentByCommentIdAndArticleId(comment.getComment(), commentId, articleId);
+                        commentService.updateCommentByCommentIdAndArticleId(articleId, commentId, comment.getComment());
                         break;
                     }
                 }

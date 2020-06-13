@@ -13,6 +13,12 @@ public abstract class BaseException extends RuntimeException
         this.errorMessage = errorMessage;
     }
 
+    public BaseException(String errorMessage, int status) {
+        super();
+        this.errorMessage = errorMessage;
+        this.status = status;
+    }
+
     public BaseException(LocalDateTime timestamp, String errorMessage, int status) {
         super();
         this.errorMessage = errorMessage;

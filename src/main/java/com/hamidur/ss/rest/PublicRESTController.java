@@ -1,13 +1,12 @@
 package com.hamidur.ss.rest;
 
 import com.hamidur.ss.dao.models.Article;
-import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
 
 import com.hamidur.ss.dao.repos.ArticleRepository;
 import com.hamidur.ss.dao.repos.AuthorRepository;
-import com.hamidur.ss.dao.repos.CommentRepository;
 
+import com.hamidur.ss.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 import java.util.Set;
 
@@ -29,15 +28,15 @@ public class PublicRESTController
 {
     private final AuthorRepository authorRepository;
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Autowired
     public PublicRESTController(AuthorRepository authorRepository,
                                 ArticleRepository articleRepository,
-                                CommentRepository commentRepository) {
+                                CommentService commentService) {
         this.authorRepository = authorRepository;
         this.articleRepository = articleRepository;
-        this.commentRepository = commentRepository;
+        this.commentService = commentService;
     }
 
     @GetMapping(value = "/articles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,18 +54,15 @@ public class PublicRESTController
     @GetMapping(value = "/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Comment>> getComments()
     {
-        List<Comment> comments = commentRepository.findAll();
-        for(Comment comment: comments)
-        {
-            comment.setArticle(null);
-        }
+        List<Comment> comments = commentService.getAllComments();
+        comments.forEach(comment -> comment.setArticle(null));
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Comment>> getCommentsByArticleId(@Size(min = 1) @PathVariable Integer articleId)
+    public ResponseEntity<List<Comment>> getCommentsByArticleId(@PositiveOrZero @PathVariable Integer articleId)
     {
-        List<Comment> comments = commentRepository.getCommentsByArticleId(articleId);
+        List<Comment> comments = commentService.getAllCommentsByArticleId(articleId);
         comments.forEach(comment -> comment.setArticle(null));
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }

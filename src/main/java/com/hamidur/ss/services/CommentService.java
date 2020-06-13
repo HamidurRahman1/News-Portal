@@ -21,7 +21,7 @@ public class CommentService
     public List<Comment> getAllComments() throws NotFoundException
     {
         List<Comment> comments = commentRepository.findAll();
-        if(comments == null)
+        if(comments == null || comments.isEmpty())
             throw new NotFoundException("No comments found to return");
         return comments;
     }
@@ -37,7 +37,7 @@ public class CommentService
     public List<Comment> getAllCommentsByArticleId(Integer articleId) throws NotFoundException
     {
         List<Comment> comments = commentRepository.getCommentsByArticleId(articleId);
-        if(comments == null)
+        if(comments == null || comments.isEmpty())
             throw new NotFoundException("No comments found associated with articleId="+articleId);
         return comments;
     }
