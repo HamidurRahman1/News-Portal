@@ -5,10 +5,9 @@ import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
 
 import com.hamidur.ss.dao.repos.ArticleRepository;
-import com.hamidur.ss.dao.repos.AuthorRepository;
-import com.hamidur.ss.dao.repos.CommentRepository;
 
 import com.hamidur.ss.exceptions.custom.NotFoundException;
+import com.hamidur.ss.services.AuthorService;
 import com.hamidur.ss.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -38,15 +36,15 @@ import java.util.Set;
 @Validated
 public class RestrictedRESTController
 {
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
     private final ArticleRepository articleRepository;
     private final CommentService commentService;
 
     @Autowired
-    public RestrictedRESTController(final AuthorRepository authorRepository,
+    public RestrictedRESTController(final AuthorService authorService,
                                     final ArticleRepository articleRepository,
                                     final CommentService commentService) {
-        this.authorRepository = authorRepository;
+        this.authorService = authorService;
         this.articleRepository = articleRepository;
         this.commentService = commentService;
     }
@@ -54,15 +52,15 @@ public class RestrictedRESTController
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Author>> getAuthors()
     {
-        Set<Author> authors = authorRepository.findAll();
+        Set<Author> authors = authorService.getAllAuthors();
         for(Author author: authors) author.setArticles(null);
         return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@Size(min = 1) @PathVariable Integer authorId)
+    public ResponseEntity<Author> getAuthor(@PositiveOrZero @PathVariable Integer authorId)
     {
-        Author author = authorRepository.findByAuthorId(authorId);
+        Author author = authorService.getAuthorById(authorId);
         author.setArticles(null);
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
@@ -95,10 +93,11 @@ public class RestrictedRESTController
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAuthorById(@Size(min = 1) @PathVariable Integer authorId)
+    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
     {
-        authorRepository.deleteById(authorId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(commentService.deleteCommentById(authorId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No author found with id="+authorId+" to delete");
     }
 
     @DeleteMapping(value = "/delete/comment/{commentId}")
@@ -119,35 +118,34 @@ public class RestrictedRESTController
     @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Author> insertAuthor(@Valid @RequestBody Author author)
     {
-        Author newAuthor = authorRepository.save(author);
-        return new ResponseEntity<>(newAuthor, HttpStatus.OK);
+        return new ResponseEntity<>(authorService.insertAuthor(author), HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Article> insertArticle(@Valid @RequestBody Article article)
     {
-        Article retrievedArticle = articleRepository.save(article);
+//        Article retrievedArticle = articleRepository.save(article);
+//
+//        Set<Integer> authorIds = new HashSet<>();
+//        article.getAuthors().forEach(author -> authorIds.add(author.getAuthorId()));
+//
+//        Iterable<Author> iterables = authorRepository.findAllById(authorIds);
+//
+//        iterables.forEach(author ->
+//        {
+//            author.getArticles().add(retrievedArticle);
+//            retrievedArticle.getAuthors().add(author);
+//        });
+//
+//        authorRepository.saveAll(iterables);
+//
+//        Article response = new Article();
+//        response.setArticleId(retrievedArticle.getArticleId());
+//        response.setTitle(retrievedArticle.getTitle());
+//        response.setBody(retrievedArticle.getBody());
+//        response.setPublishDate(retrievedArticle.getPublishDate());
 
-        Set<Integer> authorIds = new HashSet<>();
-        article.getAuthors().forEach(author -> authorIds.add(author.getAuthorId()));
-
-        Iterable<Author> iterables = authorRepository.findAllById(authorIds);
-
-        iterables.forEach(author ->
-        {
-            author.getArticles().add(retrievedArticle);
-            retrievedArticle.getAuthors().add(author);
-        });
-
-        authorRepository.saveAll(iterables);
-
-        Article response = new Article();
-        response.setArticleId(retrievedArticle.getArticleId());
-        response.setTitle(retrievedArticle.getTitle());
-        response.setBody(retrievedArticle.getBody());
-        response.setPublishDate(retrievedArticle.getPublishDate());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/comment/article/{articleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -159,19 +157,12 @@ public class RestrictedRESTController
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/update/author",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author author)
     {
-        if(author.getAuthorId() != null)
-        {
-            Author author1 = authorRepository.findByAuthorId(author.getAuthorId());
-            author1.setFirstName(author.getFirstName());
-            author1.setLastName(author.getLastName());
-            authorRepository.save(author1);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Author author1 = authorService.updateAuthor(author);
+        if(author1 == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(author1, HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/article/{articleId}",
