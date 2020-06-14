@@ -14,6 +14,11 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends CrudRepository<Comment, Integer>
 {
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "insert into comments (comment, article_id) values (:comment, :a_id)")
+    int insertComment(@Param("a_id") Integer articleId, @Param("comment") String comment);
+
     // returns All Comments
     List<Comment> findAll();
 
@@ -21,8 +26,7 @@ public interface CommentRepository extends CrudRepository<Comment, Integer>
     Comment findByCommentId(Integer commentId);
 
     // returns all Comments on an Article associated with this id
-    @Query(nativeQuery = true,
-            value = "select * from comments where article_id = (:article_id)")
+    @Query(nativeQuery = true, value = "select * from comments where article_id = (:article_id)")
     List<Comment> getCommentsByArticleId(@Param("article_id") Integer articleId);
 
     @Transactional

@@ -154,15 +154,9 @@ public class RestrictedRESTController
     public ResponseEntity<Comment> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId,
                                                             @Valid @RequestBody Comment comment)
     {
-        Optional<Article> article = articleRepository.findById(articleId);
-        if(article.isPresent())
-        {
-            article.get().getComments().add(comment);
-            comment.setArticle(article.get());
-            articleRepository.save(article.get());
-            return new ResponseEntity<>(new Comment(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+        if(commentService.insertComment(articleId, comment))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
     }
 
     @PutMapping(value = "/update/author",

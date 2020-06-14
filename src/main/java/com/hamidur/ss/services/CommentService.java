@@ -18,6 +18,13 @@ public class CommentService
         this.commentRepository = commentRepository;
     }
 
+    public boolean insertComment(Integer articleId, Comment comment)
+    {
+        if(commentRepository.insertComment(articleId, comment.getComment()) >= 1)
+            return true;
+        return false;
+    }
+
     public List<Comment> getAllComments() throws NotFoundException
     {
         List<Comment> comments = commentRepository.findAll();
