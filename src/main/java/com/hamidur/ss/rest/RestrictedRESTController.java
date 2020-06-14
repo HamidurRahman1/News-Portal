@@ -104,7 +104,7 @@ public class RestrictedRESTController
     @DeleteMapping(value = "/delete/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteCommentById(@Size(min = 1) @PathVariable Integer commentId)
     {
-        commentRepository.deleteById(commentId);
+//        commentRepository.deleteById(commentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -149,9 +149,9 @@ public class RestrictedRESTController
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/insert/article/{articleId}/comment",
+    @PostMapping(value = "/insert/comment/article/{articleId}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> insertCommentByArticleId(@Size(min = 1) @PathVariable Integer articleId,
+    public ResponseEntity<Comment> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId,
                                                             @Valid @RequestBody Comment comment)
     {
         Optional<Article> article = articleRepository.findById(articleId);
