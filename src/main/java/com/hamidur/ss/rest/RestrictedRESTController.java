@@ -101,11 +101,12 @@ public class RestrictedRESTController
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteCommentById(@Size(min = 1) @PathVariable Integer commentId)
+    @DeleteMapping(value = "/delete/comment/{commentId}")
+    public ResponseEntity<Void> deleteCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-//        commentRepository.deleteById(commentId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(commentService.deleteCommentById(commentId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No comment found with id="+commentId+" to delete");
     }
 
     @DeleteMapping(value = "/delete/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -149,14 +150,13 @@ public class RestrictedRESTController
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/insert/comment/article/{articleId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId,
-                                                            @Valid @RequestBody Comment comment)
+    @PostMapping(value = "/insert/comment/article/{articleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId,
+                                                         @Valid @RequestBody Comment comment)
     {
         if(commentService.insertComment(articleId, comment))
             return new ResponseEntity<>(HttpStatus.CREATED);
-        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/update/author",
@@ -195,31 +195,12 @@ public class RestrictedRESTController
         return new ResponseEntity<>(new Article(), HttpStatus.OK);
     }
 
-    @PutMapping(value = "/update/article/{articleId}/comment/{commentId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> updateCommentById(@Size(min = 1) @PathVariable Integer articleId,
-                                                     @Size(min = 1) @PathVariable Integer commentId,
-                                                     @Valid @RequestBody Comment comment)
+    @PutMapping(value = "/update/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateCommentById(@Valid @RequestBody Comment comment)
     {
-        Optional<Article> optional = articleRepository.findById(articleId);
-        if(optional.isPresent())
-        {
-            if(optional.get().getArticleId().equals(articleId))
-            {
-                Article article = optional.get();
-                for (int i = 0; i < article.getComments().size(); i++)
-                {
-                    if(comment.getCommentId().equals(article.getComments().get(i).getCommentId())
-                            && comment.getCommentId().equals(commentId)) {
-                        commentService.updateCommentByCommentIdAndArticleId(articleId, commentId, comment.getComment());
-                        break;
-                    }
-                }
-                Comment comment1 = new Comment(commentId, comment.getComment(), null);
-                return new ResponseEntity<>(comment1, HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(new Comment(), HttpStatus.OK);
+        if(commentService.updateCommentByCommentIdAndArticleId(comment))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
     }
 
     @GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)

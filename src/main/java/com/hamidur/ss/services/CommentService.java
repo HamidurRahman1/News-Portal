@@ -55,8 +55,13 @@ public class CommentService
         return comments;
     }
 
-    public void updateCommentByCommentIdAndArticleId(Integer articleId, Integer commentId, String comment)
+    public boolean updateCommentByCommentIdAndArticleId(Comment comment)
     {
-        commentRepository.updateCommentByCommentIdAndArticleId(comment, commentId, articleId);
+        return commentRepository.updateCommentByCommentIdAndArticleId(comment.getCommentId(), comment.getComment()) >= 1;
+    }
+
+    public boolean deleteCommentById(Integer commentId)
+    {
+        return commentRepository.deleteByCommentId(commentId) >= 1;
     }
 }

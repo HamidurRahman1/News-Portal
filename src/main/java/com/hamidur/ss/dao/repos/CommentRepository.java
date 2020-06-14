@@ -32,8 +32,13 @@ public interface CommentRepository extends CrudRepository<Comment, Integer>
     @Transactional
     @Modifying
     @Query(nativeQuery = true,
-            value = "update comments set comment = (:comment) where comment_id = (:commentId) and article_id = (:articleId)")
-    void updateCommentByCommentIdAndArticleId(@Param("comment") String comment,
-                                              @Param("commentId") Integer commentId,
-                                              @Param("articleId") Integer articleId);
+            value = "update comments set comment = (:comment) where comment_id = (:commentId)")
+    int updateCommentByCommentIdAndArticleId(@Param("commentId") Integer commentId, @Param("comment") String comment);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "delete from comments where comment_id = (:commentId)")
+    int deleteByCommentId(@Param("commentId") Integer commentId);
+
+
 }
