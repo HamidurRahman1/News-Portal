@@ -156,7 +156,7 @@ public class RestrictedRESTController
     {
         if(commentService.insertComment(articleId, comment))
             return new ResponseEntity<>(HttpStatus.CREATED);
-        return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PutMapping(value = "/update/author",

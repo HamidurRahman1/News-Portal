@@ -2,6 +2,7 @@ package com.hamidur.ss.services;
 
 import com.hamidur.ss.dao.models.Comment;
 import com.hamidur.ss.dao.repos.CommentRepository;
+import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +19,16 @@ public class CommentService
         this.commentRepository = commentRepository;
     }
 
-    public boolean insertComment(Integer articleId, Comment comment)
+    public boolean insertComment(Integer articleId, Comment comment) throws ConstraintViolationException
     {
-        if(commentRepository.insertComment(articleId, comment.getComment()) >= 1)
-            return true;
-        return false;
+        try
+        {
+            return commentRepository.insertComment(articleId, comment.getComment()) >= 1;
+        }
+        catch (org.hibernate.exception.ConstraintViolationException ex)
+        {
+            throw new ConstraintViolationException("No article found with id="+articleId+" to insert comment");
+        }
     }
 
     public List<Comment> getAllComments() throws NotFoundException

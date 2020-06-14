@@ -1,5 +1,6 @@
 package com.hamidur.ss.exceptions;
 
+import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.ErrorResponse;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.http.HttpHeaders;
@@ -51,5 +52,12 @@ public class GlobalExceptionHandler
         body.put("errors", errors);
 
         return new ResponseEntity<>(body, headers, httpStatus);
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> constrainViolation(ConstraintViolationException cv)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), cv.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
