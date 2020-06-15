@@ -2,6 +2,7 @@ package com.hamidur.ss.exceptions;
 
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.ErrorResponse;
+import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -59,5 +59,12 @@ public class GlobalExceptionHandler
     {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), cv.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = MissingAttribute.class)
+    public ResponseEntity<ErrorResponse> missingAttribute(MissingAttribute ma)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), ma.getErrorMessage(), HttpStatus.PARTIAL_CONTENT.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.PARTIAL_CONTENT);
     }
 }

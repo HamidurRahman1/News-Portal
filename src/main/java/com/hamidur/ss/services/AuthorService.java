@@ -2,12 +2,10 @@ package com.hamidur.ss.services;
 
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.AuthorRepository;
+import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.Set;
 
 @Service
@@ -30,10 +28,10 @@ public class AuthorService
         return authorRepository.save(author);
     }
 
-    public Author updateAuthor(Author author) throws NotFoundException
+    public Author updateAuthor(Author author) throws MissingAttribute
     {
         if(author.getAuthorId() == null)
-            throw new NotFoundException("Author id must be present in to update an author. given="+author.getAuthorId());
+            throw new MissingAttribute("Author id must be present to update an author. given="+author.getAuthorId());
 
         Author author1 = authorRepository.findByAuthorId(author.getAuthorId());
         author1.setFirstName(author.getFirstName());
@@ -46,6 +44,7 @@ public class AuthorService
         Set<Author> authors = authorRepository.findAll();
         if(authors == null || authors.isEmpty())
             throw new NotFoundException("No authors found to return");
+        authors.forEach(author -> author.setArticles(null));
         return authors;
     }
 
@@ -54,6 +53,17 @@ public class AuthorService
         Author author = authorRepository.findByAuthorId(authorId);
         if(author == null)
             throw new NotFoundException("No author found associated with authorId="+authorId);
+        author.setArticles(null);
         return author;
+    }
+
+    public Iterable<Author> getAuthorsByIds(Set<Integer> ids)
+    {
+        return authorRepository.findAllById(ids);
+    }
+
+    public Iterable<Author> saveAllAuthors(Iterable<Author> authors)
+    {
+        return authorRepository.saveAll(authors);
     }
 }

@@ -100,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .deleteCookies("JSESSIONID")
                 .and()
                     .exceptionHandling()
-                    .accessDeniedPage("/api/v1/r/access-denied")
+                    .accessDeniedPage("/api/v1/public/access-denied")
                 .and()
                     .headers()
                     .frameOptions()

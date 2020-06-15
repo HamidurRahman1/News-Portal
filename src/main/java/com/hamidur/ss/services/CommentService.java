@@ -3,6 +3,7 @@ package com.hamidur.ss.services;
 import com.hamidur.ss.dao.models.Comment;
 import com.hamidur.ss.dao.repos.CommentRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
+import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,15 +20,17 @@ public class CommentService
         this.commentRepository = commentRepository;
     }
 
-    public boolean insertComment(Integer articleId, Comment comment) throws ConstraintViolationException
+    public boolean insertComment(Comment comment) throws MissingAttribute, ConstraintViolationException
     {
         try
         {
-            return commentRepository.insertComment(articleId, comment.getComment()) >= 1;
+            if(comment.getArticle().getArticleId() == null)
+                throw new MissingAttribute("Comment must be associated with an article");
+            return commentRepository.insertComment(comment.getArticle().getArticleId(), comment.getComment()) >= 1;
         }
         catch (org.hibernate.exception.ConstraintViolationException ex)
         {
-            throw new ConstraintViolationException("No article found with id="+articleId+" to insert comment");
+            throw new ConstraintViolationException("No article found with id="+comment.getArticle().getArticleId()+" to insert comment");
         }
     }
 
@@ -55,8 +58,10 @@ public class CommentService
         return comments;
     }
 
-    public boolean updateCommentByCommentIdAndArticleId(Comment comment)
+    public boolean updateCommentByCommentIdAndArticleId(Comment comment) throws MissingAttribute
     {
+        if(comment.getCommentId() == null)
+            throw new MissingAttribute("Comment id must be present to update a comment");
         return commentRepository.updateCommentByCommentIdAndArticleId(comment.getCommentId(), comment.getComment()) >= 1;
     }
 
