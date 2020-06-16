@@ -1,5 +1,7 @@
 package com.hamidur.ss.rest;
 
+import com.hamidur.ss.auth.models.User;
+import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
@@ -32,14 +34,17 @@ public class RestrictedRESTController
     private final AuthorService authorService;
     private final ArticleService articleService;
     private final CommentService commentService;
+    private final UserService userService;
 
     @Autowired
     public RestrictedRESTController(final AuthorService authorService,
                                     final ArticleService articleService,
-                                    final CommentService commentService) {
+                                    final CommentService commentService,
+                                    final UserService userService) {
         this.authorService = authorService;
         this.articleService = articleService;
         this.commentService = commentService;
+        this.userService = userService;
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -137,5 +142,12 @@ public class RestrictedRESTController
         if(commentService.updateCommentByCommentIdAndArticleId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
         else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
+    }
+
+    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> insertUser(@RequestBody User user)
+    {
+        System.out.println(user);
+        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
     }
 }

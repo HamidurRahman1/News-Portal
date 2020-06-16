@@ -1,6 +1,6 @@
 package com.hamidur.ss.config;
 
-import com.hamidur.ss.auth.service.AppUserDetailsServiceImpl;
+import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

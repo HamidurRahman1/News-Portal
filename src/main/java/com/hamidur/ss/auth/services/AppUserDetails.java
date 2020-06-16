@@ -1,4 +1,4 @@
-package com.hamidur.ss.auth.service;
+package com.hamidur.ss.auth.services;
 
 import com.hamidur.ss.auth.models.Role;
 import com.hamidur.ss.auth.models.User;

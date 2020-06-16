@@ -1,5 +1,7 @@
 package com.hamidur.ss.auth.models;
 
+import com.hamidur.ss.dao.models.Author;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,7 +28,7 @@ public class Role implements Serializable
     @Column(name = "role")
     private String role;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
     public Role() {}
@@ -60,17 +63,36 @@ public class Role implements Serializable
         this.users = users;
     }
 
+    public void addUser(User user) {
+        if(this.users == null)
+            this.users = new LinkedHashSet<>();
+        this.users.add(user);
+        user.getRoles().add(this);
+    }
+
+    public void removeUser(User user) {
+        this.users.remove(user);
+        user.getRoles().remove(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Role)) return false;
         Role role1 = (Role) o;
-        return Objects.equals(getRoleId(), role1.getRoleId()) &&
-                Objects.equals(getRole(), role1.getRole());
+        return Objects.equals(getRole(), role1.getRole());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getRoleId(), getRole());
+        return Objects.hash(getRole());
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleId=" + roleId +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

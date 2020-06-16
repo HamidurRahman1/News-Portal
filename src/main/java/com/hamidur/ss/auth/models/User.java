@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import java.io.Serializable;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -35,12 +36,11 @@ public class User implements Serializable
     @Column(name = "enabled")
     private boolean isEnabled;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable
+            (name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     public User() {}
@@ -93,19 +93,46 @@ public class User implements Serializable
         this.roles = roles;
     }
 
+    public User addRole(Role role)
+    {
+        if(this.roles == null)
+            this.roles = new LinkedHashSet<>();
+        this.roles.add(role);
+        role.getUsers().add(this);
+        return this;
+    }
+
+    public User removeRole(Role role)
+    {
+        if(this.roles != null)
+            this.roles.remove(role);
+        role.getUsers().remove(this);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return isEnabled() == user.isEnabled() &&
-                Objects.equals(getUserId(), user.getUserId()) &&
                 Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getPassword(), user.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getUsername(), getPassword(), isEnabled());
+        return Objects.hash(getUsername(), getPassword(), isEnabled());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", isEnabled=" + isEnabled +
+                ", roles=" + roles +
+                '}';
     }
 }
