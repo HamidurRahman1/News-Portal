@@ -36,7 +36,7 @@ public class User implements Serializable
     @Column(name = "enabled")
     private boolean isEnabled;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable
             (name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),

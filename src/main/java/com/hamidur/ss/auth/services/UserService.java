@@ -1,6 +1,7 @@
 package com.hamidur.ss.auth.services;
 
 import com.hamidur.ss.auth.models.User;
+import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,13 @@ import org.springframework.stereotype.Service;
 public class UserService
 {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(final UserRepository userRepository) {
+    public UserService(final UserRepository userRepository, final RoleRepository roleRepository)
+    {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public User insertUser(User user) throws MissingAttribute
