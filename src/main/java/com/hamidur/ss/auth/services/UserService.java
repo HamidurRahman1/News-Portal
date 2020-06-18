@@ -24,6 +24,8 @@ public class UserService
     {
         if(user.getRoles() == null || user.getRoles().isEmpty())
             throw new MissingAttribute("At least 1 role be assigned to this user");
-        return userRepository.save(user);
+        System.out.println(user);
+        userRepository.insertUserEntity(user.getUsername(), user.getPassword(), user.isEnabled());
+        return null;
     }
 }

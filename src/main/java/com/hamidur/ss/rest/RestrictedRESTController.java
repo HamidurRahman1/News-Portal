@@ -147,7 +147,6 @@ public class RestrictedRESTController
     @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> insertUser(@RequestBody User user)
     {
-        System.out.println(user);
         return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
     }
 }
