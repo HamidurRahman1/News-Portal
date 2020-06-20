@@ -1,5 +1,6 @@
 package com.hamidur.ss.auth.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,6 +34,7 @@ public class User implements Serializable
     @Column(name = "enabled")
     private boolean enabled;
 
+    @JsonBackReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable
             (name = "users_roles",

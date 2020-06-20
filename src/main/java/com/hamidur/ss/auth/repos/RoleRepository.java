@@ -16,4 +16,7 @@ public interface RoleRepository extends CrudRepository<Role, Integer>
                     "SELECT * FROM roles r inner join users_roles ur on  r.role_id = ur.role_id" +
                     " and ur.user_id in (select user_id from users where username = :username)")
     Set<Role> getRolesByUsername(@Param("username") String username);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM roles")
+    Set<Role> getAll();
 }
