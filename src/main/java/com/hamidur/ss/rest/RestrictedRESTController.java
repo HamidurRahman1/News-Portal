@@ -157,4 +157,12 @@ public class RestrictedRESTController
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
+
+    @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
+    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    {
+        if(userService.addRole(userId, roleId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
 }

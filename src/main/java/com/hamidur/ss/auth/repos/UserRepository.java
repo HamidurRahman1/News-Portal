@@ -19,6 +19,11 @@ public interface UserRepository extends CrudRepository<User, Integer>
     @Transactional
     int revokeRole(@Param("u_i") Integer userId, @Param("r_i") Integer roleId);
 
+    @Query(nativeQuery = true, value = "insert into users_roles (user_id, role_id) values (:u_i, :r_i)")
+    @Modifying
+    @Transactional
+    int addRole(@Param("u_i") Integer userId, @Param("r_i") Integer roleId);
+
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = "insert into users (username, password, enabled) values (:un, :p, :e);")

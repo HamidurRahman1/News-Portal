@@ -4,6 +4,7 @@ import com.hamidur.ss.auth.models.Role;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
+import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,5 +50,23 @@ public class UserService
     public boolean revokeRole(Integer userId, Integer roleId)
     {
         return userRepository.revokeRole(userId, roleId) >= 1;
+    }
+
+    public boolean addRole(Integer userId, Integer roleId) throws ConstraintViolationException
+    {
+        try
+        {
+            return userRepository.addRole(userId, roleId) >= 1;
+        }
+        catch (org.hibernate.exception.ConstraintViolationException e)
+        {
+            throw new ConstraintViolationException("User with id="+userId+" already has the role with id="+roleId+" assigned to.");
+        }
+        catch (Exception e)
+        {
+            if(e.getMessage().toUpperCase().contains("primary key violation"))
+                throw new ConstraintViolationException("User with id="+userId+" already has the role with id="+roleId+" assigned to.");
+            else throw e;
+        }
     }
 }
