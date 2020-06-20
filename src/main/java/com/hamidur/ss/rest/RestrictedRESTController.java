@@ -149,4 +149,12 @@ public class RestrictedRESTController
     {
         return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/delete/user/{userId}/role/{roleId}")
+    public ResponseEntity<Boolean> deleteRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    {
+        if(userService.revokeRole(userId, roleId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+    }
 }

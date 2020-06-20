@@ -45,4 +45,9 @@ public class UserService
         }
         return null;
     }
+
+    public boolean revokeRole(Integer userId, Integer roleId)
+    {
+        return userRepository.revokeRole(userId, roleId) >= 1;
+    }
 }
