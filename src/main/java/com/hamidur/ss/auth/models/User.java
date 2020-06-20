@@ -3,7 +3,6 @@ package com.hamidur.ss.auth.models;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,9 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
 import java.io.Serializable;
-
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,7 +31,7 @@ public class User implements Serializable
     private String password;
 
     @Column(name = "enabled")
-    private boolean isEnabled;
+    private boolean enabled;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable
@@ -45,11 +42,11 @@ public class User implements Serializable
 
     public User() {}
 
-    public User(Integer userId, String username, String password, boolean isEnabled, Set<Role> roles) {
+    public User(Integer userId, String username, String password, boolean enabled, Set<Role> roles) {
         this.userId = userId;
         this.username = username;
         this.password = password;
-        this.isEnabled = isEnabled;
+        this.enabled = enabled;
         this.roles = roles;
     }
 
@@ -77,12 +74,12 @@ public class User implements Serializable
         this.password = password;
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
+    public boolean getEnabled() {
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
+        this.enabled = enabled;
     }
 
     public Set<Role> getRoles() {
@@ -115,14 +112,14 @@ public class User implements Serializable
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return isEnabled() == user.isEnabled() &&
+        return getEnabled() == user.getEnabled() &&
                 Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getPassword(), user.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), isEnabled());
+        return Objects.hash(getUsername(), getPassword(), getEnabled());
     }
 
     @Override
@@ -131,7 +128,7 @@ public class User implements Serializable
                 "userId=" + userId +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", isEnabled=" + isEnabled +
+                ", enabled=" + enabled +
                 ", roles=" + roles +
                 '}';
     }
