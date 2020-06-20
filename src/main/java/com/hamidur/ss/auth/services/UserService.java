@@ -7,6 +7,7 @@ import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
@@ -58,15 +59,14 @@ public class UserService
         {
             return userRepository.addRole(userId, roleId) >= 1;
         }
-        catch (org.hibernate.exception.ConstraintViolationException e)
+        catch (DataIntegrityViolationException e)
         {
-            throw new ConstraintViolationException("User with id="+userId+" already has the role with id="+roleId+" assigned to.");
-        }
-        catch (Exception e)
-        {
-            if(e.getMessage().toUpperCase().contains("primary key violation"))
-                throw new ConstraintViolationException("User with id="+userId+" already has the role with id="+roleId+" assigned to.");
-            else throw e;
+            if(e.getMessage().toUpperCase().contains("USERS_ROLES FOREIGN KEY"))
+                throw new ConstraintViolationException("Invalid id provided for userId or roleId. provided userId="+userId+", roleId="+roleId);
+            else if(e.getMessage().toUpperCase().contains("PRIMARY_KEY"))
+                throw new ConstraintViolationException("User with id="+userId+" already has the role with roleId="+roleId);
+            else
+                throw e;
         }
     }
 }

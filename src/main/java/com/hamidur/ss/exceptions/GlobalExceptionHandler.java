@@ -57,7 +57,7 @@ public class GlobalExceptionHandler
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> constrainViolation(ConstraintViolationException cv)
     {
-        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), cv.getMessage(), HttpStatus.BAD_REQUEST.value());
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), cv.getErrorMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
