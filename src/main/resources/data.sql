@@ -3,7 +3,12 @@ insert into users (username, password, enabled) values
 ('user1', '$2b$10$jEDw4HHKDe75.mM47p4siui1XZrdGkf7Y0.oqKLY.Wt5TjIwuhByq', true),
 ('user2', '$2b$10$hS6mt4EUU38qu2jFz1nGp./KXkafrDZoWsAupfFrv7ZvwYiLnGVie', true),
 ('user3', '$2b$10$8Iv7IIaMNm6ZlFuyzZVoA.1dTC7kGBi5AXzH023tHFHHjGMQQoReO', true),
-('user4', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true);
+('user4', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true),
+('author1', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true),
+('author2', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true),
+('author3', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true),
+('author4', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true),
+('author5', '$2b$10$UmpwL1ImYyVTy1eofo8t9.ecIFzyyCJsML8y0k1UJtMWG2W1hJ3T6', true);
 
 -- ROLE_ prefix will be added at runtime
 insert into roles (role) values
@@ -18,12 +23,12 @@ insert into users_roles (user_id, role_id) values
 (3, 3), (3, 4),
 (4, 4);
 
-insert into authors (author_first_name, author_last_name) values
-('Raj', 'Arnold'),
-('Garin', 'Tanner'),
-('Caleb', 'Phillips'),
-('Izaan', 'Shaw'),
-('Zack', 'Jennings');
+insert into authors (author_first_name, author_last_name, login_id) values
+('Raj', 'Arnold', 5),
+('Garin', 'Tanner', 6),
+('Caleb', 'Phillips', 7),
+('Izaan', 'Shaw', 8),
+('Zack', 'Jennings', 9);
 
 insert into articles (article_title, article_body, article_publish_date) values
 ('title1', 'body1', '2020-05-20'),

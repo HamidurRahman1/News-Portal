@@ -26,7 +26,9 @@ create table authors
 (
   author_id int primary key auto_increment,
   author_first_name varchar(50) not null,
-  author_last_name varchar(50) null
+  author_last_name varchar(50) null,
+  login_id int not null,
+  foreign key (login_id) references users(user_id)
 );
 
 create table articles
@@ -41,7 +43,7 @@ create table authors_articles
 (
   author_id int not null,
   article_id int not null,
-
+  primary key(author_id, article_id),
   foreign key (author_id) references authors(author_id),
   foreign key (article_id) references articles(article_id)
 );
