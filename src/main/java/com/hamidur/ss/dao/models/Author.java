@@ -1,15 +1,19 @@
 package com.hamidur.ss.dao.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hamidur.ss.auth.models.User;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -44,9 +48,14 @@ public class Author
             inverseJoinColumns = @JoinColumn(name = "article_id"))
     private Set<Article> articles;
 
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "login_id")
+    private User user;
+
     public Author() {}
 
-    public Author(Integer authorId, String firstName, String lastName, Set<Article> articles) {
+    public Author(Integer authorId, String firstName, String lastName, Set<Article> articles, User user) {
         this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -93,6 +102,14 @@ public class Author
     public void removeArticle(Article article) {
         articles.remove(article);
         article.getAuthors().remove(this);
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
