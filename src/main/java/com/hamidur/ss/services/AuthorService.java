@@ -52,7 +52,6 @@ public class AuthorService
         Author author = authorRepository.findByAuthorId(authorId);
         if(author == null)
             throw new NotFoundException("No author found associated with authorId="+authorId);
-        author.setArticles(null);
         return author;
     }
 

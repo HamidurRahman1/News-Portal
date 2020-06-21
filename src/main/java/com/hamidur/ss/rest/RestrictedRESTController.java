@@ -68,14 +68,7 @@ public class RestrictedRESTController
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Comment> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-        try
-        {
-            return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
-        }
-        catch (NotFoundException ex)
-        {
-            throw new NotFoundException(ex.getErrorMessage(), HttpStatus.NOT_FOUND.value());
-        }
+        return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)

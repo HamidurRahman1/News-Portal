@@ -30,9 +30,7 @@ public class ArticleService
             if(author.getAuthorId() != null) authorIds.add(author.getAuthorId());
 
         if(authorIds.isEmpty())
-        {
             throw new MissingAttribute("At least 1 author must be associated with article. found="+authorIds.size());
-        }
 
         Article savedArticle = articleRepository.save(article);
 

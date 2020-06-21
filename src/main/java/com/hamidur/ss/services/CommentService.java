@@ -6,6 +6,7 @@ import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class CommentService
                 throw new MissingAttribute("Comment must be associated with an article");
             return commentRepository.insertComment(comment.getArticle().getArticleId(), comment.getComment()) >= 1;
         }
-        catch (org.hibernate.exception.ConstraintViolationException ex)
+        catch (DataIntegrityViolationException ex)
         {
             throw new ConstraintViolationException("No article found with id="+comment.getArticle().getArticleId()+" to insert comment");
         }
