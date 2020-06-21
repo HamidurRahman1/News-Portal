@@ -44,7 +44,6 @@ public class AuthorService
         Set<Author> authors = authorRepository.findAll();
         if(authors == null || authors.isEmpty())
             throw new NotFoundException("No authors found to return");
-        authors.forEach(author -> author.setArticles(null));
         return authors;
     }
 

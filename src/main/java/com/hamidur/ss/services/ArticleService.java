@@ -67,11 +67,6 @@ public class ArticleService
         Set<Article> articles = articleRepository.getArticlesByAuthorId(authorId);
         if(articles == null || articles.isEmpty())
             throw new NotFoundException("No articles found to return for author with id="+authorId);
-        articles.forEach(article ->
-        {
-            article.setAuthors(null);
-            article.setComments(null);
-        });
         return articles;
     }
 

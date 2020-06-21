@@ -70,9 +70,7 @@ public class RestrictedRESTController
     {
         try
         {
-            Comment comment = commentService.getCommentById(commentId);
-            comment.setArticle(null);
-            return new ResponseEntity<>(comment, HttpStatus.OK);
+            return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
         }
         catch (NotFoundException ex)
         {

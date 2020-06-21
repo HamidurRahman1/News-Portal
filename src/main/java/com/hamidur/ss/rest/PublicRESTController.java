@@ -36,29 +36,19 @@ public class PublicRESTController
     @GetMapping(value = "/articles", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<Article>> getArticles()
     {
-        Set<Article> articles = articleService.getAllArticles();
-        for(Article article: articles)
-        {
-            article.setAuthors(null);
-            article.setComments(null);
-        }
-        return new ResponseEntity<>(articles, HttpStatus.OK);
+        return new ResponseEntity<>(articleService.getAllArticles(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Comment>> getComments()
     {
-        List<Comment> comments = commentService.getAllComments();
-        comments.forEach(comment -> comment.setArticle(null));
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        return new ResponseEntity<>(commentService.getAllComments(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Comment>> getCommentsByArticleId(@PositiveOrZero @PathVariable Integer articleId)
     {
-        List<Comment> comments = commentService.getAllCommentsByArticleId(articleId);
-        comments.forEach(comment -> comment.setArticle(null));
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        return new ResponseEntity<>(commentService.getAllCommentsByArticleId(articleId), HttpStatus.OK);
     }
 
     @GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)

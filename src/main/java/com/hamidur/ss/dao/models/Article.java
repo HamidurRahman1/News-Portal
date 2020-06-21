@@ -1,7 +1,7 @@
 package com.hamidur.ss.dao.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -46,6 +45,7 @@ public class Article
     @Column(name = "article_publish_date", nullable = false)
     private LocalDate publishDate;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
