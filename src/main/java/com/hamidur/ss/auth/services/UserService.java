@@ -34,18 +34,25 @@ public class UserService
     {
         if(user.getRoles() == null || user.getRoles().isEmpty())
             throw new MissingAttribute("At least 1 role be assigned to this user");
-        if(userRepository.insertUserEntity(user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
+        try
         {
-            User savedUser = userRepository.getUserByUsername(user.getUsername());
-            Set<Role> roles = roleRepository.getAll();
-            Set<Role> assignedRoles = new HashSet<>();
-            roles.forEach(role -> {
-                if(user.getRoles().contains(role)) assignedRoles.add(role);
-            });
-            savedUser.setRoles(assignedRoles);
-            return userRepository.save(savedUser);
+            if(userRepository.insertUserEntity(user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
+            {
+                User savedUser = userRepository.getUserByUsername(user.getUsername());
+                Set<Role> roles = roleRepository.getAll();
+                Set<Role> assignedRoles = new HashSet<>();
+                roles.forEach(role -> {
+                    if(user.getRoles().contains(role)) assignedRoles.add(role);
+                });
+                savedUser.setRoles(assignedRoles);
+                return userRepository.save(savedUser);
+            }
+            return null;
         }
-        return null;
+        catch (DataIntegrityViolationException ex)
+        {
+            throw new ConstraintViolationException("A user with username="+user.getUsername()+" already exists");
+        }
     }
 
     public boolean revokeRole(Integer userId, Integer roleId)

@@ -11,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -25,19 +28,25 @@ public class User implements Serializable
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "username")
+    @NotNull(message = "username cannot be null")
+    @NotBlank(message = "username cannot be empty")
+    @Size(min = 2, max = 50, message = "username must be in length of 2-50 characters")
+    @Column(name = "username", nullable = false, unique = true, updatable = true, length = 50)
     private String username;
 
-    @Column(name = "password")
+    @NotNull(message = "password cannot be null")
+    @NotBlank(message = "password cannot be empty")
+    @Size(min = 5, max = 70, message = "password must be in length of 5-15 characters")
+    @Column(name = "password", nullable = false, updatable = true, length = 70)
     private String password;
 
-    @Column(name = "enabled")
+    @NotNull(message = "enabled property cannot be null")
+    @Column(name = "enabled", nullable = false, updatable = true)
     private boolean enabled;
 
     @JsonBackReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
-    @JoinTable
-            (name = "users_roles",
+    @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;

@@ -36,22 +36,15 @@ public class GlobalExceptionHandler
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> argumentNotValid(MethodArgumentNotValidException ex, HttpStatus httpStatus,
-                                                   HttpHeaders headers, WebRequest request)
+    public ResponseEntity<ErrorResponse> argumentNotValid(MethodArgumentNotValidException ex)
     {
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("timestamp", LocalDateTime.now());
-        body.put("status", httpStatus.value());
-
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        body.put("errors", errors);
-
-        return new ResponseEntity<>(body, headers, httpStatus);
+        return new ResponseEntity<>(new ErrorResponse(LocalDateTime.now(), errors.toString(), HttpStatus.BAD_REQUEST.value()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
