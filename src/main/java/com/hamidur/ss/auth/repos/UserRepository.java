@@ -14,18 +14,24 @@ public interface UserRepository extends CrudRepository<User, Integer>
     @Query(nativeQuery = true, value = "SELECT * FROM users WHERE username = :username")
     User getUserByUsername(@Param("username") String username);
 
-    @Query(nativeQuery = true, value = "delete from users_roles where user_id = :u_i and role_id = :r_i")
     @Modifying
     @Transactional
+    @Query(nativeQuery = true, value = "delete from users_roles where user_id = :u_i and role_id = :r_i")
     int revokeRole(@Param("u_i") Integer userId, @Param("r_i") Integer roleId);
 
-    @Query(nativeQuery = true, value = "insert into users_roles (user_id, role_id) values (:u_i, :r_i)")
     @Modifying
     @Transactional
+    @Query(nativeQuery = true, value = "insert into users_roles (user_id, role_id) values (:u_i, :r_i)")
     int addRole(@Param("u_i") Integer userId, @Param("r_i") Integer roleId);
 
     @Modifying
     @Transactional
     @Query(nativeQuery = true, value = "insert into users (username, password, enabled) values (:un, :p, :e);")
     int insertUserEntity(@Param("un") String username, @Param("p") String password, @Param("e") boolean enabled);
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "delete from users_roles where user_id = :id;" +
+                                        "delete from users where user_id = :id")
+    int deleteUserById(@Param("id") Integer userId);
 }

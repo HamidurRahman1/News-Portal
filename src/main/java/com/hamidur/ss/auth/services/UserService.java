@@ -76,4 +76,9 @@ public class UserService
                 throw e;
         }
     }
+
+    public boolean deleteUserById(Integer userId)
+    {
+        return userRepository.deleteUserById(userId) >= 1;
+    }
 }

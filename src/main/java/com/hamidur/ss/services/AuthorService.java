@@ -1,26 +1,36 @@
 package com.hamidur.ss.services;
 
+import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.AuthorRepository;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import javax.transaction.Transactional;
 import java.util.Set;
 
 @Service
 public class AuthorService
 {
     private final AuthorRepository authorRepository;
+    private final UserService userService;
 
     @Autowired
-    public AuthorService(final AuthorRepository authorRepository) {
+    public AuthorService(final AuthorRepository authorRepository, final UserService userService) {
         this.authorRepository = authorRepository;
+        this.userService = userService;
     }
 
+    @Transactional
     public boolean deleteAuthorById(Integer authorId)
     {
-        return authorRepository.deleteByAuthorId(authorId) >= 1;
+        Author author = authorRepository.findByAuthorId(authorId);
+        if(author == null)
+            return false;
+        Integer userId = author.getUser().getUserId();
+        authorRepository.deleteByAuthorId(authorId);
+        return userService.deleteUserById(userId);
     }
 
     public Author insertAuthor(Author author)
