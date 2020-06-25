@@ -1,6 +1,5 @@
 package com.hamidur.ss.services;
 
-import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.AuthorRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
@@ -16,12 +15,10 @@ import java.util.Set;
 public class AuthorService
 {
     private final AuthorRepository authorRepository;
-    private final UserService userService;
 
     @Autowired
-    public AuthorService(final AuthorRepository authorRepository, final UserService userService) {
+    public AuthorService(final AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
-        this.userService = userService;
     }
 
     @Transactional
@@ -31,8 +28,7 @@ public class AuthorService
         if(author == null)
             return false;
         Integer userId = author.getUser().getUserId();
-        authorRepository.deleteByAuthorId(authorId);
-        return userService.deleteUserById(userId);
+        return authorRepository.deleteAuthorById(authorId, userId) >= 1;
     }
 
     public Author insertAuthor(Author author)

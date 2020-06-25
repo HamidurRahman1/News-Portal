@@ -7,6 +7,8 @@ import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -23,6 +25,7 @@ public class ArticleService
         this.authorService = authorService;
     }
 
+    @Transactional
     public Article insertArticle(Article article) throws MissingAttribute
     {
         Set<Integer> authorIds = new HashSet<>();

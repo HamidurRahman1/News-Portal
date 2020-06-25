@@ -6,12 +6,14 @@ import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
+import com.hamidur.ss.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -20,13 +22,16 @@ public class UserService
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final AuthorService authorService;
 
     @Autowired
-    public UserService(final UserRepository userRepository, final RoleRepository roleRepository, final PasswordEncoder passwordEncoder)
+    public UserService(final UserRepository userRepository, final RoleRepository roleRepository,
+                       final PasswordEncoder passwordEncoder, final AuthorService authorService)
     {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authorService = authorService;
     }
 
     @Transactional
@@ -79,6 +84,9 @@ public class UserService
 
     public boolean deleteUserById(Integer userId)
     {
-        return userRepository.deleteUserById(userId) >= 1;
+        Integer authorId = userRepository.isUserAnAuthor(userId);
+        if(authorId == null)
+            return userRepository.deleteUserById(userId) >= 1;
+        return authorService.deleteAuthorById(authorId);
     }
 }
