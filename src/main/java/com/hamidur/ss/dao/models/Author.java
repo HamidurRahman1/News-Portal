@@ -48,6 +48,7 @@ public class Author
             inverseJoinColumns = @JoinColumn(name = "article_id"))
     private Set<Article> articles;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "login_id")
     private User user;
