@@ -101,14 +101,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .exceptionHandling()
                     .accessDeniedPage("/api/v1/public/access-denied")
                 .and()
-                    .headers()
-                    .frameOptions()
-                    .sameOrigin()
-                .and()
-                    .cors()
-                    .disable()
-                    .csrf()
-                    .disable()
                 .httpBasic();
     }
 }
