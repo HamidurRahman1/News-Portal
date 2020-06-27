@@ -1,5 +1,7 @@
 *.iml
 *.DS_Store
 target/
+classes/
+src/test/
 .idea/
 src/main/resources/application-prod.properties
