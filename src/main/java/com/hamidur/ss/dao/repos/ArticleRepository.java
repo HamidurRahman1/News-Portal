@@ -28,4 +28,7 @@ public interface ArticleRepository extends CrudRepository<Article, Integer>
                     "delete from comments c where c.article_id = (:articleId);" +
                     "delete from articles a where a.article_id = (:articleId)")
     int deleteArticleById(@Param("articleId") Integer articleId);
+
+    @Query(nativeQuery = true, value = "select * from articles where article_id not in (select article_id from authors_articles)")
+    Set<Article> getAllArticlesWithNoAuthor();
 }

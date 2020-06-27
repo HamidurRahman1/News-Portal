@@ -45,6 +45,12 @@ public class PublicRESTController
         return new ResponseEntity<>(commentService.getAllComments(), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/articles/no-author", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<Article>> getArticlesWithNoAuthor()
+    {
+        return new ResponseEntity<>(articleService.getAllArticlesWithNoAuthor(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Comment>> getCommentsByArticleId(@PositiveOrZero @PathVariable Integer articleId)
     {

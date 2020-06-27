@@ -90,4 +90,12 @@ public class ArticleService
         }
         else throw new NotFoundException("Not article found with associated id="+article.getArticleId());
     }
+
+    public Set<Article> getAllArticlesWithNoAuthor() throws NotFoundException
+    {
+        Set<Article> articles = articleRepository.getAllArticlesWithNoAuthor();
+        if(articles == null || articles.isEmpty())
+            throw new NotFoundException("No articles exists without author to return");
+        return articles;
+    }
 }
