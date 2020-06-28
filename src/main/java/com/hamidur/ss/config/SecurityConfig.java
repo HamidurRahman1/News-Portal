@@ -82,10 +82,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/article/{\\d+}").hasAnyRole("ADMIN", "PUBLISHER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/r/insert/article").hasAnyRole("ADMIN", "PUBLISHER")
-                    .antMatchers(HttpMethod.POST, "/api/v1/r/insert/article/{\\d+}/comment").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.POST, "/api/v1/r/insert/comment/article").hasAnyRole("ADMIN", "USER")
                     .antMatchers(HttpMethod.POST, "/api/v1/r/insert/**").hasRole("ADMIN")
-                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
-                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article/{\\d+}").hasAnyRole("ADMIN", "EDITOR")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/comment").hasAnyRole("ADMIN", "USER")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/r/update/article").hasAnyRole("ADMIN", "EDITOR")
                     .antMatchers(HttpMethod.PUT, "/api/v1/r/update/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.GET, "/api/v1/r/**").hasAnyRole("ADMIN", "USER", "EDITOR", "PUBLISHER")
                     .antMatchers("/api/v1/public/**").permitAll()
@@ -101,6 +101,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .exceptionHandling()
                     .accessDeniedPage("/api/v1/public/access-denied")
                 .and()
+                    .headers()
+                    .frameOptions()
+                    .disable()
+                .and()
+                    .cors()
+                    .disable()
+                    .csrf()
+                    .disable()
                 .httpBasic();
     }
 }
