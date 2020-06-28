@@ -1,6 +1,14 @@
 ## Spring Boot REST API with Spring Security
 
-## Purpose of this project
+## What this project is about:
+This project is about building mini news portal. Only subscribed user can read, comment on articles. 
+The public can only see part of an article. A user with <b>Publisher</b> role can insert or delete an article. 
+A user with <b>Editor</b> can only update an article. A subscribed user will have a <b>User</b> role, can delete a comment and an <b>Admin</b> can do anything
+mentioned as well as add an author and assign roles to users. Every action is performed by checking and verifying if one has 
+the correct permissions (roles) to do so.
+
+
+## Purpose of this project:
 This is a demo project for learning and practicing purposes only as well as demonstrating the knowledge of the below technologies.
 * Full-Stack Development  
 * Spring Boot
@@ -10,24 +18,27 @@ This is a demo project for learning and practicing purposes only as well as demo
 * H2/AWS RDS
 * Restricted endpoints
 * Exceptions handling
-* Custom Error Response  
+* Custom Error Response
+* HTML
+* JavaScript  
 
-## Environments
+## Environments:
 
 | Props|Development |Production|
 | :---:  | :---: |  :---: |
 |Database| H2   | MySQL
-|Hosted(DB)  |Local (in memory) | AWS  
+|Host (DB)  |Local (in memory) | AWS
+|Host (app)| Local | AWS Elastic Beanstalk 
 
 <br>
 
-## API Documentation
+## API Documentation:
 * All paths are relative to <strong>domain/blogs/api/v1/...</strong> in production and development
 * At this moment inbound and outbound data supported only in JSON format
 
 <br>
 
-##### Public API
+##### Public API:
 
 | HTTP METHOD|Path | Explanation|
 | :---:  | :---: | :---: |
@@ -38,7 +49,7 @@ This is a demo project for learning and practicing purposes only as well as demo
   
 <br>  
 
-#### Roles
+#### Roles:
 This is for simplification  
 
 |ID| Role | Indicator 
@@ -50,7 +61,7 @@ This is for simplification
 
 <br>
 
-##### Protected API
+##### Protected API:
 
 | HTTP METHOD|Path | Accessible with Role(s) | Explanation|
 | :---:  | :---: | :---: | :---: |
