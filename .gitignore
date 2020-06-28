@@ -2,6 +2,6 @@
 *.DS_Store
 target/
 classes/
-src/test/
+src/test
 .idea/
 src/main/resources/application-prod.properties
