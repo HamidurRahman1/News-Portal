@@ -13,7 +13,7 @@ public class LoggingAspect
 {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Before("execution (* com.hamidur.ss.rest.RestrictedRESTController..*(..)))")
+    @Before("execution (* com.hamidur.ss.rest.*..*(..)))")
     public void before(JoinPoint joinPoint)
     {
         logger.info(joinPoint.getSignature().getName() + "() is executed from -> " + joinPoint.getSignature().getDeclaringType());
