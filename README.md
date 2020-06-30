@@ -39,6 +39,7 @@ This is a demo project for learning and practicing purposes only as well as demo
 <br>
 
 ##### Public API:
+* All paths are relative to <strong>domain/blogs/api/v1/public/...</strong> in production and development
 
 | HTTP METHOD|Path | Explanation|
 | :---:  | :---: | :---: |
@@ -62,6 +63,7 @@ This is for simplification
 <br>
 
 ##### Protected API:
+* All paths are relative to <strong>domain/blogs/api/v1/r/...</strong> in production and development
 
 | HTTP METHOD|Path | Accessible with Role(s) | Explanation|
 | :---:  | :---: | :---: | :---: |
