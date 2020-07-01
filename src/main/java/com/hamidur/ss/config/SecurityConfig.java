@@ -2,6 +2,7 @@ package com.hamidur.ss.config;
 
 import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
 
+import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAccessDeniedHandler;
 import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -84,6 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .and()
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint())
+                    .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
@@ -109,6 +111,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .csrf()
                     .disable()
                 .httpBasic();
+    }
+
+    @Bean
+    public RESTAccessDeniedHandler accessDeniedHandler()
+    {
+        return new RESTAccessDeniedHandler();
     }
 
     @Bean
