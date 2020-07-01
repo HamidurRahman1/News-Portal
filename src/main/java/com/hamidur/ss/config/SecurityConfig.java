@@ -4,6 +4,7 @@ import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
 
 import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAccessDeniedHandler;
 import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationEntryPoint;
+import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationFailureHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -84,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .exceptionHandling()
-                    .authenticationEntryPoint(authenticationEntryPoint())
+//                    .authenticationEntryPoint(authenticationEntryPoint()) // enable it in production
                     .accessDeniedHandler(accessDeniedHandler())
                 .and()
                 .authorizeRequests()
@@ -101,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .antMatchers("/api/v1/public/**").permitAll()
                 .and()
                     .formLogin()
+                    .failureHandler(authenticationFailureHandler())
                 .and()
                     .headers()
                     .frameOptions()
@@ -111,6 +113,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .csrf()
                     .disable()
                 .httpBasic();
+    }
+
+    @Bean
+    public RESTAuthenticationFailureHandler authenticationFailureHandler()
+    {
+        return new RESTAuthenticationFailureHandler();
     }
 
     @Bean
