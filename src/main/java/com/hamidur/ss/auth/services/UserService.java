@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -41,9 +40,9 @@ public class UserService
             throw new MissingAttribute("At least 1 role be assigned to this user");
         try
         {
-            if(userRepository.insertUserEntity(user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
+            if(userRepository.insertUserEntity(user.getEmail(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
             {
-                User savedUser = userRepository.getUserByUsername(user.getUsername());
+                User savedUser = userRepository.getUserByUsername(user.getEmail());
                 Set<Role> roles = roleRepository.getAll();
                 Set<Role> assignedRoles = new HashSet<>();
                 roles.forEach(role -> {
@@ -56,7 +55,7 @@ public class UserService
         }
         catch (DataIntegrityViolationException ex)
         {
-            throw new ConstraintViolationException("A user with username="+user.getUsername()+" already exists");
+            throw new ConstraintViolationException("A user with email="+user.getEmail()+" already exists");
         }
     }
 

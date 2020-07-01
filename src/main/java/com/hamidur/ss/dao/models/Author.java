@@ -15,9 +15,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 
@@ -30,17 +27,6 @@ public class Author
     @Column(name = "author_id", nullable = false, updatable = false, unique = true)
     private Integer authorId;
 
-    @NotNull(message = "first name cannot be null")
-    @NotBlank(message = "first name cannot be empty")
-    @Size(min = 2, max = 50, message = "first name can only be in length of 2-50 characters")
-    @Column(name = "author_first_name", nullable = false, length = 50)
-    private String firstName;
-
-    @NotBlank(message = "last name cannot be empty but optionally can be null")
-    @Size(min = 2, max = 50, message = "last name can only be in length of 2-50 characters, null allowed")
-    @Column(name = "author_last_name", length = 50)
-    private String lastName;
-
     @JsonBackReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable(name = "authors_articles",
@@ -50,17 +36,10 @@ public class Author
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "login_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Author() {}
-
-    public Author(Integer authorId, String firstName, String lastName, Set<Article> articles, User user) {
-        this.authorId = authorId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.articles = articles;
-    }
 
     public Integer getAuthorId() {
         return authorId;
@@ -68,22 +47,6 @@ public class Author
 
     public void setAuthorId(Integer authorId) {
         this.authorId = authorId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Set<Article> getArticles() {
@@ -118,21 +81,19 @@ public class Author
         if (!(o instanceof Author)) return false;
         Author author = (Author) o;
         return Objects.equals(getAuthorId(), author.getAuthorId()) &&
-                Objects.equals(getFirstName(), author.getFirstName()) &&
-                Objects.equals(getLastName(), author.getLastName());
+                Objects.equals(getUser(), author.getUser());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAuthorId(), getFirstName(), getLastName());
+        return Objects.hash(getAuthorId(), getUser().hashCode());
     }
 
     @Override
     public String toString() {
         return "Author{" +
                 "authorId=" + authorId +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", user=" + user +
                 '}';
     }
 }

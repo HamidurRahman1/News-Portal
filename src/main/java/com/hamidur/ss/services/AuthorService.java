@@ -48,8 +48,8 @@ public class AuthorService
             throw new MissingAttribute("Author id must be present to update an author. given="+author.getAuthorId());
 
         Author author1 = authorRepository.findByAuthorId(author.getAuthorId());
-        author1.setFirstName(author.getFirstName());
-        author1.setLastName(author.getLastName());
+//        author1.setFirstName(author.getFirstName());
+//        author1.setLastName(author.getLastName());
         return authorRepository.save(author1);
     }
 
