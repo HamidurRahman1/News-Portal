@@ -2,6 +2,7 @@ package com.hamidur.ss.config;
 
 import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
 
+import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -77,6 +79,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
          */
 
         http
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint())
+                .and()
                 .authorizeRequests()
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/comment/{\\d+}").hasAnyRole("ADMIN", "USER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/article/{\\d+}").hasAnyRole("ADMIN", "PUBLISHER")
@@ -92,15 +100,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .and()
                     .formLogin()
                 .and()
-                    .logout()
-                    .logoutUrl("/logout")
-                    .invalidateHttpSession(true)
-                    .clearAuthentication(true)
-                    .deleteCookies("JSESSIONID")
-                .and()
-                    .exceptionHandling()
-                    .accessDeniedPage("/api/v1/public/access-denied")
-                .and()
                     .headers()
                     .frameOptions()
                     .disable()
@@ -110,5 +109,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .csrf()
                     .disable()
                 .httpBasic();
+    }
+
+    @Bean
+    public RESTAuthenticationEntryPoint authenticationEntryPoint() {
+        return new RESTAuthenticationEntryPoint();
     }
 }
