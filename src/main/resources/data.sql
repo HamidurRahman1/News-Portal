@@ -37,13 +37,13 @@ insert into authors (author_id, user_id) values
 (4, 9),
 (5, 10);
 
-insert into articles (article_title, article_body, article_publish_date) values
-('title1', 'body1', '2020-05-20'),
-('title2', 'body2', '2020-05-21'),
-('title3', 'body3', '2020-05-22'),
-('title4', 'body4', '2020-05-23'),
-('no author article title11', 'no author article body1', '2020-05-24'),
-('no author article title1', 'no author article body2', '2020-05-25');
+insert into articles (title, body, datetime, is_published) values
+('title1', 'body1', '2020-05-20 20:20', true),
+('title2', 'body2', '2020-05-21 20:20:20', true),
+('title3', 'body3', '2020-05-22 20:20:20', true),
+('title4', 'body4', '2020-05-23 20:20:20', true),
+('no author article title11', 'no author article body1', '2020-05-24 20:20:20', true),
+('no author article title1', 'no author article body2', '2020-05-25 20:20:20', false);
 
 insert into authors_articles (author_id, article_id) values
 (5, 1), (3, 1), (1, 1),

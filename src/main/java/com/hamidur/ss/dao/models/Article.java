@@ -2,6 +2,8 @@ package com.hamidur.ss.dao.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,14 +16,16 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "articles")
-public class Article
+public class Article implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,19 +35,24 @@ public class Article
     @NotNull(message = "title cannot be null")
     @NotBlank(message = "title cannot be empty")
     @Size(min = 1, max = 1000, message = "title can only be in length of 25-1000 characters")
-    @Column(name = "article_title", nullable = false, length = 1000)
+    @Column(name = "title", nullable = false, length = 1000)
     private String title;
 
     @NotNull(message = "body cannot be null")
     @NotBlank(message = "body cannot be empty")
     @Size(min = 1, max = 10000, message = "body can only be in length of 1000-10000 characters")
-    @Column(name = "article_body", nullable = false, length = 10000)
+    @Column(name = "body", nullable = false, length = 10000)
     private String body;
 
-    @NotNull(message = "publish date cannot be null")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    @Column(name = "article_publish_date", nullable = false)
-    private LocalDate publishDate;
+    @NotNull(message = "datetime cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss", iso = DateTimeFormat.ISO.DATE_TIME)
+    @Column(name = "datetime", nullable = false)
+    private LocalDateTime dateTime;
+
+    @NotNull(message = "publish property cannot be null")
+    @Column(name = "is_published", nullable = false, updatable = true)
+    private boolean publish;
 
     @JsonBackReference
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
@@ -54,11 +63,11 @@ public class Article
 
     public Article() {}
 
-    public Article(Integer articleId, String title, String body, LocalDate publishDate, List<Comment> comments, Set<Author> authors) {
+    public Article(Integer articleId, String title, String body, LocalDateTime dateTime, List<Comment> comments, Set<Author> authors) {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
-        this.publishDate = publishDate;
+        this.dateTime = dateTime;
         this.comments = comments;
         this.authors = authors;
     }
@@ -87,12 +96,20 @@ public class Article
         this.body = body;
     }
 
-    public LocalDate getPublishDate() {
-        return publishDate;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setPublishDate(LocalDate publishDate) {
-        this.publishDate = publishDate;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public boolean getPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     public List<Comment> getComments() {
@@ -129,12 +146,12 @@ public class Article
         return Objects.equals(getArticleId(), article.getArticleId()) &&
                 Objects.equals(getTitle(), article.getTitle()) &&
                 Objects.equals(getBody(), article.getBody()) &&
-                Objects.equals(getPublishDate(), article.getPublishDate());
+                Objects.equals(getDateTime(), article.getDateTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getArticleId(), getTitle(), getBody(), getPublishDate());
+        return Objects.hash(getArticleId(), getTitle(), getBody(), getDateTime());
     }
 
     @Override
@@ -143,7 +160,8 @@ public class Article
                 "articleId=" + articleId +
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
-                ", publishDate=" + publishDate +
+                ", datetime=" + dateTime +
+                ", isPublished=" + publish +
                 '}';
     }
 }

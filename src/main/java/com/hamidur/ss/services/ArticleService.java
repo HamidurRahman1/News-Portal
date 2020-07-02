@@ -28,6 +28,9 @@ public class ArticleService
     @Transactional
     public Article insertArticle(Article article) throws MissingAttribute
     {
+        if(article.getAuthors() == null)
+            throw new MissingAttribute("At least 1 author must be associated with article. found="+null);
+
         Set<Integer> authorIds = new HashSet<>();
         for (Author author : article.getAuthors())
             if(author.getAuthorId() != null) authorIds.add(author.getAuthorId());
@@ -51,7 +54,7 @@ public class ArticleService
         responseArticle.setArticleId(savedArticle.getArticleId());
         responseArticle.setTitle(savedArticle.getTitle());
         responseArticle.setBody(savedArticle.getBody());
-        responseArticle.setPublishDate(savedArticle.getPublishDate());
+        responseArticle.setDateTime(savedArticle.getDateTime());
         return responseArticle;
     }
 
@@ -85,7 +88,7 @@ public class ArticleService
             Article article1 = optional.get();
             article1.setTitle(article.getTitle());
             article1.setBody(article.getBody());
-            article1.setPublishDate(article.getPublishDate());
+            article1.setDateTime(article.getDateTime());
             return articleRepository.save(article1);
         }
         else throw new NotFoundException("Not article found with associated id="+article.getArticleId());
