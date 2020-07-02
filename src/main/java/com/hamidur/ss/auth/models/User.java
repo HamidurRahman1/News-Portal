@@ -1,6 +1,8 @@
 package com.hamidur.ss.auth.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.hamidur.ss.dao.models.Author;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -39,11 +42,11 @@ public class User implements Serializable
     @Column(name = "last_name", length = 50)
     private String lastName;
 
-    @NotNull(message = "email cannot be null")
-    @NotBlank(message = "email cannot be empty")
-    @Size(min = 5, max = 50, message = "email must be in length of 5-60 characters")
-    @Column(name = "email", nullable = false, unique = true, updatable = true, length = 60)
-    private String email;
+    @NotNull(message = "username(email) cannot be null")
+    @NotBlank(message = "username(email) cannot be empty")
+    @Size(min = 5, max = 50, message = "username(email) must be in length of 5-60 characters")
+    @Column(name = "username", nullable = false, unique = true, updatable = true, length = 60)
+    private String username;
 
     @NotNull(message = "password cannot be null")
     @NotBlank(message = "password cannot be empty")
@@ -62,11 +65,14 @@ public class User implements Serializable
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Author author;
+
     public User() {}
 
-    public User(Integer userId, String email, String password, boolean enabled, Set<Role> roles) {
+    public User(Integer userId, String username, String password, boolean enabled, Set<Role> roles) {
         this.userId = userId;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
@@ -96,12 +102,12 @@ public class User implements Serializable
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -145,6 +151,14 @@ public class User implements Serializable
         return this;
     }
 
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,13 +168,13 @@ public class User implements Serializable
                 Objects.equals(getUserId(), user.getUserId()) &&
                 Objects.equals(getFirstName(), user.getFirstName()) &&
                 Objects.equals(getLastName(), user.getLastName()) &&
-                Objects.equals(getEmail(), user.getEmail()) &&
+                Objects.equals(getUsername(), user.getUsername()) &&
                 Objects.equals(getPassword(), user.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUserId(), getFirstName(), getLastName(), getEmail(), getPassword(), getEnabled());
+        return Objects.hash(getUserId(), getFirstName(), getLastName(), getUsername(), getPassword(), getEnabled());
     }
 
     @Override
@@ -169,7 +183,7 @@ public class User implements Serializable
                 "userId=" + userId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
                 '}';

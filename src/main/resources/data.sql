@@ -1,4 +1,4 @@
-insert into users (email, password, enabled, first_name, last_name) values
+insert into users (username, password, enabled, first_name, last_name) values
 ('user1', '$2b$10$jEDw4HHKDe75.mM47p4siui1XZrdGkf7Y0.oqKLY.Wt5TjIwuhByq', true, 'first1', 'last1'),
 ('user2', '$2b$10$hS6mt4EUU38qu2jFz1nGp./KXkafrDZoWsAupfFrv7ZvwYiLnGVie', true, 'first2', 'last1'),
 ('user3', '$2b$10$8Iv7IIaMNm6ZlFuyzZVoA.1dTC7kGBi5AXzH023tHFHHjGMQQoReO', true, 'first3', 'last1'),

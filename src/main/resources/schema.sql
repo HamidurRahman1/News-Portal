@@ -3,7 +3,7 @@ create table users
   user_id int primary key auto_increment,
   first_name varchar(50) not null,
   last_name varchar(50) not null,
-  email varchar(60) unique not null,
+  username varchar(60) unique not null,
   password varchar(70) not null,
   enabled tinyint not null
 );
