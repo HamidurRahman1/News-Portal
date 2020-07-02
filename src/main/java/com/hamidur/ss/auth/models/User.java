@@ -28,11 +28,22 @@ public class User implements Serializable
     @Column(name = "user_id")
     private Integer userId;
 
-    @NotNull(message = "username cannot be null")
-    @NotBlank(message = "username cannot be empty")
-    @Size(min = 2, max = 50, message = "username must be in length of 2-50 characters")
-    @Column(name = "username", nullable = false, unique = true, updatable = true, length = 50)
-    private String username;
+    @NotNull(message = "first name cannot be null")
+    @NotBlank(message = "first name cannot be empty")
+    @Size(min = 2, max = 50, message = "first name can only be in length of 2-50 characters")
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
+
+    @NotBlank(message = "last name cannot be empty but optionally can be null")
+    @Size(min = 2, max = 50, message = "last name can only be in length of 2-50 characters, null allowed")
+    @Column(name = "last_name", length = 50)
+    private String lastName;
+
+    @NotNull(message = "email cannot be null")
+    @NotBlank(message = "email cannot be empty")
+    @Size(min = 5, max = 50, message = "email must be in length of 5-60 characters")
+    @Column(name = "email", nullable = false, unique = true, updatable = true, length = 60)
+    private String email;
 
     @NotNull(message = "password cannot be null")
     @NotBlank(message = "password cannot be empty")
@@ -53,9 +64,9 @@ public class User implements Serializable
 
     public User() {}
 
-    public User(Integer userId, String username, String password, boolean enabled, Set<Role> roles) {
+    public User(Integer userId, String email, String password, boolean enabled, Set<Role> roles) {
         this.userId = userId;
-        this.username = username;
+        this.email = email;
         this.password = password;
         this.enabled = enabled;
         this.roles = roles;
@@ -69,12 +80,28 @@ public class User implements Serializable
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -124,23 +151,27 @@ public class User implements Serializable
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return getEnabled() == user.getEnabled() &&
-                Objects.equals(getUsername(), user.getUsername()) &&
+                Objects.equals(getUserId(), user.getUserId()) &&
+                Objects.equals(getFirstName(), user.getFirstName()) &&
+                Objects.equals(getLastName(), user.getLastName()) &&
+                Objects.equals(getEmail(), user.getEmail()) &&
                 Objects.equals(getPassword(), user.getPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUsername(), getPassword(), getEnabled());
+        return Objects.hash(getUserId(), getFirstName(), getLastName(), getEmail(), getPassword(), getEnabled());
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
-                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", enabled=" + enabled +
-                ", roles=" + roles +
                 '}';
     }
 }

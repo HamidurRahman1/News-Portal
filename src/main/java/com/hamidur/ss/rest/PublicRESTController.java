@@ -58,25 +58,4 @@ public class PublicRESTController
     {
         return new ResponseEntity<>(commentService.getAllCommentsByArticleId(articleId), HttpStatus.OK);
     }
-
-    @GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> accessDenied()
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null)
-        {
-            stringBuilder
-                    .append("User: ").append(authentication.getName())
-                    .append(" has tried to access protected resources without proper credentials.")
-                    .append("\n")
-                    .append("ResponseStatus: ").append(HttpStatus.FORBIDDEN);
-            return new ResponseEntity<>(stringBuilder.toString(), HttpStatus.FORBIDDEN);
-        }
-        stringBuilder
-                .append("Request URI is protected, requires proper credentials for access.")
-                .append("\n")
-                .append("ResponseStatus: ").append(HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(stringBuilder.toString(), HttpStatus.FORBIDDEN);
-    }
 }
