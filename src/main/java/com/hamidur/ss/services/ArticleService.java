@@ -74,9 +74,20 @@ public class ArticleService
         return articles;
     }
 
-    public boolean deleteArticleById(Integer articleId)
+    public boolean deletePublishedArticleById(Integer articleId)
     {
-        return articleRepository.deleteArticleById(articleId) >= 1;
+        boolean existsById = articleRepository.existsById(articleId);
+        if(!existsById) return false;
+        articleRepository.deletePublishedArticleById(articleId);
+        return !articleRepository.existsById(articleId);
+    }
+
+    public boolean deleteUnpublishedArticleById(Integer articleId)
+    {
+        boolean existsById = articleRepository.existsById(articleId);
+        if(!existsById) return false;
+        articleRepository.deleteUnPublishedArticleById(articleId);
+        return !articleRepository.existsById(articleId);
     }
 
     public Article updateArticle(Article article) throws MissingAttribute, NotFoundException

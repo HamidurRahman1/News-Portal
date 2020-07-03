@@ -1,5 +1,6 @@
 package com.hamidur.ss.services;
 
+import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.AuthorRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
@@ -25,10 +26,8 @@ public class AuthorService
     public boolean deleteAuthorById(Integer authorId)
     {
         Author author = authorRepository.findByAuthorId(authorId);
-        if(author == null)
-            return false;
-        Integer userId = author.getUser().getUserId();
-        return authorRepository.deleteAuthorById(authorId, userId) >= 1;
+        if(author.getUser() == null) return false;
+        return authorRepository.deleteAuthorById(authorId, author.getUser().getUserId()) >= 1;
     }
 
     public Author insertAuthor(Author author)

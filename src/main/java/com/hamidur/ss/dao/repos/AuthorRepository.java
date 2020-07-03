@@ -23,9 +23,8 @@ public interface AuthorRepository extends CrudRepository<Author, Integer>
     @Transactional
     @Modifying
     @Query(nativeQuery = true,
-            value = "delete from authors_articles aa where aa.author_id = (:authorId);" +
-                    "delete from authors a where a.author_id = (:authorId);"+
-                    "delete from users_roles where user_id = :id;" +
-                    "delete from users where user_id = :id")
+            value = "delete from users_roles where user_id = :id and role_id = (select role_id from roles where role = 'AUTHOR');" +
+                    "delete from authors_articles aa where aa.author_id = (:authorId);" +
+                    "delete from authors a where a.author_id = (:authorId);")
     int deleteAuthorById(@Param("authorId") Integer authorId, @Param("id") Integer userId);
 }

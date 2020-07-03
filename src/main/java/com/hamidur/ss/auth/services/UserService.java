@@ -6,7 +6,6 @@ import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
-import com.hamidur.ss.services.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,16 +20,13 @@ public class UserService
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final AuthorService authorService;
 
     @Autowired
-    public UserService(final UserRepository userRepository, final RoleRepository roleRepository,
-                       final PasswordEncoder passwordEncoder, final AuthorService authorService)
+    public UserService(final UserRepository userRepository, final RoleRepository roleRepository, final PasswordEncoder passwordEncoder)
     {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorService = authorService;
     }
 
     @Transactional
@@ -86,6 +82,6 @@ public class UserService
         Integer authorId = userRepository.isUserAnAuthor(userId);
         if(authorId == null)
             return userRepository.deleteUserById(userId) >= 1;
-        return authorService.deleteAuthorById(authorId);
+        return userRepository.deleteAllInfoByUserId(authorId, userId) >= 1;
     }
 }

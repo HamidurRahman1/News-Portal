@@ -79,9 +79,10 @@ This is for simplification
 |PUT| /update/author |  A | updates an existing author's attributes, authorId must be present
 |PUT| /update/article |  A, E | updates an existing article's attributes, articleId must be present 
 |PUT| /update/comment |  A, U | updates an existing comment, commentId must be present
-|DELETE| /delete/author/{authorId} |  A | deletes an author specified by <b>{authorId}</b>
+|DELETE| /delete/author/{authorId} |  A | Detaches everything related to this Author along with <b>AUTHOR</b> role. Only UserDetails (personal info and login) are kept active with <b>USER</b> role.
 |DELETE| /delete/comment/{commentId} |  A, U | deletes a comment specified by <b>{commentId}</b> 
-|DELETE| /delete/article/{articleId} |  A, P | deletes an article specified by <b>{articleId}</b>
+|DELETE| /delete/published/article/{articleId} |  A, P | deletes an already published article specified by <b>{articleId}</b>
+|DELETE| /delete/unpublished/article/{articleId} |  A, P | deletes a non-published article specified by <b>{articleId}</b>
 |DELETE| /delete/user/{userId}/role/{roleId} |  A | revoke a role specified by <b>{roleId}</b> from a user specified by <b>{userId}</b> 
 |DELETE| /delete/user/{userId} |  A | deletes a user specified by <b>{userId}</b>
 <br>
