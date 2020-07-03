@@ -26,17 +26,26 @@ public interface UserRepository extends CrudRepository<User, Integer>
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "insert into users (username, password, enabled) values (:un, :p, :e);")
-    int insertUserEntity(@Param("un") String username, @Param("p") String password, @Param("e") boolean enabled);
-
-    @Query(nativeQuery = true, value = "select author_id from authors where user_id = :id")
-    Integer getAuthorIdByUserId(@Param("id")Integer userId);
+    @Query(nativeQuery = true,
+            value = "insert into users (first_name, last_name, username, password, enabled) " +
+                    "values (:fn, :ln, :un, :p, :e);")
+    int insertUserEntity(@Param("fn") String firstName, @Param("ln") String lastName, @Param("un") String username,
+                         @Param("p") String password, @Param("e") boolean enabled);
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "delete from users_roles where user_id = :id; delete from users where user_id = :id")
+    @Query(nativeQuery = true, value = "delete from users_roles where user_id = (:id); delete from users where user_id = (:id)")
     int deleteUserById(@Param("id")Integer userId);
 
     @Query(nativeQuery = true, value = "select author_id from authors where user_id = :id")
     Integer isUserAnAuthor(@Param("id")Integer userId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+    value = "delete from users_roles where user_id = (:u_id);" +
+            "delete from authors_articles aa where aa.author_id = (:a_id);" +
+            "delete from authors a where a.author_id = (:a_id);"+
+            "delete from users where user_id = (:u_id);")
+    int deleteAllInfoByUserId(@Param("a_id")Integer authorId, @Param("u_id")Integer userId);
 }

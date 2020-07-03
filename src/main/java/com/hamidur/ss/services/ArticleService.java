@@ -28,6 +28,9 @@ public class ArticleService
     @Transactional
     public Article insertArticle(Article article) throws MissingAttribute
     {
+        if(article.getAuthors() == null)
+            throw new MissingAttribute("At least 1 author must be associated with article. found="+null);
+
         Set<Integer> authorIds = new HashSet<>();
         for (Author author : article.getAuthors())
             if(author.getAuthorId() != null) authorIds.add(author.getAuthorId());
@@ -51,7 +54,7 @@ public class ArticleService
         responseArticle.setArticleId(savedArticle.getArticleId());
         responseArticle.setTitle(savedArticle.getTitle());
         responseArticle.setBody(savedArticle.getBody());
-        responseArticle.setPublishDate(savedArticle.getPublishDate());
+        responseArticle.setDateTime(savedArticle.getDateTime());
         return responseArticle;
     }
 
@@ -71,24 +74,39 @@ public class ArticleService
         return articles;
     }
 
-    public boolean deleteArticleById(Integer articleId)
+    public boolean deletePublishedArticleById(Integer articleId)
     {
-        return articleRepository.deleteArticleById(articleId) >= 1;
+        boolean existsById = articleRepository.existsById(articleId);
+        if(!existsById) return false;
+        articleRepository.deletePublishedArticleById(articleId);
+        return !articleRepository.existsById(articleId);
+    }
+
+    public boolean deleteUnpublishedArticleById(Integer articleId)
+    {
+        boolean existsById = articleRepository.existsById(articleId);
+        if(!existsById) return false;
+        articleRepository.deleteUnPublishedArticleById(articleId);
+        return !articleRepository.existsById(articleId);
     }
 
     public Article updateArticle(Article article) throws MissingAttribute, NotFoundException
     {
-        if(article.getArticleId() == null) throw new MissingAttribute("article must contains its id to be updated");
+        if(article.getArticleId() == null)
+            throw new MissingAttribute("article must contains its id to be updated");
+
         Optional<Article> optional = articleRepository.findById(article.getArticleId());
-        if(optional.isPresent())
-        {
+
+        if(!optional.isPresent())
+            throw new NotFoundException("Not article found with associated id="+article.getArticleId());
+        else {
             Article article1 = optional.get();
             article1.setTitle(article.getTitle());
             article1.setBody(article.getBody());
-            article1.setPublishDate(article.getPublishDate());
+            article1.setDateTime(article.getDateTime());
+            article1.setPublish(article.getPublish());
             return articleRepository.save(article1);
         }
-        else throw new NotFoundException("Not article found with associated id="+article.getArticleId());
     }
 
     public Set<Article> getAllArticlesWithNoAuthor() throws NotFoundException

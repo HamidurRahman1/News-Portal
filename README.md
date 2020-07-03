@@ -71,17 +71,17 @@ This is for simplification
 |GET| /author/{authorId} |  A, P, E, U | returns an author associated with specified <b>{authorId}</b>
 |GET| /author/{authorId}/articles |  A, P, E, U | returns all articles associated with specified <b>{authorId}</b>
 |GET| /comment/{commentId} |  A, P, E, U | returns a comment associated with specified <b>{commentId}</b>
-|POST| /insert/author | A | inserts a new author, <b>{loginId}</b> must be specified which was generated from <b>/insert/user</b>
 |POST| /insert/article |  A, P | inserts a new article, at least one {authorId} must be associated with this article
 |POST| /insert/comment/article |  A, U | inserts a new comment to the specified article
 |POST| /insert/user |  A | inserts a new user
 |POST| /insert/user/{userId}/role/{roleId} |  A | adds a role specified by <b>{roleId}</b> to a specified user with specified by <b>{userId}</b>
-|PUT| /update/author |  A | updates an existing author's attributes, authorId must be present
+|PUT| /update/user |  A | updates an existing user's attributes, userId must be present
 |PUT| /update/article |  A, E | updates an existing article's attributes, articleId must be present 
 |PUT| /update/comment |  A, U | updates an existing comment, commentId must be present
-|DELETE| /delete/author/{authorId} |  A | deletes an author specified by <b>{authorId}</b>
+|DELETE| /delete/author/{authorId} |  A | Detaches everything related to this Author along with <b>AUTHOR</b> role. Only UserDetails (personal info and login) are kept active with <b>USER</b> role.
 |DELETE| /delete/comment/{commentId} |  A, U | deletes a comment specified by <b>{commentId}</b> 
-|DELETE| /delete/article/{articleId} |  A, P | deletes an article specified by <b>{articleId}</b>
+|DELETE| /delete/published/article/{articleId} |  A, P | deletes an already published article specified by <b>{articleId}</b>
+|DELETE| /delete/unpublished/article/{articleId} |  A, P | deletes a non-published article specified by <b>{articleId}</b>
 |DELETE| /delete/user/{userId}/role/{roleId} |  A | revoke a role specified by <b>{roleId}</b> from a user specified by <b>{userId}</b> 
 |DELETE| /delete/user/{userId} |  A | deletes a user specified by <b>{userId}</b>
 <br>

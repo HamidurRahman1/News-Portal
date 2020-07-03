@@ -26,8 +26,15 @@ public interface ArticleRepository extends CrudRepository<Article, Integer>
     @Query(nativeQuery = true,
             value = "delete from authors_articles aa where aa.article_id = (:articleId);" +
                     "delete from comments c where c.article_id = (:articleId);" +
-                    "delete from articles a where a.article_id = (:articleId)")
-    int deleteArticleById(@Param("articleId") Integer articleId);
+                    "delete from articles a where a.article_id = (:articleId) and is_published = true;")
+    int deletePublishedArticleById(@Param("articleId") Integer articleId);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true,
+            value = "delete from authors_articles aa where aa.article_id = (:articleId);" +
+                    "delete from articles a where a.article_id = (:articleId) and is_published = false;")
+    int deleteUnPublishedArticleById(@Param("articleId") Integer articleId);
 
     @Query(nativeQuery = true, value = "select * from articles where article_id not in (select article_id from authors_articles)")
     Set<Article> getAllArticlesWithNoAuthor();

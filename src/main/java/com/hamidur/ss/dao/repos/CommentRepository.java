@@ -33,7 +33,7 @@ public interface CommentRepository extends CrudRepository<Comment, Integer>
     @Modifying
     @Query(nativeQuery = true,
             value = "update comments set comment = (:comment) where comment_id = (:commentId)")
-    int updateCommentByCommentIdAndArticleId(@Param("commentId") Integer commentId, @Param("comment") String comment);
+    int updateCommentByCommentId(@Param("commentId") Integer commentId, @Param("comment") String comment);
 
     @Transactional
     @Modifying

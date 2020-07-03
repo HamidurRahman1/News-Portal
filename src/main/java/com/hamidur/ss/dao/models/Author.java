@@ -15,12 +15,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "authors")
-public class Author
+public class Author implements Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

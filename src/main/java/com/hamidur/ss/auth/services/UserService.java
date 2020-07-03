@@ -6,13 +6,14 @@ import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
-import com.hamidur.ss.services.AuthorService;
+import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -21,16 +22,13 @@ public class UserService
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final AuthorService authorService;
 
     @Autowired
-    public UserService(final UserRepository userRepository, final RoleRepository roleRepository,
-                       final PasswordEncoder passwordEncoder, final AuthorService authorService)
+    public UserService(final UserRepository userRepository, final RoleRepository roleRepository, final PasswordEncoder passwordEncoder)
     {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authorService = authorService;
     }
 
     @Transactional
@@ -40,9 +38,11 @@ public class UserService
             throw new MissingAttribute("At least 1 role be assigned to this user");
         try
         {
-            if(userRepository.insertUserEntity(user.getEmail(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
+            System.out.println(user);
+            System.out.println(user.getRoles());
+            if(userRepository.insertUserEntity(user.getFirstName(), user.getLastName(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
             {
-                User savedUser = userRepository.getUserByUsername(user.getEmail());
+                User savedUser = userRepository.getUserByUsername(user.getUsername());
                 Set<Role> roles = roleRepository.getAll();
                 Set<Role> assignedRoles = new HashSet<>();
                 roles.forEach(role -> {
@@ -55,7 +55,7 @@ public class UserService
         }
         catch (DataIntegrityViolationException ex)
         {
-            throw new ConstraintViolationException("A user with email="+user.getEmail()+" already exists");
+            throw new ConstraintViolationException("A user with username="+user.getUsername()+" already exists");
         }
     }
 
@@ -86,6 +86,32 @@ public class UserService
         Integer authorId = userRepository.isUserAnAuthor(userId);
         if(authorId == null)
             return userRepository.deleteUserById(userId) >= 1;
-        return authorService.deleteAuthorById(authorId);
+        return userRepository.deleteAllInfoByUserId(authorId, userId) >= 1;
+    }
+
+    public User updateUser(User user) throws MissingAttribute, NotFoundException, ConstraintViolationException
+    {
+        if(user.getUserId() == null)
+            throw new MissingAttribute("userId must be present to update User attributes");
+        Optional<User> dbUser = userRepository.findById(user.getUserId());
+        if(!dbUser.isPresent())
+            throw new NotFoundException("No user found with userId="+user.getUserId());
+        else
+        {
+            try
+            {
+                User user1 = dbUser.get();
+                user1.setFirstName(user.getFirstName());
+                user1.setLastName(user.getLastName());
+                user1.setUsername(user.getUsername());
+                user1.setPassword(passwordEncoder.encode(user.getPassword()));
+                user1.setEnabled(user.getEnabled());
+                return userRepository.save(user1);
+            }
+            catch (DataIntegrityViolationException ex)
+            {
+                throw new ConstraintViolationException("username="+user.getUsername()+" is already in use");
+            }
+        }
     }
 }

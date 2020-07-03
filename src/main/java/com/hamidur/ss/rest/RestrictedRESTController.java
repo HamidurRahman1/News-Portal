@@ -73,34 +73,18 @@ public class RestrictedRESTController
         return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
+    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
     {
-        if(authorService.deleteAuthorById(authorId))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No author found with id="+authorId+" to delete");
+        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/comment/{commentId}")
-    public ResponseEntity<Void> deleteCommentById(@PositiveOrZero @PathVariable Integer commentId)
+    @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
+    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
     {
-        if(commentService.deleteCommentById(commentId))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No comment found with id="+commentId+" to delete");
-    }
-
-    @DeleteMapping(value = "/delete/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteArticleById(@PositiveOrZero @PathVariable Integer articleId)
-    {
-        if(articleService.deleteArticleById(articleId))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No article found with id="+articleId+" to delete");
-    }
-
-    @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> insertAuthor(@Valid @RequestBody Author author)
-    {
-        return new ResponseEntity<>(authorService.insertAuthor(author), HttpStatus.CREATED);
+        if(userService.addRole(userId, roleId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -117,10 +101,10 @@ public class RestrictedRESTController
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/update/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author author)
+    @PutMapping(value = "/update/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user)
     {
-        return new ResponseEntity<>(authorService.updateAuthor(author), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -132,38 +116,56 @@ public class RestrictedRESTController
     @PutMapping(value = "/update/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateCommentById(@Valid @RequestBody Comment comment)
     {
-        if(commentService.updateCommentByCommentIdAndArticleId(comment))
+        if(commentService.updateCommentByCommentId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
         else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
     }
 
-    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
+    @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
     {
-        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
+        if(authorService.deleteAuthorById(authorId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No author found with id="+authorId+" to delete");
     }
 
-    @DeleteMapping(value = "/delete/user/{userId}/role/{roleId}")
-    public ResponseEntity<Boolean> deleteRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    @DeleteMapping(value = "/delete/comment/{commentId}")
+    public ResponseEntity<Void> deleteCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-        if(userService.revokeRole(userId, roleId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        if(commentService.deleteCommentById(commentId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No comment found with id="+commentId+" to delete");
     }
 
-    @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
-    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    @DeleteMapping(value = "/delete/published/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deletePublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
     {
-        if(userService.addRole(userId, roleId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        if(articleService.deletePublishedArticleById(articleId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No article found with id="+articleId+" to delete");
+    }
+
+    @DeleteMapping(value = "/delete/unpublished/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteUnPublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
+    {
+        if(articleService.deleteUnpublishedArticleById(articleId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No article found with id="+articleId+" to delete");
     }
 
     @DeleteMapping(value = "/delete/user/{userId}")
-    public ResponseEntity<Boolean> deleteUserById(@PathVariable @PositiveOrZero Integer userId)
+    public ResponseEntity<Void> deleteUserById(@PathVariable @PositiveOrZero Integer userId)
     {
         if(userService.deleteUserById(userId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("No user found with user_id="+userId+" to delete");
+    }
+
+    @DeleteMapping(value = "/delete/user/{userId}/role/{roleId}")
+    public ResponseEntity<Void> deleteRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    {
+        if(userService.revokeRole(userId, roleId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else throw new NotFoundException("user with userId="+userId+" or role with roleId="+roleId+" not found to delete");
     }
 }

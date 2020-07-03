@@ -3,7 +3,7 @@ create table users
   user_id int primary key auto_increment,
   first_name varchar(50) not null,
   last_name varchar(50) not null,
-  email varchar(60) unique not null,
+  username varchar(60) unique not null,
   password varchar(70) not null,
   enabled tinyint not null
 );
@@ -33,9 +33,10 @@ create table authors
 create table articles
 (
   article_id int primary key auto_increment,
-  article_title varchar(1000) not null,
-  article_body varchar(10000) not null,
-  article_publish_date date not null
+  title varchar(1000) not null,
+  body varchar(10000) not null,
+  datetime datetime not null,
+  is_published tinyint not null
 );
 
 create table authors_articles
