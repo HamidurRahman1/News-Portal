@@ -101,10 +101,10 @@ public class RestrictedRESTController
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(value = "/update/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> updateAuthor(@Valid @RequestBody Author author)
+    @PutMapping(value = "/update/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> updateUser(@Valid @RequestBody User user)
     {
-        return new ResponseEntity<>(authorService.updateAuthor(author), HttpStatus.OK);
+        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -116,7 +116,7 @@ public class RestrictedRESTController
     @PutMapping(value = "/update/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> updateCommentById(@Valid @RequestBody Comment comment)
     {
-        if(commentService.updateCommentByCommentIdAndArticleId(comment))
+        if(commentService.updateCommentByCommentId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
         else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
     }

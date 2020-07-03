@@ -92,17 +92,21 @@ public class ArticleService
 
     public Article updateArticle(Article article) throws MissingAttribute, NotFoundException
     {
-        if(article.getArticleId() == null) throw new MissingAttribute("article must contains its id to be updated");
+        if(article.getArticleId() == null)
+            throw new MissingAttribute("article must contains its id to be updated");
+
         Optional<Article> optional = articleRepository.findById(article.getArticleId());
-        if(optional.isPresent())
-        {
+
+        if(!optional.isPresent())
+            throw new NotFoundException("Not article found with associated id="+article.getArticleId());
+        else {
             Article article1 = optional.get();
             article1.setTitle(article.getTitle());
             article1.setBody(article.getBody());
             article1.setDateTime(article.getDateTime());
+            article1.setPublish(article.getPublish());
             return articleRepository.save(article1);
         }
-        else throw new NotFoundException("Not article found with associated id="+article.getArticleId());
     }
 
     public Set<Article> getAllArticlesWithNoAuthor() throws NotFoundException

@@ -59,11 +59,11 @@ public class CommentService
         return comments;
     }
 
-    public boolean updateCommentByCommentIdAndArticleId(Comment comment) throws MissingAttribute
+    public boolean updateCommentByCommentId(Comment comment) throws MissingAttribute
     {
         if(comment.getCommentId() == null)
             throw new MissingAttribute("Comment id must be present to update a comment");
-        return commentRepository.updateCommentByCommentIdAndArticleId(comment.getCommentId(), comment.getComment()) >= 1;
+        return commentRepository.updateCommentByCommentId(comment.getCommentId(), comment.getComment()) >= 1;
     }
 
     public boolean deleteCommentById(Integer commentId)

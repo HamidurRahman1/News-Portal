@@ -75,7 +75,7 @@ This is for simplification
 |POST| /insert/comment/article |  A, U | inserts a new comment to the specified article
 |POST| /insert/user |  A | inserts a new user
 |POST| /insert/user/{userId}/role/{roleId} |  A | adds a role specified by <b>{roleId}</b> to a specified user with specified by <b>{userId}</b>
-|PUT| /update/author |  A | updates an existing author's attributes, authorId must be present
+|PUT| /update/user |  A | updates an existing user's attributes, userId must be present
 |PUT| /update/article |  A, E | updates an existing article's attributes, articleId must be present 
 |PUT| /update/comment |  A, U | updates an existing comment, commentId must be present
 |DELETE| /delete/author/{authorId} |  A | Detaches everything related to this Author along with <b>AUTHOR</b> role. Only UserDetails (personal info and login) are kept active with <b>USER</b> role.

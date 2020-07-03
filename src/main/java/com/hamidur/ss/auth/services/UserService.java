@@ -6,12 +6,14 @@ import com.hamidur.ss.auth.repos.RoleRepository;
 import com.hamidur.ss.auth.repos.UserRepository;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
+import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -85,5 +87,31 @@ public class UserService
         if(authorId == null)
             return userRepository.deleteUserById(userId) >= 1;
         return userRepository.deleteAllInfoByUserId(authorId, userId) >= 1;
+    }
+
+    public User updateUser(User user) throws MissingAttribute, NotFoundException, ConstraintViolationException
+    {
+        if(user.getUserId() == null)
+            throw new MissingAttribute("userId must be present to update User attributes");
+        Optional<User> dbUser = userRepository.findById(user.getUserId());
+        if(!dbUser.isPresent())
+            throw new NotFoundException("No user found with userId="+user.getUserId());
+        else
+        {
+            try
+            {
+                User user1 = dbUser.get();
+                user1.setFirstName(user.getFirstName());
+                user1.setLastName(user.getLastName());
+                user1.setUsername(user.getUsername());
+                user1.setPassword(passwordEncoder.encode(user.getPassword()));
+                user1.setEnabled(user.getEnabled());
+                return userRepository.save(user1);
+            }
+            catch (DataIntegrityViolationException ex)
+            {
+                throw new ConstraintViolationException("username="+user.getUsername()+" is already in use");
+            }
+        }
     }
 }
