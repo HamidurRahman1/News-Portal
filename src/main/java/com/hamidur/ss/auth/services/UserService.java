@@ -36,7 +36,9 @@ public class UserService
             throw new MissingAttribute("At least 1 role be assigned to this user");
         try
         {
-            if(userRepository.insertUserEntity(user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
+            System.out.println(user);
+            System.out.println(user.getRoles());
+            if(userRepository.insertUserEntity(user.getFirstName(), user.getLastName(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled()) >= 1)
             {
                 User savedUser = userRepository.getUserByUsername(user.getUsername());
                 Set<Role> roles = roleRepository.getAll();
@@ -51,7 +53,7 @@ public class UserService
         }
         catch (DataIntegrityViolationException ex)
         {
-            throw new ConstraintViolationException("A user with username/email="+user.getUsername()+" already exists");
+            throw new ConstraintViolationException("A user with username="+user.getUsername()+" already exists");
         }
     }
 

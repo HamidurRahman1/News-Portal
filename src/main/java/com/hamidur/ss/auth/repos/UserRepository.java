@@ -26,8 +26,11 @@ public interface UserRepository extends CrudRepository<User, Integer>
 
     @Modifying
     @Transactional
-    @Query(nativeQuery = true, value = "insert into users (username, password, enabled) values (:un, :p, :e);")
-    int insertUserEntity(@Param("un") String username, @Param("p") String password, @Param("e") boolean enabled);
+    @Query(nativeQuery = true,
+            value = "insert into users (first_name, last_name, username, password, enabled) " +
+                    "values (:fn, :ln, :un, :p, :e);")
+    int insertUserEntity(@Param("fn") String firstName, @Param("ln") String lastName, @Param("un") String username,
+                         @Param("p") String password, @Param("e") boolean enabled);
 
     @Modifying
     @Transactional

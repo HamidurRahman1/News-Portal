@@ -73,10 +73,18 @@ public class RestrictedRESTController
         return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/insert/author", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> insertAuthor(@Valid @RequestBody Author author)
+    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
     {
-        return new ResponseEntity<>(authorService.insertAuthor(author), HttpStatus.CREATED);
+        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
+    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    {
+        if(userService.addRole(userId, roleId))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,20 +119,6 @@ public class RestrictedRESTController
         if(commentService.updateCommentByCommentIdAndArticleId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
         else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
-    }
-
-    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
-    {
-        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
-    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
-    {
-        if(userService.addRole(userId, roleId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,13 +1,10 @@
 package com.hamidur.ss.services;
 
-import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.AuthorRepository;
-import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Set;
@@ -28,17 +25,6 @@ public class AuthorService
         Author author = authorRepository.findByAuthorId(authorId);
         if(author.getUser() == null) return false;
         return authorRepository.deleteAuthorById(authorId, author.getUser().getUserId()) >= 1;
-    }
-
-    public Author insertAuthor(Author author)
-    {
-        try {
-            return authorRepository.save(author);
-        }
-        catch (DataIntegrityViolationException ex)
-        {
-            throw new ConstraintViolationException("user id must be specified for this author to be persisted");
-        }
     }
 
     public Author updateAuthor(Author author) throws MissingAttribute

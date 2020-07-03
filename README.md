@@ -71,7 +71,6 @@ This is for simplification
 |GET| /author/{authorId} |  A, P, E, U | returns an author associated with specified <b>{authorId}</b>
 |GET| /author/{authorId}/articles |  A, P, E, U | returns all articles associated with specified <b>{authorId}</b>
 |GET| /comment/{commentId} |  A, P, E, U | returns a comment associated with specified <b>{commentId}</b>
-|POST| /insert/author | A | inserts a new author, <b>{loginId}</b> must be specified which was generated from <b>/insert/user</b>
 |POST| /insert/article |  A, P | inserts a new article, at least one {authorId} must be associated with this article
 |POST| /insert/comment/article |  A, U | inserts a new comment to the specified article
 |POST| /insert/user |  A | inserts a new user
