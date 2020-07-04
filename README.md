@@ -47,7 +47,7 @@ This is a demo project for learning and practicing purposes only as well as demo
 |GET| /comments| returns all comments
 |GET| /articles/no-author | returns all articles that do not have any authors
 |GET| /article/{articleId}/comments | returns all comments associated with specified {articleId}  
-  
+|POST| /user/signup | inserts a new user
 <br>  
 
 #### Roles:
@@ -75,7 +75,6 @@ This is for simplification
 |GET| /comment/{commentId} |  U | returns a comment associated with specified <b>{commentId}</b>
 |POST| /insert/article |  AD, P | inserts a new article, at least one {authorId} must be associated with this article
 |POST| /insert/comment/article |  U | inserts a new comment to the specified article
-|POST| /insert/user |  AD | inserts a new user
 |POST| /insert/user/{userId}/role/{roleId} |  AD | adds a role specified by <b>{roleId}</b> to a specified user with specified by <b>{userId}</b>
 |PUT| /update/user |  U | updates an existing user's attributes, userId must be present
 |PUT| /update/article |  AD, E | updates an existing article's attributes, articleId must be present 

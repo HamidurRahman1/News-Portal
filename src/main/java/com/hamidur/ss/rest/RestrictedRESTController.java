@@ -74,12 +74,6 @@ public class RestrictedRESTController
         return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
-    {
-        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
-    }
-
     @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
     public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
     {
