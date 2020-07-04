@@ -114,4 +114,17 @@ public class UserService
             }
         }
     }
+
+    public boolean deactivateUserAccount(Integer userId) throws NotFoundException
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(!optionalUser.isPresent())
+            throw new NotFoundException("No user with id="+userId+" found to deactivate associated account");
+        else
+        {
+            User user = optionalUser.get();
+            user.setEnabled(false);
+            return !userRepository.save(user).getEnabled();
+        }
+    }
 }
