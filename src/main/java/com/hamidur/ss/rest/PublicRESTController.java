@@ -1,5 +1,6 @@
 package com.hamidur.ss.rest;
 
+import com.hamidur.ss.auth.models.LoginRequest;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.AppUserDetails;
 import com.hamidur.ss.auth.services.UserService;
@@ -50,8 +51,8 @@ public class PublicRESTController
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody Map<String, Object> body) {
-        Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(body.get("username"), body.get("password")));
+    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest loginRequest) {
+        Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
         return new ResponseEntity<>(((AppUserDetails)authentication.getPrincipal()).getUser(), HttpStatus.OK);
     }
 
