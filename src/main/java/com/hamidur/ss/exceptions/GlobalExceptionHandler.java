@@ -1,10 +1,11 @@
 package com.hamidur.ss.exceptions;
 
+import com.hamidur.ss.exceptions.custom.AccountDisabledException;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.ErrorResponse;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
-import com.hamidur.ss.exceptions.restSecurityExceptions.UserNameNotFoundException;
+import com.hamidur.ss.exceptions.custom.UserNameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +54,13 @@ public class GlobalExceptionHandler
 
     @ExceptionHandler(value = UserNameNotFoundException.class)
     public ResponseEntity<ErrorResponse> usernameNotFoundException(UserNameNotFoundException e)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), e.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = AccountDisabledException.class)
+    public ResponseEntity<ErrorResponse> accountDisabledException(AccountDisabledException e)
     {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), e.getMessage(), HttpStatus.UNAUTHORIZED.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);

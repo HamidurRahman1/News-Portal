@@ -1,4 +1,4 @@
-package com.hamidur.ss.exceptions.restSecurityExceptions;
+package com.hamidur.ss.exceptions.custom;
 
 import org.springframework.security.core.AuthenticationException;
 

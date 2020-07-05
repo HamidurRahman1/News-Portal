@@ -1,4 +1,4 @@
-package com.hamidur.ss.exceptions.restSecurityExceptions;
+package com.hamidur.ss.exceptions.custom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;

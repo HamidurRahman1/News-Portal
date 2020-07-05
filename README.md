@@ -47,6 +47,7 @@ This is a demo project for learning and practicing purposes only as well as demo
 |GET| /comments| returns all comments
 |GET| /articles/no-author | returns all articles that do not have any authors
 |GET| /article/{articleId}/comments | returns all comments associated with specified {articleId}  
+|POST| /login | validates the given username and password. If valid then UserDetails is returned
 |POST| /user/signup | inserts a new user
 <br>  
 

@@ -2,9 +2,8 @@ package com.hamidur.ss.config;
 
 import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
 
-import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAccessDeniedHandler;
-import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationEntryPoint;
-import com.hamidur.ss.exceptions.restSecurityExceptions.RESTAuthenticationFailureHandler;
+import com.hamidur.ss.exceptions.custom.RESTAccessDeniedHandler;
+import com.hamidur.ss.exceptions.custom.RESTAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -125,12 +124,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                     .csrf()
                     .disable()
                 .httpBasic();
-    }
-
-    @Bean
-    public RESTAuthenticationFailureHandler authenticationFailureHandler()
-    {
-        return new RESTAuthenticationFailureHandler();
     }
 
     @Bean
