@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -73,12 +74,6 @@ public class RestrictedRESTController
         return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/insert/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
-    {
-        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
-    }
-
     @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
     public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
     {
@@ -119,6 +114,14 @@ public class RestrictedRESTController
         if(commentService.updateCommentByCommentId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
         else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
+    }
+
+    @PatchMapping(value = "/deactivate/user/{userId}")
+    public ResponseEntity<Void> deactivateUserAccount(@PositiveOrZero @PathVariable Integer userId)
+    {
+        if(userService.deactivateUserAccount(userId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
