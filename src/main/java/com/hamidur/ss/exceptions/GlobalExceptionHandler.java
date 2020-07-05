@@ -4,18 +4,15 @@ import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.ErrorResponse;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
-import org.springframework.http.HttpHeaders;
+import com.hamidur.ss.exceptions.restSecurityExceptions.UserNameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -52,6 +49,13 @@ public class GlobalExceptionHandler
     {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), cv.getErrorMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = UserNameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> usernameNotFoundException(UserNameNotFoundException e)
+    {
+        ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), e.getMessage(), HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(value = MissingAttribute.class)
