@@ -3,9 +3,9 @@ package com.hamidur.ss.auth.services;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.repos.UserRepository;
 
-import com.hamidur.ss.exceptions.restSecurityExceptions.UserNameNotFoundException;
+import com.hamidur.ss.exceptions.custom.AccountDisabledException;
+import com.hamidur.ss.exceptions.custom.UserNameNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +24,7 @@ public class AppUserDetailsServiceImpl implements UserDetailsService
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userRepository.getUserByUsername(s);
         if(user == null) throw new UserNameNotFoundException("No such user with username="+s);
-        if(!user.getEnabled()) throw new DisabledException("User is disabled, needs to verify their account");
+        if(!user.getEnabled()) throw new AccountDisabledException("User is disabled, need to verify their account");
         return new AppUserDetails(user);
     }
 }
