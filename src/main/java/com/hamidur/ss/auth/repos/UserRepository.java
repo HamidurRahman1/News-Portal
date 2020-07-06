@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>
@@ -46,4 +47,7 @@ public interface UserRepository extends CrudRepository<User, Integer>
             "delete from authors a where a.author_id = (:a_id);"+
             "delete from users where user_id = (:u_id);")
     int deleteAllInfoByUserId(@Param("a_id")Integer authorId, @Param("u_id")Integer userId);
+
+    @Query(nativeQuery = true, value = "select * from users where user_id in (select user_id from authors)")
+    Set<User> getAllAuthors();
 }

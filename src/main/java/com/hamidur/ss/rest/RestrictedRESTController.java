@@ -51,9 +51,9 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Author>> getAuthors()
+    public ResponseEntity<Set<User>> getAuthors()
     {
-        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllAuthors(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
