@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
@@ -54,6 +55,12 @@ public class RestrictedRESTController
     public ResponseEntity<Set<User>> getAuthors()
     {
         return new ResponseEntity<>(userService.getAllAuthors(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/articles/text")
+    public ResponseEntity<Set<Article>> searchArticle(@RequestParam("bodyContains") String subString)
+    {
+        return new ResponseEntity<>(articleService.getArticlesBySubString(subString), HttpStatus.OK);
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
