@@ -29,7 +29,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1/r")
 @Validated

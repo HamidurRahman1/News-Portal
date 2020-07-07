@@ -1,7 +1,6 @@
 package com.hamidur.ss.config;
 
 import com.hamidur.ss.auth.services.AppUserDetailsServiceImpl;
-
 import com.hamidur.ss.exceptions.custom.RESTAccessDeniedHandler;
 import com.hamidur.ss.exceptions.custom.RESTAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -16,27 +15,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://localhost:63343"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder()
     {
