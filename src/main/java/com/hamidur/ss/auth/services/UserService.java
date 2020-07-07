@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService
@@ -23,6 +24,14 @@ public class UserService
     {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+    }
+
+    public Set<User> getAllAuthors() throws NotFoundException
+    {
+        Set<User> authors = userRepository.getAllAuthors();
+        if(authors == null || authors.isEmpty())
+            throw new NotFoundException("No authors found to return");
+        return authors;
     }
 
     @Transactional

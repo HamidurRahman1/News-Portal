@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
 
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1/r")
 @Validated
@@ -51,9 +52,15 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Author>> getAuthors()
+    public ResponseEntity<Set<User>> getAuthors()
     {
-        return new ResponseEntity<>(authorService.getAllAuthors(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllAuthors(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/articles/text")
+    public ResponseEntity<Set<Article>> searchArticle(@RequestParam("bodyContains") String subString)
+    {
+        return new ResponseEntity<>(articleService.getArticlesBySubString(subString), HttpStatus.OK);
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)

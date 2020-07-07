@@ -25,6 +25,14 @@ public class ArticleService
         this.authorService = authorService;
     }
 
+    public Set<Article> getArticlesBySubString(String text)
+    {
+        Set<Article> articles = articleRepository.getArticlesByBodyContains(text);
+        if(articles == null || articles.isEmpty())
+            throw new NotFoundException("No articles found to return");
+        return articles;
+    }
+
     @Transactional
     public Article insertArticle(Article article) throws MissingAttribute
     {

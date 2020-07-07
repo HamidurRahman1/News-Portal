@@ -15,6 +15,8 @@ public interface ArticleRepository extends CrudRepository<Article, Integer>
     // returns all Articles
     Set<Article> findAll();
 
+    Set<Article> getArticlesByBodyContains(String text);
+
     // returns all Articles written by an author associated with this id
     @Query(nativeQuery = true,
             value = "select * from articles a inner join authors_articles aa " +

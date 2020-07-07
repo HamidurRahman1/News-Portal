@@ -1,7 +1,6 @@
 package com.hamidur.ss.dao.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hamidur.ss.auth.models.User;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,7 +34,7 @@ public class Author implements Serializable
             inverseJoinColumns = @JoinColumn(name = "article_id"))
     private Set<Article> articles;
 
-    @JsonIgnore
+    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
