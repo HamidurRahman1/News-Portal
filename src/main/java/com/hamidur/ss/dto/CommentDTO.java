@@ -1,6 +1,7 @@
 package com.hamidur.ss.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO implements Serializable
 {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer commentId;
 
     @NotNull(message = "comment cannot be null")

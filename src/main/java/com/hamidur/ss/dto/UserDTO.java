@@ -1,6 +1,7 @@
 package com.hamidur.ss.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable
 {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer userId;
 
     @NotNull(message = "first name cannot be null")
@@ -31,11 +33,14 @@ public class UserDTO implements Serializable
     @NotNull(message = "password cannot be null")
     @NotBlank(message = "password cannot be empty")
     @Size(min = 5, max = 70, message = "password must be in length of 5-15 characters")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Set<RoleDTO> roles;
 
-    private AuthorDTO authorDTO;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Integer authorId;
 
     public UserDTO() {
     }
@@ -88,6 +93,22 @@ public class UserDTO implements Serializable
         this.password = password;
     }
 
+    public Set<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDTO> roles) {
+        this.roles = roles;
+    }
+
+    public Integer getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthor(Integer authorId) {
+        this.authorId = authorId;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -96,6 +117,8 @@ public class UserDTO implements Serializable
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", roles=" + roles +
+                ", authorId=" + authorId +
                 '}';
     }
 }

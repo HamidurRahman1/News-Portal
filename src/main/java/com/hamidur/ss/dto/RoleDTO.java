@@ -1,9 +1,12 @@
 package com.hamidur.ss.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class RoleDTO implements Serializable
 {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer roleId;
     private String role;
 

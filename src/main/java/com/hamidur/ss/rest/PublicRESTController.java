@@ -6,8 +6,11 @@ import com.hamidur.ss.auth.services.AppUserDetails;
 import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
 import com.hamidur.ss.dao.models.Comment;
+import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.services.ArticleService;
 import com.hamidur.ss.services.CommentService;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,20 +42,26 @@ public class PublicRESTController
     private final CommentService commentService;
     private final UserService userService;
     private final DaoAuthenticationProvider daoAuthenticationProvider;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public PublicRESTController(final ArticleService articleService, final CommentService commentService,
-                                final UserService userService, final DaoAuthenticationProvider daoAuthenticationProvider) {
+                                final UserService userService, final DaoAuthenticationProvider daoAuthenticationProvider,
+                                final ModelMapper modelMapper) {
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
         this.daoAuthenticationProvider = daoAuthenticationProvider;
+        this.modelMapper = modelMapper;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-        return new ResponseEntity<>(((AppUserDetails)authentication.getPrincipal()).getUser(), HttpStatus.OK);
+        User user = ((AppUserDetails)authentication.getPrincipal()).getUser();
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        userDTO.setAuthor(user.getAuthor().getAuthorId());
+        return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
     @PostMapping(value = "/user/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
