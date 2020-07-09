@@ -1,11 +1,11 @@
-package com.hamidur.ss.auth.models;
+package com.hamidur.ss.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-public class LoginRequest implements Serializable
+public class LoginDTO implements Serializable
 {
     @NotNull(message = "username(email) cannot be null")
     @NotBlank(message = "username(email) cannot be empty")
@@ -17,10 +17,10 @@ public class LoginRequest implements Serializable
     @Size(min = 5, max = 70, message = "password must be in length of 5-15 characters")
     private String password;
 
-    public LoginRequest() {
+    public LoginDTO() {
     }
 
-    public LoginRequest(String username, String password) {
+    public LoginDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -43,7 +43,7 @@ public class LoginRequest implements Serializable
 
     @Override
     public String toString() {
-        return "LoginRequest{" +
+        return "LoginDTO{" +
                 "username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';

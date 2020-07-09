@@ -1,6 +1,6 @@
 package com.hamidur.ss.rest;
 
-import com.hamidur.ss.auth.models.LoginRequest;
+import com.hamidur.ss.dto.LoginDTO;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.AppUserDetails;
 import com.hamidur.ss.auth.services.UserService;
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @CrossOrigin(origins = "*")
@@ -51,8 +50,8 @@ public class PublicRESTController
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public ResponseEntity<User> login(@Valid @RequestBody LoginDTO loginDTO) {
+        Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         return new ResponseEntity<>(((AppUserDetails)authentication.getPrincipal()).getUser(), HttpStatus.OK);
     }
 

@@ -1,6 +1,5 @@
 package com.hamidur.ss.dao.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hamidur.ss.auth.models.User;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,14 +26,12 @@ public class Author implements Serializable
     @Column(name = "author_id", nullable = false, updatable = false, unique = true)
     private Integer authorId;
 
-    @JsonBackReference
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable(name = "authors_articles",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "article_id"))
     private Set<Article> articles;
 
-    @JsonBackReference
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

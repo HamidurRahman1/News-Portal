@@ -1,6 +1,5 @@
 package com.hamidur.ss.auth.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +25,6 @@ public class Role implements Serializable
     @Column(name = "role")
     private String role;
 
-    @JsonBackReference
     @ManyToMany(mappedBy = "roles", cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     private Set<User> users;
 
