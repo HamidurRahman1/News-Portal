@@ -12,6 +12,16 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>
 {
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value =
+                    "insert into users (first_name, last_name, username, password, enabled) values ((:fn), (:ln), (:un), (:p), (:e));" +
+                    "insert into users_roles (user_id, role_id) " +
+                            "values (select user_id from users where username = (:un), " +
+                            " (select role_id from roles where role = 'USER'))")
+    int signUpWithUserRole(@Param("fn") String firstName, @Param("ln") String lastName, @Param("un") String username,
+                           @Param("p") String password, @Param("e") boolean enabled);
+
     @Query(nativeQuery = true, value = "SELECT * FROM users WHERE username = :username")
     User getUserByUsername(@Param("username") String username);
 
@@ -24,12 +34,6 @@ public interface UserRepository extends CrudRepository<User, Integer>
     @Transactional
     @Query(nativeQuery = true, value = "insert into users_roles (user_id, role_id) values (:u_i, :r_i)")
     int addRole(@Param("u_i") Integer userId, @Param("r_i") Integer roleId);
-
-    @Modifying
-    @Transactional
-    @Query(nativeQuery = true,
-            value = "insert into users_roles (user_id, role_id) values ((:uId), (select role_id from roles where role = 'USER'));")
-    void assignUserRole(@Param("uId") Integer userId);
 
     @Modifying
     @Transactional

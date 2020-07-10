@@ -30,20 +30,13 @@ insert into users_roles (user_id, role_id) values
 (9, 4), (9, 5),
 (10, 4), (10, 5);
 
-insert into authors (author_id, user_id) values
-(1, 6),
-(2, 7),
-(3, 8),
-(4, 9),
-(5, 10);
-
-insert into articles (title, body, datetime, is_published) values
-('title1', 'body1', '2020-05-20 20:20', true),
-('title2', 'body2', '2020-05-21 20:20:20', true),
-('title3', 'body3', '2020-05-22 20:20:20', true),
-('title4', 'body4', '2020-05-23 20:20:20', true),
-('no author article title11', 'no author article body1', '2020-05-24 20:20:20', true),
-('no author article title1', 'no author article body2', '2020-05-25 20:20:20', false);
+insert into articles (title, body, timestamp, is_published) values
+('title1', 'body1', '1594336982542', true),
+('title2', 'body2', '1594336982542', true),
+('title3', 'body3', '1594336982542', true),
+('title4', 'body4', '1594336982542', true),
+('no author article title11', 'no author article body1', '1594336982542', true),
+('no author article title1', 'no author article body2', '1594336982542', false);
 
 insert into authors_articles (author_id, article_id) values
 (5, 1), (3, 1), (1, 1),

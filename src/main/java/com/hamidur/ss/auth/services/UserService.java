@@ -40,9 +40,8 @@ public class UserService
         try
         {
             user.setEnabled(false);
-            User savedUser = userRepository.save(user);
-            userRepository.assignUserRole(savedUser.getUserId());
-            return userRepository.findById(savedUser.getUserId()).get();
+            userRepository.signUpWithUserRole(user.getFirstName(), user.getLastName(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled());
+            return userRepository.getUserByUsername(user.getUsername());
         }
         catch (DataIntegrityViolationException ex)
         {

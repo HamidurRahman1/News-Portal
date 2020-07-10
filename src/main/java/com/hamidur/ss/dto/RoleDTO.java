@@ -8,6 +8,8 @@ public class RoleDTO implements Serializable
 {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer roleId;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String role;
 
     public RoleDTO() {

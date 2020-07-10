@@ -38,6 +38,10 @@ public interface ArticleRepository extends CrudRepository<Article, Integer>
                     "delete from articles a where a.article_id = (:articleId) and is_published = false;")
     int deleteUnPublishedArticleById(@Param("articleId") Integer articleId);
 
-    @Query(nativeQuery = true, value = "select * from articles where article_id not in (select article_id from authors_articles)")
-    Set<Article> getAllArticlesWithNoAuthor();
+    @Query(nativeQuery = true, value = "select * from articles where article_id not in (select article_id from authors_articles) and is_published = true;")
+    Set<Article> getPublishedArticlesWithNoAuthor();
+
+    // Not for user or author
+    @Query(nativeQuery = true, value = "select * from articles where article_id not in (select article_id from authors_articles) and is_published = false;")
+    Set<Article> getUnPublishedArticlesWithNoAuthor();
 }

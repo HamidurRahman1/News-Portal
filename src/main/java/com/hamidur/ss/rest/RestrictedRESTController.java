@@ -3,11 +3,9 @@ package com.hamidur.ss.rest;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
-import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import com.hamidur.ss.services.ArticleService;
-import com.hamidur.ss.services.AuthorService;
 import com.hamidur.ss.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,17 +33,14 @@ import java.util.Set;
 @Validated
 public class RestrictedRESTController
 {
-    private final AuthorService authorService;
     private final ArticleService articleService;
     private final CommentService commentService;
     private final UserService userService;
 
     @Autowired
-    public RestrictedRESTController(final AuthorService authorService,
-                                    final ArticleService articleService,
+    public RestrictedRESTController(final ArticleService articleService,
                                     final CommentService commentService,
                                     final UserService userService) {
-        this.authorService = authorService;
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
@@ -64,9 +59,9 @@ public class RestrictedRESTController
     }
 
     @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@PositiveOrZero @PathVariable Integer authorId)
+    public ResponseEntity<User> getAuthor(@PositiveOrZero @PathVariable Integer authorId)
     {
-        return new ResponseEntity<>(authorService.getAuthorById(authorId), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -134,9 +129,7 @@ public class RestrictedRESTController
     @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
     {
-        if(authorService.deleteAuthorById(authorId))
-            return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No author found with id="+authorId+" to delete");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/comment/{commentId}")

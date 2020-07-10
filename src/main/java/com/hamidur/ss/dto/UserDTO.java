@@ -12,7 +12,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO implements Serializable
 {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer userId;
 
     @NotNull(message = "first name cannot be null")
@@ -40,7 +39,7 @@ public class UserDTO implements Serializable
     private Set<RoleDTO> roles;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Integer authorId;
+    private Set<ArticleDTO> articles;
 
     public UserDTO() {
     }
@@ -101,12 +100,12 @@ public class UserDTO implements Serializable
         this.roles = roles;
     }
 
-    public Integer getAuthorId() {
-        return authorId;
+    public Set<ArticleDTO> getArticles() {
+        return articles;
     }
 
-    public void setAuthor(Integer authorId) {
-        this.authorId = authorId;
+    public void setArticles(Set<ArticleDTO> articles) {
+        this.articles = articles;
     }
 
     @Override
@@ -118,7 +117,6 @@ public class UserDTO implements Serializable
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
-                ", authorId=" + authorId +
                 '}';
     }
 }

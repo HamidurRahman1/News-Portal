@@ -1,5 +1,7 @@
 package com.hamidur.ss.dao.models;
 
+import com.hamidur.ss.auth.models.User;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,7 +12,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -30,8 +31,8 @@ public class Article implements Serializable
     @Column(name = "body", nullable = false, length = 10000)
     private String body;
 
-    @Column(name = "datetime", nullable = false)
-    private LocalDateTime dateTime;
+    @Column(name = "timestamp", nullable = false, length = 50)
+    private String timestamp;
 
     @Column(name = "is_published", nullable = false, updatable = true)
     private boolean publish;
@@ -40,15 +41,15 @@ public class Article implements Serializable
     private List<Comment> comments;
 
     @ManyToMany(mappedBy = "articles")
-    private Set<Author> authors;
+    private Set<User> authors;
 
     public Article() {}
 
-    public Article(Integer articleId, String title, String body, LocalDateTime dateTime, List<Comment> comments, Set<Author> authors) {
+    public Article(Integer articleId, String title, String body, String timestamp, List<Comment> comments, Set<User> authors) {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
-        this.dateTime = dateTime;
+        this.timestamp = timestamp;
         this.comments = comments;
         this.authors = authors;
     }
@@ -77,12 +78,12 @@ public class Article implements Serializable
         this.body = body;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public boolean getPublish() {
@@ -101,22 +102,12 @@ public class Article implements Serializable
         this.comments = comments;
     }
 
-    public Set<Author> getAuthors() {
+    public Set<User> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
+    public void setAuthors(Set<User> authors) {
         this.authors = authors;
-    }
-
-    public void addAuthor(Author author) {
-        this.authors.add(author);
-        author.getArticles().add(this);
-    }
-
-    public void removeAuthor(Author author) {
-        this.authors.remove(author);
-        author.getArticles().remove(this);
     }
 
     @Override
@@ -127,12 +118,12 @@ public class Article implements Serializable
         return Objects.equals(getArticleId(), article.getArticleId()) &&
                 Objects.equals(getTitle(), article.getTitle()) &&
                 Objects.equals(getBody(), article.getBody()) &&
-                Objects.equals(getDateTime(), article.getDateTime());
+                Objects.equals(getTimestamp(), article.getTimestamp());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getArticleId(), getTitle(), getBody(), getDateTime());
+        return Objects.hash(getArticleId(), getTitle(), getBody(), getTimestamp());
     }
 
     @Override
@@ -141,7 +132,7 @@ public class Article implements Serializable
                 "articleId=" + articleId +
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
-                ", datetime=" + dateTime +
+                ", timestamp=" + timestamp +
                 ", isPublished=" + publish +
                 '}';
     }

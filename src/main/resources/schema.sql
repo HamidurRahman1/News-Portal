@@ -23,19 +23,12 @@ create table users_roles
   foreign key (role_id) references roles(role_id)
 );
 
-create table authors
-(
-  author_id int primary key auto_increment,
-  user_id int not null,
-  foreign key (user_id) references users(user_id)
-);
-
 create table articles
 (
   article_id int primary key auto_increment,
   title varchar(1000) not null,
   body varchar(10000) not null,
-  datetime datetime not null,
+  timestamp varchar (50) not null,
   is_published tinyint not null
 );
 
@@ -44,7 +37,7 @@ create table authors_articles
   author_id int not null,
   article_id int not null,
   primary key(author_id, article_id),
-  foreign key (author_id) references authors(author_id),
+  foreign key (author_id) references users(user_id),
   foreign key (article_id) references articles(article_id)
 );
 

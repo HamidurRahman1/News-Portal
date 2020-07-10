@@ -13,7 +13,6 @@ import java.util.Set;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArticleDTO implements Serializable
 {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer articleId;
 
     @NotNull(message = "title cannot be null")
@@ -27,21 +26,22 @@ public class ArticleDTO implements Serializable
     private String body;
 
     @NotNull(message = "timestamp cannot be null")
-    @NotBlank(message = "body cannot be empty")
+    @NotBlank(message = "timestamp cannot be empty")
+    @Size(min = 12, max = 50, message = "invalid timestamp provided")
     private String timestamp;
 
-    @NotNull(message = "publish property cannot be null")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean publish;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<CommentDTO> comments;
 
-    private Set<AuthorDTO> authors;
+    private Set<UserDTO> authors;
 
     public ArticleDTO() {
     }
 
-    public ArticleDTO(Integer articleId, String title, String body, String datetime, boolean publish, List<CommentDTO> comments, Set<AuthorDTO> authors)
+    public ArticleDTO(Integer articleId, String title, String body, String datetime, boolean publish, List<CommentDTO> comments, Set<UserDTO> authors)
     {
         this.articleId = articleId;
         this.title = title;
@@ -99,11 +99,11 @@ public class ArticleDTO implements Serializable
         this.comments = comments;
     }
 
-    public Set<AuthorDTO> getAuthors() {
+    public Set<UserDTO> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<AuthorDTO> authors) {
+    public void setAuthors(Set<UserDTO> authors) {
         this.authors = authors;
     }
 

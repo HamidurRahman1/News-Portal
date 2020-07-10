@@ -1,14 +1,15 @@
 package com.hamidur.ss.rest;
 
+import com.hamidur.ss.dto.ArticleDTO;
+import com.hamidur.ss.dto.CommentDTO;
 import com.hamidur.ss.dto.LoginDTO;
+import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.AppUserDetails;
 import com.hamidur.ss.auth.services.UserService;
-import com.hamidur.ss.dao.models.Article;
-import com.hamidur.ss.dao.models.Comment;
-import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.services.ArticleService;
 import com.hamidur.ss.services.CommentService;
+import com.hamidur.ss.util.ModelConverter;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,54 +44,58 @@ public class PublicRESTController
     private final UserService userService;
     private final DaoAuthenticationProvider daoAuthenticationProvider;
     private final ModelMapper modelMapper;
+    private final ModelConverter modelConverter;
 
     @Autowired
     public PublicRESTController(final ArticleService articleService, final CommentService commentService,
                                 final UserService userService, final DaoAuthenticationProvider daoAuthenticationProvider,
-                                final ModelMapper modelMapper) {
+                                final ModelMapper modelMapper, final ModelConverter modelConverter) {
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
         this.daoAuthenticationProvider = daoAuthenticationProvider;
         this.modelMapper = modelMapper;
+        this.modelConverter = modelConverter;
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = daoAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         User user = ((AppUserDetails)authentication.getPrincipal()).getUser();
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-        userDTO.setAuthor(user.getAuthor().getAuthorId());
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        return new ResponseEntity<>(modelMapper.map(user, UserDTO.class), HttpStatus.OK);
     }
 
     @PostMapping(value = "/user/signup", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user)
+    public ResponseEntity<UserDTO> insertUser(@Valid @RequestBody UserDTO userDTO)
     {
-        return new ResponseEntity<>(userService.insertUser(user), HttpStatus.OK);
+        User user = userService.insertUser(modelMapper.map(userDTO, User.class));
+        UserDTO userDTO1 = modelMapper.map(user, UserDTO.class);
+        return new ResponseEntity<>(userDTO1, HttpStatus.OK);
     }
 
     @GetMapping(value = "/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticles()
+    public ResponseEntity<Set<ArticleDTO>> getArticles()
     {
-        return new ResponseEntity<>(articleService.getAllArticles(), HttpStatus.OK);
+        Set<ArticleDTO> articleDTOS = modelConverter.articlesToDTOArticles(articleService.getAllArticles());
+        return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Comment>> getComments()
+    public ResponseEntity<List<CommentDTO>> getComments()
     {
-        return new ResponseEntity<>(commentService.getAllComments(), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.commentsToDTOComments(commentService.getAllComments()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/articles/no-author", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesWithNoAuthor()
+    public ResponseEntity<Set<ArticleDTO>> getArticlesWithNoAuthor()
     {
-        return new ResponseEntity<>(articleService.getAllArticlesWithNoAuthor(), HttpStatus.OK);
+        Set<ArticleDTO> articleDTOS = modelConverter.articlesToDTOArticles(articleService.getAllArticlesWithNoAuthor());
+        return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
     }
 
     @GetMapping(value = "/article/{articleId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Comment>> getCommentsByArticleId(@PositiveOrZero @PathVariable Integer articleId)
+    public ResponseEntity<List<CommentDTO>> getCommentsByArticleId(@PositiveOrZero @PathVariable Integer articleId)
     {
-        return new ResponseEntity<>(commentService.getAllCommentsByArticleId(articleId), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.commentsToDTOComments(commentService.getAllCommentsByArticleId(articleId)), HttpStatus.OK);
     }
 }

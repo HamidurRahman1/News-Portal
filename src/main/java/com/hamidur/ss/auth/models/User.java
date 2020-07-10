@@ -1,6 +1,6 @@
 package com.hamidur.ss.auth.models;
 
-import com.hamidur.ss.dao.models.Author;
+import com.hamidur.ss.dao.models.Article;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
@@ -42,14 +41,17 @@ public class User implements Serializable
     @Column(name = "enabled", nullable = false, updatable = true)
     private boolean enabled;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Author author;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "authors_articles",
+            joinColumns = @JoinColumn(name = "author_id"),
+            inverseJoinColumns = @JoinColumn(name = "article_id"))
+    private Set<Article> articles;
 
     public User() {}
 
@@ -117,6 +119,14 @@ public class User implements Serializable
         this.roles = roles;
     }
 
+    public Set<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<Article> articles) {
+        this.articles = articles;
+    }
+
     public User addRole(Role role)
     {
         if(this.roles == null)
@@ -132,14 +142,6 @@ public class User implements Serializable
             this.roles.remove(role);
         role.getUsers().remove(this);
         return this;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
     }
 
     @Override

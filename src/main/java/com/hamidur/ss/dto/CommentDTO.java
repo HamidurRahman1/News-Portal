@@ -11,7 +11,6 @@ import java.io.Serializable;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CommentDTO implements Serializable
 {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer commentId;
 
     @NotNull(message = "comment cannot be null")
