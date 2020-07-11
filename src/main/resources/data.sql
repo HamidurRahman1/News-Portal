@@ -39,10 +39,10 @@ insert into articles (title, body, timestamp, is_published) values
 ('no author article title1', 'no author article body2', '1594336982542', false);
 
 insert into authors_articles (author_id, article_id) values
-(5, 1), (3, 1), (1, 1),
-(5, 2), (2, 2),
-(1, 3), (3, 3),
-(4, 4), (5, 4);
+(10, 1), (8, 1), (6, 1),
+(10, 2), (7, 2),
+(6, 3), (8, 3),
+(9, 4), (10, 4);
 
 insert into comments (comment, article_id) values
 ('comment to article 1', 1), ('comment to article 1', 1), ('comment to article 1', 1), ('comment to article 1', 1),

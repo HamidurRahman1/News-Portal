@@ -17,6 +17,6 @@ public class OtherBeans
     @Bean
     public ModelConverter modelConverter()
     {
-        return new ModelConverter(modelMapper());
+        return new ModelConverter();
     }
 }

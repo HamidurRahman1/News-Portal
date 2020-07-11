@@ -70,6 +70,7 @@ public class PublicRESTController
     {
         User user = userService.insertUser(modelMapper.map(userDTO, User.class));
         UserDTO userDTO1 = modelMapper.map(user, UserDTO.class);
+        userDTO1.setArticles(null);
         return new ResponseEntity<>(userDTO1, HttpStatus.OK);
     }
 

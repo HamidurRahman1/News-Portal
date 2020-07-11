@@ -117,4 +117,12 @@ public class UserService
             return !userRepository.save(user).getEnabled();
         }
     }
+
+    public User getAuthorByUserId(Integer userId) throws NotFoundException
+    {
+        User user = userRepository.getAuthorByUserId(userId);
+        if(user == null)
+            throw new NotFoundException("No author found with userId="+userId);
+        return user;
+    }
 }

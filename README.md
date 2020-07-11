@@ -14,32 +14,21 @@ This is a demo project for learning and practicing purposes only as well as demo
 * Spring Boot
 * Spring Security
 * Spring AOP
-* AWS Elastic BeanStalk
-* H2/AWS RDS
+* H2
 * Restricted endpoints
 * Exceptions handling
 * Custom Error Response
-* HTML
-* JavaScript  
-
-## Environments:
-
-| Props|Development |Production|
-| :---:  | :---: |  :---: |
-|Database| H2   | MySQL
-|Host (DB)  |Local (in memory) | AWS
-|Host (app)| Local | AWS Elastic Beanstalk 
 
 <br>
 
 ## API Documentation:
-* All paths are relative to <strong>domain/blogs/api/v1/...</strong> in production and development
-* At this moment inbound and outbound data supported only in JSON format
+* All paths are relative to <strong>domain/blogs/api/v1/...</strong>
+* At this moment content negotiation is supported only in JSON format
 
 <br>
 
 ##### Public API:
-* All paths are relative to <strong>domain/blogs/api/v1/public/...</strong> in production and development
+* All paths are relative to <strong>domain/blogs/api/v1/public/...</strong>
 
 | HTTP METHOD|Path | Explanation|
 | :---:  | :---: | :---: |
@@ -47,8 +36,8 @@ This is a demo project for learning and practicing purposes only as well as demo
 |GET| /comments| returns all comments
 |GET| /articles/no-author | returns all articles that do not have any authors
 |GET| /article/{articleId}/comments | returns all comments associated with specified {articleId}  
-|POST| /login | validates the given username and password. If valid then UserDetails is returned
-|POST| /user/signup | inserts a new user
+|POST| /login | validates the given username and password. If valid then UserDetails is returned o/w exception thrown
+|POST| /user/signup | inserts a new user and UserDetails is returned (containing userId and roles)
 <br>  
 
 #### Roles:

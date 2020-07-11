@@ -4,9 +4,15 @@ import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
 import com.hamidur.ss.dao.models.Comment;
+import com.hamidur.ss.dto.ArticleDTO;
+import com.hamidur.ss.dto.CommentDTO;
+import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import com.hamidur.ss.services.ArticleService;
 import com.hamidur.ss.services.CommentService;
+
+import com.hamidur.ss.util.ModelConverter;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
@@ -36,44 +43,49 @@ public class RestrictedRESTController
     private final ArticleService articleService;
     private final CommentService commentService;
     private final UserService userService;
+    private final ModelConverter modelConverter;
 
     @Autowired
-    public RestrictedRESTController(final ArticleService articleService,
-                                    final CommentService commentService,
-                                    final UserService userService) {
+    public RestrictedRESTController(final ArticleService articleService, final CommentService commentService,
+                                    final UserService userService, final ModelConverter modelConverter) {
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
+        this.modelConverter = modelConverter;
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<User>> getAuthors()
+    public ResponseEntity<Set<UserDTO>> getAuthors()
     {
-        return new ResponseEntity<>(userService.getAllAuthors(), HttpStatus.OK);
+        Set<UserDTO> authors = modelConverter.usersToDTOUsers(userService.getAllAuthors());
+        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/articles/text")
-    public ResponseEntity<Set<Article>> searchArticle(@RequestParam("bodyContains") String subString)
+    @GetMapping(value = "/articles/text", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ArticleDTO>> searchArticle(@RequestParam("bodyContains") String subString)
     {
-        return new ResponseEntity<>(articleService.getArticlesBySubString(subString), HttpStatus.OK);
+        Set<ArticleDTO> articleDTOS = modelConverter.articlesToDTOArticles(articleService.getArticlesBySubString(subString));
+        return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> getAuthor(@PositiveOrZero @PathVariable Integer authorId)
+    @GetMapping(value = "/author/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> getAuthor(@PositiveOrZero @PathVariable Integer userId)
     {
-        return new ResponseEntity<>(HttpStatus.OK);
+        User author = userService.getAuthorByUserId(userId);
+        UserDTO dtoAuthor = modelConverter.authorToDTOAuthor(author);
+        return new ResponseEntity<>(dtoAuthor, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@PositiveOrZero @PathVariable Integer authorId)
+    @GetMapping(value = "/author/{userId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ArticleDTO>> getArticlesByAuthorId(@PositiveOrZero @PathVariable Integer userId)
     {
-        return new ResponseEntity<>(articleService.getArticlesByAuthorId(authorId), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.articlesToJustDTOArticles(articleService.getArticlesByAuthorId(userId)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
+    public ResponseEntity<CommentDTO> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-        return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.commentToDTOComment(commentService.getCommentById(commentId)), HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/user/{userId}/role/{roleId}")

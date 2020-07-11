@@ -44,12 +44,14 @@ public class UserDTO implements Serializable
     public UserDTO() {
     }
 
-    public UserDTO(Integer userId, String firstName, String lastName, String username, String password) {
+    public UserDTO(Integer userId, String firstName, String lastName, String username, String password, Set<RoleDTO> roles, Set<ArticleDTO> articles) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.roles = roles;
+        this.articles = articles;
     }
 
     public Integer getUserId() {

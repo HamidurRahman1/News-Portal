@@ -52,6 +52,13 @@ public interface UserRepository extends CrudRepository<User, Integer>
             "delete from users where user_id = (:u_id);")
     int deleteAllInfoByUserId(@Param("a_id")Integer authorId, @Param("u_id")Integer userId);
 
-    @Query(nativeQuery = true, value = "select * from users where user_id in (select user_id from authors)")
+    @Query(nativeQuery = true, value =
+            "select * from users where user_id in " +
+            "(select user_id from users_roles ur inner join roles r on ur.role_id = r.role_id and r.role = 'AUTHOR');")
     Set<User> getAllAuthors();
+
+    @Query(nativeQuery = true, value =
+            "select * from users u inner join users_roles ur on u.user_id = ur.user_id" +
+            " and u.user_id = (:userId) and ur.role_id = (select role_id from roles where role = 'AUTHOR')")
+    User getAuthorByUserId(@Param("userId") Integer userId);
 }
