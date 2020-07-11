@@ -44,7 +44,7 @@ public class ArticleService
 
         authorsIds.forEach(userService::getAuthorByUserId);
 
-        article.setPublish(false);
+        article.setPublished(false);
         article.setComments(null);
         article.setAuthors(null);
         Article savedArticle = articleRepository.save(article);
@@ -99,7 +99,6 @@ public class ArticleService
             article1.setTitle(article.getTitle());
             article1.setBody(article.getBody());
             article1.setTimestamp(article.getTimestamp());
-            article1.setPublish(article.getPublish());
             return articleRepository.save(article1);
         }
     }

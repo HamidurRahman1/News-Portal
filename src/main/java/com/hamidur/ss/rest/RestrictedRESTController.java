@@ -91,11 +91,11 @@ public class RestrictedRESTController
     }
 
     @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
-    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    public ResponseEntity<Void> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
     {
         if(userService.addRole(userId, roleId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -115,23 +115,34 @@ public class RestrictedRESTController
     }
 
     @PutMapping(value = "/update/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user)
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO)
     {
-        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+        User user = modelMapper.map(userDTO, User.class);
+        User updatedUser = userService.updateUser(user);
+        UserDTO response = modelMapper.map(updatedUser, UserDTO.class);
+        response.setArticles(null);
+        response.setRoles(null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> updateArticle(@Valid @RequestBody Article article)
+    public ResponseEntity<ArticleDTO> updateArticle(@Valid @RequestBody ArticleDTO articleDTO)
     {
-        return new ResponseEntity<>(articleService.updateArticle(article), HttpStatus.OK);
+        Article article = modelMapper.map(articleDTO, Article.class);
+        Article updatedArticle = articleService.updateArticle(article);
+        updatedArticle.setAuthors(null);
+        updatedArticle.setComments(null);
+        ArticleDTO updatedArticleDto = modelMapper.map(updatedArticle, ArticleDTO.class);
+        return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateCommentById(@Valid @RequestBody Comment comment)
+    public ResponseEntity<Void> updateCommentById(@Valid @RequestBody CommentDTO commentDTO)
     {
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
         if(commentService.updateCommentByCommentId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
+        else throw new NotFoundException("No comment found with id="+commentDTO.getCommentId()+" to update");
     }
 
     @PatchMapping(value = "/deactivate/user/{userId}")

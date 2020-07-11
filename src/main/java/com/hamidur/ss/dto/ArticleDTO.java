@@ -31,7 +31,7 @@ public class ArticleDTO implements Serializable
     private String timestamp;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean publish;
+    private boolean published;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<CommentDTO> comments;
@@ -41,12 +41,13 @@ public class ArticleDTO implements Serializable
     public ArticleDTO() {
     }
 
-    public ArticleDTO(Integer articleId, String title, String body, String datetime, boolean publish, List<CommentDTO> comments, Set<UserDTO> authors)
+    public ArticleDTO(Integer articleId, String title, String body, String timestamp, boolean published, List<CommentDTO> comments, Set<UserDTO> authors)
     {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
-        this.publish = publish;
+        this.timestamp = timestamp;
+        this.published = published;
         this.comments = comments;
         this.authors = authors;
     }
@@ -83,12 +84,12 @@ public class ArticleDTO implements Serializable
         this.timestamp = timestamp;
     }
 
-    public boolean isPublish() {
-        return publish;
+    public boolean getPublished() {
+        return published;
     }
 
-    public void setPublish(boolean publish) {
-        this.publish = publish;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public List<CommentDTO> getComments() {
@@ -114,7 +115,7 @@ public class ArticleDTO implements Serializable
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
                 ", timestamp='" + timestamp + '\'' +
-                ", publish=" + publish +
+                ", published=" + published +
                 ", comments=" + comments +
                 '}';
     }

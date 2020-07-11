@@ -36,6 +36,9 @@ public class UserDTO implements Serializable
     private String password;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean enabled;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Set<RoleDTO> roles;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -94,6 +97,14 @@ public class UserDTO implements Serializable
         this.password = password;
     }
 
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public Set<RoleDTO> getRoles() {
         return roles;
     }
@@ -118,7 +129,9 @@ public class UserDTO implements Serializable
                 ", lastName='" + lastName + '\'' +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", enabled=" + enabled +
                 ", roles=" + roles +
+                ", articles=" + articles +
                 '}';
     }
 }

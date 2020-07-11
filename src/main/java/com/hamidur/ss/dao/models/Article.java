@@ -5,7 +5,6 @@ import com.hamidur.ss.auth.models.User;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,7 +35,7 @@ public class Article implements Serializable
     private String timestamp;
 
     @Column(name = "is_published", nullable = false, updatable = true)
-    private boolean publish;
+    private boolean published;
 
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments;
@@ -46,11 +45,12 @@ public class Article implements Serializable
 
     public Article() {}
 
-    public Article(Integer articleId, String title, String body, String timestamp, List<Comment> comments, Set<User> authors) {
+    public Article(Integer articleId, String title, String body, String timestamp, boolean published, List<Comment> comments, Set<User> authors) {
         this.articleId = articleId;
         this.title = title;
         this.body = body;
         this.timestamp = timestamp;
+        this.published = published;
         this.comments = comments;
         this.authors = authors;
     }
@@ -87,12 +87,12 @@ public class Article implements Serializable
         this.timestamp = timestamp;
     }
 
-    public boolean getPublish() {
-        return publish;
+    public boolean getPublished() {
+        return published;
     }
 
-    public void setPublish(boolean publish) {
-        this.publish = publish;
+    public void setPublished(boolean published) {
+        this.published = published;
     }
 
     public List<Comment> getComments() {
@@ -134,7 +134,7 @@ public class Article implements Serializable
                 ", title='" + title + '\'' +
                 ", body='" + body + '\'' +
                 ", timestamp=" + timestamp +
-                ", isPublished=" + publish +
+                ", published=" + published +
                 '}';
     }
 }

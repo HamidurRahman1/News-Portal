@@ -2,6 +2,7 @@ package com.hamidur.ss.auth.services;
 
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.repos.UserRepository;
+import com.hamidur.ss.exceptions.custom.AccountDisabledException;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
@@ -97,6 +98,8 @@ public class UserService
         Optional<User> dbUser = userRepository.findById(user.getUserId());
         if(!dbUser.isPresent())
             throw new NotFoundException("No user found with userId="+user.getUserId());
+        else if(!dbUser.get().getEnabled())
+            throw new AccountDisabledException("User with userId="+user.getUserId()+" cannot be updated since account is not activated yet");
         else
         {
             try
@@ -106,7 +109,6 @@ public class UserService
                 user1.setLastName(user.getLastName());
                 user1.setUsername(user.getUsername());
                 user1.setPassword(passwordEncoder.encode(user.getPassword()));
-                user1.setEnabled(user.getEnabled());
                 return userRepository.save(user1);
             }
             catch (DataIntegrityViolationException ex)

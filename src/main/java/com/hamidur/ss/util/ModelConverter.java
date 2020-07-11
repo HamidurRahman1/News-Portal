@@ -24,7 +24,7 @@ public class ModelConverter
             articleDTO.setTitle(article1.getTitle());
             articleDTO.setBody(article1.getBody());
             articleDTO.setTimestamp(article1.getTimestamp());
-            articleDTO.setPublish(article1.getPublish());
+            articleDTO.setPublished(article1.getPublished());
             if(!article1.getAuthors().isEmpty())
                 articleDTO.setAuthors(article1.getAuthors().stream().map(user -> new UserDTO(user.getUserId(), user.getFirstName(), user.getLastName(), null, null, null, null)).collect(Collectors.toSet()));
             return articleDTO;
@@ -55,7 +55,7 @@ public class ModelConverter
 
     public Set<ArticleDTO> articlesToJustDTOArticles(Set<Article> articles)
     {
-        return articles.stream().map(obj -> new ArticleDTO(obj.getArticleId(), obj.getTitle(), obj.getBody(), obj.getTimestamp(), obj.getPublish(), null, null)).collect(Collectors.toSet());
+        return articles.stream().map(obj -> new ArticleDTO(obj.getArticleId(), obj.getTitle(), obj.getBody(), obj.getTimestamp(), obj.getPublished(), null, null)).collect(Collectors.toSet());
     }
 
     public CommentDTO commentToDTOComment(Comment comment)
