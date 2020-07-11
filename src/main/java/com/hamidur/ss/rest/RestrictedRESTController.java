@@ -44,14 +44,16 @@ public class RestrictedRESTController
     private final CommentService commentService;
     private final UserService userService;
     private final ModelConverter modelConverter;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public RestrictedRESTController(final ArticleService articleService, final CommentService commentService,
-                                    final UserService userService, final ModelConverter modelConverter) {
+                                    final UserService userService, final ModelConverter modelConverter, final ModelMapper modelMapper) {
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
         this.modelConverter = modelConverter;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,16 +98,18 @@ public class RestrictedRESTController
         return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> insertArticle(@Valid @RequestBody Article article)
+    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ArticleDTO> insertArticle(@Valid @RequestBody ArticleDTO articleDTO)
     {
-        return new ResponseEntity<>(articleService.insertArticle(article), HttpStatus.CREATED);
+        Article article = modelMapper.map(articleDTO, Article.class);
+        ArticleDTO articleDTO1 = modelMapper.map(articleService.insertArticle(article), ArticleDTO.class);
+        return new ResponseEntity<>(articleDTO1, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/insert/comment/article", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> insertCommentByArticleId(@Valid @RequestBody Comment comment)
+    @PostMapping(value = "/insert/comment/article/{articleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId, @Valid @RequestBody Comment comment)
     {
-        if(commentService.insertComment(comment))
+        if(commentService.insertComment(articleId, comment))
             return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

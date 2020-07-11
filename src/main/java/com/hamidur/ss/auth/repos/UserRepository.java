@@ -40,7 +40,8 @@ public interface UserRepository extends CrudRepository<User, Integer>
     @Query(nativeQuery = true, value = "delete from users_roles where user_id = (:id); delete from users where user_id = (:id)")
     int deleteUserById(@Param("id")Integer userId);
 
-    @Query(nativeQuery = true, value = "select author_id from authors where user_id = :id")
+    @Query(nativeQuery = true, value = "select user_id from users u inner join users_roles ur on u.user_id = ur.user_id" +
+            " and ur.role_id = (select role_id from roles where role = 'AUTHOR')")
     Integer isUserAnAuthor(@Param("id")Integer userId);
 
     @Transactional
@@ -61,4 +62,11 @@ public interface UserRepository extends CrudRepository<User, Integer>
             "select * from users u inner join users_roles ur on u.user_id = ur.user_id" +
             " and u.user_id = (:userId) and ur.role_id = (select role_id from roles where role = 'AUTHOR')")
     User getAuthorByUserId(@Param("userId") Integer userId);
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "insert into authors_articles (user_id, article_id) values " +
+            "((select user_id from users_roles where role_id = (select role_id from roles where role = 'AUTHOR') " +
+            "and user_id = (:userId)), (:articleId))")
+    void addArticleToAuthor(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
 }

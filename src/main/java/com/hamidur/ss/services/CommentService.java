@@ -21,13 +21,11 @@ public class CommentService
         this.commentRepository = commentRepository;
     }
 
-    public boolean insertComment(Comment comment) throws MissingAttribute, ConstraintViolationException
+    public boolean insertComment(Integer articleId, Comment comment) throws MissingAttribute, ConstraintViolationException
     {
         try
         {
-            if(comment.getArticle().getArticleId() == null)
-                throw new MissingAttribute("Comment must be associated with an article");
-            return commentRepository.insertComment(comment.getArticle().getArticleId(), comment.getComment()) >= 1;
+            return commentRepository.insertComment(articleId, comment.getComment()) >= 1;
         }
         catch (DataIntegrityViolationException ex)
         {

@@ -1,5 +1,6 @@
 package com.hamidur.ss.services;
 
+import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
 import com.hamidur.ss.dao.repos.ArticleRepository;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,10 +17,12 @@ import java.util.Set;
 public class ArticleService
 {
     private final ArticleRepository articleRepository;
+    private final UserService userService;
 
     @Autowired
-    public ArticleService(final ArticleRepository articleRepository) {
+    public ArticleService(final ArticleRepository articleRepository, final UserService userService) {
         this.articleRepository = articleRepository;
+        this.userService = userService;
     }
 
     public Set<Article> getArticlesBySubString(String text)
@@ -33,9 +37,20 @@ public class ArticleService
     public Article insertArticle(Article article) throws MissingAttribute
     {
         if(article.getAuthors() == null)
-            throw new MissingAttribute("At least 1 author must be associated with article. found="+null);
+            throw new MissingAttribute("At least 1 author must be associated with article. found=0");
 
-        return null;
+        Set<Integer> authorsIds = new HashSet<>();
+        article.getAuthors().forEach(obj -> authorsIds.add(obj.getUserId()));
+
+        authorsIds.forEach(userService::getAuthorByUserId);
+
+        article.setPublish(false);
+        article.setComments(null);
+        article.setAuthors(null);
+        Article savedArticle = articleRepository.save(article);
+
+        authorsIds.forEach(e -> userService.addArticleToAuthor(e, savedArticle.getArticleId()));
+        return savedArticle;
     }
 
     public Set<Article> getAllArticles() throws NotFoundException

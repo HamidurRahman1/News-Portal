@@ -26,6 +26,17 @@ public class UserService
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void addArticleToAuthor(Integer userId, Integer articleId) throws ConstraintViolationException
+    {
+        try{
+            userRepository.addArticleToAuthor(userId, articleId);
+        }
+        catch (DataIntegrityViolationException ex)
+        {
+            throw new ConstraintViolationException("Author is already associated with this Article or invalid userId/article given or user does not have Author role");
+        }
+    }
+
     public Set<User> getAllAuthors() throws NotFoundException
     {
         Set<User> authors = userRepository.getAllAuthors();

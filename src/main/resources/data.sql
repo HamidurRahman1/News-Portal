@@ -38,7 +38,7 @@ insert into articles (title, body, timestamp, is_published) values
 ('no author article title11', 'no author article body1', '1594336982542', true),
 ('no author article title1', 'no author article body2', '1594336982542', false);
 
-insert into authors_articles (author_id, article_id) values
+insert into authors_articles (user_id, article_id) values
 (10, 1), (8, 1), (6, 1),
 (10, 2), (7, 2),
 (6, 3), (8, 3),

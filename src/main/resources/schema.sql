@@ -34,10 +34,10 @@ create table articles
 
 create table authors_articles
 (
-  author_id int not null,
+  user_id int not null,
   article_id int not null,
-  primary key(author_id, article_id),
-  foreign key (author_id) references users(user_id),
+  primary key(user_id, article_id),
+  foreign key (user_id) references users(user_id),
   foreign key (article_id) references articles(article_id)
 );
 
