@@ -88,6 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
                 .authorizeRequests()
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/comment/{\\d+}").hasRole("USER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/*/article/{\\d+}").hasAnyRole("ADMIN", "PUBLISHER")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/user/{\\d+}").hasRole("USER")
                     .antMatchers(HttpMethod.DELETE, "/api/v1/r/delete/**").hasRole("ADMIN")
                     .antMatchers(HttpMethod.POST, "/api/v1/r/insert/comment/article/{\\d+}").hasRole("USER")
                     .antMatchers(HttpMethod.POST, "/api/v1/r/insert/article").hasAnyRole("ADMIN", "PUBLISHER")

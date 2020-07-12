@@ -71,10 +71,10 @@ This is for simplification
 |PUT| /update/article |  AD, E | updates an existing article's attributes, articleId must be present 
 |PUT| /update/comment |  U | updates an existing comment, commentId must be present
 |PATCH| /deactivate/user/{userId} |  U | deactivate/disable an existing account, userId must be specified
-|DELETE| /delete/author/{userId} |  AD | Detaches everything related to this Author along with <b>AUTHOR</b> role. Only UserDetails (personal info and login) are kept active with <b>USER</b> role.
+|DELETE| /delete/author/{userId} |  AD | <b>AUTHOR</b> role is revoked from the user specified by <b>{userId}</b>. Articles are also detached if there are any
 |DELETE| /delete/comment/{commentId} |  U | deletes a comment specified by <b>{commentId}</b> 
 |DELETE| /delete/published/article/{articleId} |  AD, P | deletes an already published article specified by <b>{articleId}</b>
 |DELETE| /delete/unpublished/article/{articleId} |  AD, P | deletes a non-published article specified by <b>{articleId}</b>
 |DELETE| /delete/user/{userId}/role/{roleId} |  AD | revoke a role specified by <b>{roleId}</b> from a user specified by <b>{userId}</b> 
-|DELETE| /delete/user/{userId} |  AD | deletes a user specified by <b>{userId}</b>
+|DELETE| /delete/user/{userId} |  U | deletes a user specified by <b>{userId}</b>
 <br>

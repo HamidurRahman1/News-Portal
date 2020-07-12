@@ -10,8 +10,8 @@ import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import com.hamidur.ss.services.ArticleService;
 import com.hamidur.ss.services.CommentService;
-
 import com.hamidur.ss.util.ModelConverter;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -153,10 +154,12 @@ public class RestrictedRESTController
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
+    @DeleteMapping(value = "/delete/author/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer userId)
     {
-        return new ResponseEntity<>(HttpStatus.OK);
+        if(userService.removeAuthorRole(userId))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/delete/comment/{commentId}")
@@ -167,20 +170,20 @@ public class RestrictedRESTController
         else throw new NotFoundException("No comment found with id="+commentId+" to delete");
     }
 
-    @DeleteMapping(value = "/delete/published/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/published/article/{articleId}")
     public ResponseEntity<Void> deletePublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
     {
         if(articleService.deletePublishedArticleById(articleId))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No article found with id="+articleId+" to delete");
+        else throw new NotFoundException("No published article found with id="+articleId+" to delete");
     }
 
-    @DeleteMapping(value = "/delete/unpublished/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/unpublished/article/{articleId}")
     public ResponseEntity<Void> deleteUnPublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
     {
         if(articleService.deleteUnpublishedArticleById(articleId))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No article found with id="+articleId+" to delete");
+        else throw new NotFoundException("No unpublished article found with id="+articleId+" to delete");
     }
 
     @DeleteMapping(value = "/delete/user/{userId}")

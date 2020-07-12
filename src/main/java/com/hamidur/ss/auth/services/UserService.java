@@ -85,10 +85,7 @@ public class UserService
 
     public boolean deleteUserById(Integer userId)
     {
-        Integer authorId = userRepository.isUserAnAuthor(userId);
-        if(authorId == null)
-            return userRepository.deleteUserById(userId) >= 1;
-        return userRepository.deleteAllInfoByUserId(authorId, userId) >= 1;
+        return userRepository.deleteUserById(userId) >= 1;
     }
 
     public User updateUser(User user) throws MissingAttribute, NotFoundException, ConstraintViolationException
@@ -137,5 +134,13 @@ public class UserService
         if(user == null)
             throw new NotFoundException("No author found with userId="+userId);
         return user;
+    }
+
+    public boolean removeAuthorRole(Integer userId)
+    {
+        User user = userRepository.getAuthorByUserId(userId);
+        if(user == null)
+            throw new NotFoundException("Author role cannot be revoked since User with userId="+userId+" does not have author role");
+        return userRepository.removeAuthorRole(userId) >= 1;
     }
 }

@@ -81,7 +81,7 @@ public class ArticleService
     {
         boolean existsById = articleRepository.existsById(articleId);
         if(!existsById) return false;
-        articleRepository.deleteUnPublishedArticleById(articleId);
+        articleRepository.deleteUnpublishedArticleById(articleId);
         return !articleRepository.existsById(articleId);
     }
 
@@ -93,7 +93,7 @@ public class ArticleService
         Optional<Article> optional = articleRepository.findById(article.getArticleId());
 
         if(!optional.isPresent())
-            throw new NotFoundException("Not article found with associated id="+article.getArticleId());
+            throw new NotFoundException("No article found with associated id="+article.getArticleId());
         else {
             Article article1 = optional.get();
             article1.setTitle(article.getTitle());
