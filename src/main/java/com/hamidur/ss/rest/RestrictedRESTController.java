@@ -3,12 +3,16 @@ package com.hamidur.ss.rest;
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
-import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.models.Comment;
+import com.hamidur.ss.dto.ArticleDTO;
+import com.hamidur.ss.dto.CommentDTO;
+import com.hamidur.ss.dto.UserDTO;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
 import com.hamidur.ss.services.ArticleService;
-import com.hamidur.ss.services.AuthorService;
 import com.hamidur.ss.services.CommentService;
+import com.hamidur.ss.util.ModelConverter;
+
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -35,92 +41,109 @@ import java.util.Set;
 @Validated
 public class RestrictedRESTController
 {
-    private final AuthorService authorService;
     private final ArticleService articleService;
     private final CommentService commentService;
     private final UserService userService;
+    private final ModelConverter modelConverter;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public RestrictedRESTController(final AuthorService authorService,
-                                    final ArticleService articleService,
-                                    final CommentService commentService,
-                                    final UserService userService) {
-        this.authorService = authorService;
+    public RestrictedRESTController(final ArticleService articleService, final CommentService commentService,
+                                    final UserService userService, final ModelConverter modelConverter, final ModelMapper modelMapper) {
         this.articleService = articleService;
         this.commentService = commentService;
         this.userService = userService;
+        this.modelConverter = modelConverter;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<User>> getAuthors()
+    public ResponseEntity<Set<UserDTO>> getAuthors()
     {
-        return new ResponseEntity<>(userService.getAllAuthors(), HttpStatus.OK);
+        Set<UserDTO> authors = modelConverter.usersToDTOUsers(userService.getAllAuthors());
+        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/articles/text")
-    public ResponseEntity<Set<Article>> searchArticle(@RequestParam("bodyContains") String subString)
+    @GetMapping(value = "/articles/text", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ArticleDTO>> searchArticle(@RequestParam("bodyContains") String subString)
     {
-        return new ResponseEntity<>(articleService.getArticlesBySubString(subString), HttpStatus.OK);
+        Set<ArticleDTO> articleDTOS = modelConverter.articlesToDTOArticles(articleService.getArticlesBySubString(subString));
+        return new ResponseEntity<>(articleDTOS, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Author> getAuthor(@PositiveOrZero @PathVariable Integer authorId)
+    @GetMapping(value = "/author/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> getAuthor(@PositiveOrZero @PathVariable Integer userId)
     {
-        return new ResponseEntity<>(authorService.getAuthorById(authorId), HttpStatus.OK);
+        User author = userService.getAuthorByUserId(userId);
+        UserDTO dtoAuthor = modelConverter.authorToDTOAuthor(author);
+        return new ResponseEntity<>(dtoAuthor, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/author/{authorId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Set<Article>> getArticlesByAuthorId(@PositiveOrZero @PathVariable Integer authorId)
+    @GetMapping(value = "/author/{userId}/articles", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<ArticleDTO>> getArticlesByAuthorId(@PositiveOrZero @PathVariable Integer userId)
     {
-        return new ResponseEntity<>(articleService.getArticlesByAuthorId(authorId), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.articlesToJustDTOArticles(articleService.getArticlesByAuthorId(userId)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/comment/{commentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
+    public ResponseEntity<CommentDTO> getCommentById(@PositiveOrZero @PathVariable Integer commentId)
     {
-        return new ResponseEntity<>(commentService.getCommentById(commentId), HttpStatus.OK);
+        return new ResponseEntity<>(modelConverter.commentToDTOComment(commentService.getCommentById(commentId)), HttpStatus.OK);
     }
 
     @PostMapping(value = "/insert/user/{userId}/role/{roleId}")
-    public ResponseEntity<Boolean> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
+    public ResponseEntity<Void> addRole(@PositiveOrZero @PathVariable Integer userId, @PositiveOrZero @PathVariable Integer roleId)
     {
         if(userService.addRole(userId, roleId))
-            return new ResponseEntity<>(true, HttpStatus.OK);
-        return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> insertArticle(@Valid @RequestBody Article article)
+    @PostMapping(value = "/insert/article", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ArticleDTO> insertArticle(@Valid @RequestBody ArticleDTO articleDTO)
     {
-        return new ResponseEntity<>(articleService.insertArticle(article), HttpStatus.CREATED);
+        Article article = modelMapper.map(articleDTO, Article.class);
+        ArticleDTO articleDTO1 = modelMapper.map(articleService.insertArticle(article), ArticleDTO.class);
+        return new ResponseEntity<>(articleDTO1, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/insert/comment/article", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> insertCommentByArticleId(@Valid @RequestBody Comment comment)
+    @PostMapping(value = "/insert/comment/article/{articleId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> insertCommentByArticleId(@PositiveOrZero @PathVariable Integer articleId, @Valid @RequestBody Comment comment)
     {
-        if(commentService.insertComment(comment))
+        if(commentService.insertComment(articleId, comment))
             return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping(value = "/update/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateUser(@Valid @RequestBody User user)
+    public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO)
     {
-        return new ResponseEntity<>(userService.updateUser(user), HttpStatus.OK);
+        User user = modelMapper.map(userDTO, User.class);
+        User updatedUser = userService.updateUser(user);
+        UserDTO response = modelMapper.map(updatedUser, UserDTO.class);
+        response.setArticles(null);
+        response.setRoles(null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/article", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Article> updateArticle(@Valid @RequestBody Article article)
+    public ResponseEntity<ArticleDTO> updateArticle(@Valid @RequestBody ArticleDTO articleDTO)
     {
-        return new ResponseEntity<>(articleService.updateArticle(article), HttpStatus.OK);
+        Article article = modelMapper.map(articleDTO, Article.class);
+        Article updatedArticle = articleService.updateArticle(article);
+        updatedArticle.setAuthors(null);
+        updatedArticle.setComments(null);
+        ArticleDTO updatedArticleDto = modelMapper.map(updatedArticle, ArticleDTO.class);
+        return new ResponseEntity<>(updatedArticleDto, HttpStatus.OK);
     }
 
     @PutMapping(value = "/update/comment", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateCommentById(@Valid @RequestBody Comment comment)
+    public ResponseEntity<Void> updateCommentById(@Valid @RequestBody CommentDTO commentDTO)
     {
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
         if(commentService.updateCommentByCommentId(comment))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No comment found with id="+comment.getCommentId()+" to update");
+        else throw new NotFoundException("No comment found with id="+commentDTO.getCommentId()+" to update");
     }
 
     @PatchMapping(value = "/deactivate/user/{userId}")
@@ -131,12 +154,12 @@ public class RestrictedRESTController
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping(value = "/delete/author/{authorId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer authorId)
+    @DeleteMapping(value = "/delete/author/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteAuthorById(@PositiveOrZero @PathVariable Integer userId)
     {
-        if(authorService.deleteAuthorById(authorId))
+        if(userService.removeAuthorRole(userId))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No author found with id="+authorId+" to delete");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/delete/comment/{commentId}")
@@ -147,20 +170,20 @@ public class RestrictedRESTController
         else throw new NotFoundException("No comment found with id="+commentId+" to delete");
     }
 
-    @DeleteMapping(value = "/delete/published/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/published/article/{articleId}")
     public ResponseEntity<Void> deletePublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
     {
         if(articleService.deletePublishedArticleById(articleId))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No article found with id="+articleId+" to delete");
+        else throw new NotFoundException("No published article found with id="+articleId+" to delete");
     }
 
-    @DeleteMapping(value = "/delete/unpublished/article/{articleId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/delete/unpublished/article/{articleId}")
     public ResponseEntity<Void> deleteUnPublishedArticleById(@PositiveOrZero @PathVariable Integer articleId)
     {
         if(articleService.deleteUnpublishedArticleById(articleId))
             return new ResponseEntity<>(HttpStatus.OK);
-        else throw new NotFoundException("No article found with id="+articleId+" to delete");
+        else throw new NotFoundException("No unpublished article found with id="+articleId+" to delete");
     }
 
     @DeleteMapping(value = "/delete/user/{userId}")

@@ -1,6 +1,6 @@
 package com.hamidur.ss.auth.models;
 
-import com.hamidur.ss.dao.models.Author;
+import com.hamidur.ss.dao.models.Article;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,11 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -30,41 +26,32 @@ public class User implements Serializable
     @Column(name = "user_id")
     private Integer userId;
 
-    @NotNull(message = "first name cannot be null")
-    @NotBlank(message = "first name cannot be empty")
-    @Size(min = 2, max = 50, message = "first name can only be in length of 2-50 characters")
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @NotBlank(message = "last name cannot be empty but optionally can be null")
-    @Size(min = 2, max = 50, message = "last name can only be in length of 2-50 characters, null allowed")
     @Column(name = "last_name", length = 50)
     private String lastName;
 
-    @NotNull(message = "username(email) cannot be null")
-    @NotBlank(message = "username(email) cannot be empty")
-    @Size(min = 5, max = 50, message = "username(email) must be in length of 5-60 characters")
     @Column(name = "username", nullable = false, unique = true, updatable = true, length = 60)
     private String username;
 
-    @NotNull(message = "password cannot be null")
-    @NotBlank(message = "password cannot be empty")
-    @Size(min = 5, max = 70, message = "password must be in length of 5-15 characters")
     @Column(name = "password", nullable = false, updatable = true, length = 70)
     private String password;
 
-    @NotNull(message = "enabled property cannot be null")
     @Column(name = "enabled", nullable = false, updatable = true)
     private boolean enabled;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Author author;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinTable(name = "authors_articles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "article_id"))
+    private Set<Article> articles;
 
     public User() {}
 
@@ -132,6 +119,14 @@ public class User implements Serializable
         this.roles = roles;
     }
 
+    public Set<Article> getArticles() {
+        return articles;
+    }
+
+    public void setArticles(Set<Article> articles) {
+        this.articles = articles;
+    }
+
     public User addRole(Role role)
     {
         if(this.roles == null)
@@ -147,14 +142,6 @@ public class User implements Serializable
             this.roles.remove(role);
         role.getUsers().remove(this);
         return this;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
     }
 
     @Override

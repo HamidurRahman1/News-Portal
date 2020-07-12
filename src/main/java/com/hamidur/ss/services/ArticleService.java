@@ -1,7 +1,7 @@
 package com.hamidur.ss.services;
 
+import com.hamidur.ss.auth.services.UserService;
 import com.hamidur.ss.dao.models.Article;
-import com.hamidur.ss.dao.models.Author;
 import com.hamidur.ss.dao.repos.ArticleRepository;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
@@ -17,12 +17,12 @@ import java.util.Set;
 public class ArticleService
 {
     private final ArticleRepository articleRepository;
-    private final AuthorService authorService;
+    private final UserService userService;
 
     @Autowired
-    public ArticleService(final ArticleRepository articleRepository, final AuthorService authorService) {
+    public ArticleService(final ArticleRepository articleRepository, final UserService userService) {
         this.articleRepository = articleRepository;
-        this.authorService = authorService;
+        this.userService = userService;
     }
 
     public Set<Article> getArticlesBySubString(String text)
@@ -37,33 +37,20 @@ public class ArticleService
     public Article insertArticle(Article article) throws MissingAttribute
     {
         if(article.getAuthors() == null)
-            throw new MissingAttribute("At least 1 author must be associated with article. found="+null);
+            throw new MissingAttribute("At least 1 author must be associated with article. found=0");
 
-        Set<Integer> authorIds = new HashSet<>();
-        for (Author author : article.getAuthors())
-            if(author.getAuthorId() != null) authorIds.add(author.getAuthorId());
+        Set<Integer> authorsIds = new HashSet<>();
+        article.getAuthors().forEach(obj -> authorsIds.add(obj.getUserId()));
 
-        if(authorIds.isEmpty())
-            throw new MissingAttribute("At least 1 author must be associated with article. found="+authorIds.size());
+        authorsIds.forEach(userService::getAuthorByUserId);
 
+        article.setPublished(false);
+        article.setComments(null);
+        article.setAuthors(null);
         Article savedArticle = articleRepository.save(article);
 
-        Iterable<Author> iterables = authorService.getAuthorsByIds(authorIds);
-
-        iterables.forEach(author ->
-        {
-            author.getArticles().add(savedArticle);
-            savedArticle.getAuthors().add(author);
-        });
-
-        authorService.saveAllAuthors(iterables);
-
-        Article responseArticle = new Article();
-        responseArticle.setArticleId(savedArticle.getArticleId());
-        responseArticle.setTitle(savedArticle.getTitle());
-        responseArticle.setBody(savedArticle.getBody());
-        responseArticle.setDateTime(savedArticle.getDateTime());
-        return responseArticle;
+        authorsIds.forEach(e -> userService.addArticleToAuthor(e, savedArticle.getArticleId()));
+        return savedArticle;
     }
 
     public Set<Article> getAllArticles() throws NotFoundException
@@ -94,7 +81,7 @@ public class ArticleService
     {
         boolean existsById = articleRepository.existsById(articleId);
         if(!existsById) return false;
-        articleRepository.deleteUnPublishedArticleById(articleId);
+        articleRepository.deleteUnpublishedArticleById(articleId);
         return !articleRepository.existsById(articleId);
     }
 
@@ -106,20 +93,19 @@ public class ArticleService
         Optional<Article> optional = articleRepository.findById(article.getArticleId());
 
         if(!optional.isPresent())
-            throw new NotFoundException("Not article found with associated id="+article.getArticleId());
+            throw new NotFoundException("No article found with associated id="+article.getArticleId());
         else {
             Article article1 = optional.get();
             article1.setTitle(article.getTitle());
             article1.setBody(article.getBody());
-            article1.setDateTime(article.getDateTime());
-            article1.setPublish(article.getPublish());
+            article1.setTimestamp(article.getTimestamp());
             return articleRepository.save(article1);
         }
     }
 
     public Set<Article> getAllArticlesWithNoAuthor() throws NotFoundException
     {
-        Set<Article> articles = articleRepository.getAllArticlesWithNoAuthor();
+        Set<Article> articles = articleRepository.getPublishedArticlesWithNoAuthor();
         if(articles == null || articles.isEmpty())
             throw new NotFoundException("No articles exists without author to return");
         return articles;

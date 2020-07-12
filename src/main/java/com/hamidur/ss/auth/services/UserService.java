@@ -2,6 +2,7 @@ package com.hamidur.ss.auth.services;
 
 import com.hamidur.ss.auth.models.User;
 import com.hamidur.ss.auth.repos.UserRepository;
+import com.hamidur.ss.exceptions.custom.AccountDisabledException;
 import com.hamidur.ss.exceptions.custom.ConstraintViolationException;
 import com.hamidur.ss.exceptions.custom.MissingAttribute;
 import com.hamidur.ss.exceptions.custom.NotFoundException;
@@ -26,6 +27,17 @@ public class UserService
         this.passwordEncoder = passwordEncoder;
     }
 
+    public void addArticleToAuthor(Integer userId, Integer articleId) throws ConstraintViolationException
+    {
+        try{
+            userRepository.addArticleToAuthor(userId, articleId);
+        }
+        catch (DataIntegrityViolationException ex)
+        {
+            throw new ConstraintViolationException("Author is already associated with this Article or invalid userId/article given or user does not have Author role");
+        }
+    }
+
     public Set<User> getAllAuthors() throws NotFoundException
     {
         Set<User> authors = userRepository.getAllAuthors();
@@ -40,9 +52,8 @@ public class UserService
         try
         {
             user.setEnabled(false);
-            User savedUser = userRepository.save(user);
-            userRepository.assignUserRole(savedUser.getUserId());
-            return userRepository.findById(savedUser.getUserId()).get();
+            userRepository.signUpWithUserRole(user.getFirstName(), user.getLastName(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled());
+            return userRepository.getUserByUsername(user.getUsername());
         }
         catch (DataIntegrityViolationException ex)
         {
@@ -74,10 +85,7 @@ public class UserService
 
     public boolean deleteUserById(Integer userId)
     {
-        Integer authorId = userRepository.isUserAnAuthor(userId);
-        if(authorId == null)
-            return userRepository.deleteUserById(userId) >= 1;
-        return userRepository.deleteAllInfoByUserId(authorId, userId) >= 1;
+        return userRepository.deleteUserById(userId) >= 1;
     }
 
     public User updateUser(User user) throws MissingAttribute, NotFoundException, ConstraintViolationException
@@ -87,6 +95,8 @@ public class UserService
         Optional<User> dbUser = userRepository.findById(user.getUserId());
         if(!dbUser.isPresent())
             throw new NotFoundException("No user found with userId="+user.getUserId());
+        else if(!dbUser.get().getEnabled())
+            throw new AccountDisabledException("User with userId="+user.getUserId()+" cannot be updated since account is not activated yet");
         else
         {
             try
@@ -96,7 +106,6 @@ public class UserService
                 user1.setLastName(user.getLastName());
                 user1.setUsername(user.getUsername());
                 user1.setPassword(passwordEncoder.encode(user.getPassword()));
-                user1.setEnabled(user.getEnabled());
                 return userRepository.save(user1);
             }
             catch (DataIntegrityViolationException ex)
@@ -117,5 +126,21 @@ public class UserService
             user.setEnabled(false);
             return !userRepository.save(user).getEnabled();
         }
+    }
+
+    public User getAuthorByUserId(Integer userId) throws NotFoundException
+    {
+        User user = userRepository.getAuthorByUserId(userId);
+        if(user == null)
+            throw new NotFoundException("No author found with userId="+userId);
+        return user;
+    }
+
+    public boolean removeAuthorRole(Integer userId)
+    {
+        User user = userRepository.getAuthorByUserId(userId);
+        if(user == null)
+            throw new NotFoundException("Author role cannot be revoked since User with userId="+userId+" does not have author role");
+        return userRepository.removeAuthorRole(userId) >= 1;
     }
 }
