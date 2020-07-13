@@ -19,7 +19,7 @@ fetch(publicEndPoints.articlesEndpoint)
 
 fetch(publicEndPoints.commentsEndpoint)
   .then(response => response.json())
-  .then(data => console.log(data))
+  .then(data => console.log(data));
 
 const createHTMLarticle = (article) => {
   let articleHTML = "";
@@ -29,4 +29,4 @@ const createHTMLarticle = (article) => {
   articleHTML += "<p class= \"_articlebody card-text\">" + article.body + "</p>";
   articleHTML += "</div>";
   _maindiv.insertAdjacentHTML('beforeend', articleHTML);
-}
+};

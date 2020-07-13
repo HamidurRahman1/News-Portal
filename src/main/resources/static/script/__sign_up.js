@@ -11,9 +11,9 @@ const enableSignUp = () => {
             username : formData.get("sign_email"),
             password : formData.get("sign_pass"),
             enabled : false
-        }
+        };
 
-        console.log(JSON.stringify(formObj))
+        console.log(JSON.stringify(formObj));
 
         fetch("http://localhost:8080/blogs/api/v1/public/user/signup", {
             headers: {
@@ -27,6 +27,6 @@ const enableSignUp = () => {
         .then(function(data){console.log(data)});
         console.log(formObj);
     })
-}
+};
 
 export {enableSignUp};
