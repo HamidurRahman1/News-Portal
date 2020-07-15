@@ -3,6 +3,7 @@ package com.hamidur.ss.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class RoleDTO implements Serializable
 {
@@ -34,6 +35,19 @@ public class RoleDTO implements Serializable
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RoleDTO)) return false;
+        RoleDTO roleDTO = (RoleDTO) o;
+        return Objects.equals(getRole(), roleDTO.getRole());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRole());
     }
 
     @Override

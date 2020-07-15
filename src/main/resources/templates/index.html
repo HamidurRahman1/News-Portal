@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>News Portal App 📖🗞</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="../static/css/style.css" />
   </head>
 
   <body>
     <header>
-      <nav
-        class="navbar navbar-expand-lg navbar-light bg-light justify-content-between"
-      >
+      <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
         <button
           class="navbar-toggler"
           type="button"
@@ -20,27 +18,16 @@
           data-target="#navbarNavAltMarkup"
           aria-controls="navbarNavAltMarkup"
           aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
+          aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <a class="navbar-brand" href="#">LOGO</a>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav ml-auto">
-            <button
-              class="btn btn-light nav-item button_act"
-              data-toggle="modal"
-              data-target="#signup_div"
-            >
+            <button class="btn btn-light nav-item button_act" data-toggle="modal" data-target="#signup_div">
               Sign Up
             </button>
-            <button
-              class="btn btn-light nav-item button_act"
-              data-toggle="modal"
-              data-target="#login_div"
-            >
-              Log In
-            </button>
+            <button class="btn btn-light nav-item button_act" data-toggle="modal" data-target="#login_div">Log In</button>
           </div>
         </div>
       </nav>
@@ -48,91 +35,45 @@
 
     <main class="m-3">
       <div class="container" id="app">
-        <div class="welcome_div">
-          <p class="line-1 welcome_inner anim-typewriter">
-            Welcome to News Portal App.
-          </p>
-        </div>
+        <p class="welcome_div"></p>
+        <p class="line-1 welcome_inner anim-typewriter">Welcome to News Portal App.</p>
       </div>
 
-      <!-- Modal -->
       <div id="signup_div" class="modal fade" role="dialog">
         <div class="modal-dialog">
-          <!-- Modal content-->
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">
-                &times;
-              </button>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h4 class="modal-title">Sign Up Form</h4>
             </div>
             <div class="modal-body">
-              <!-- First Name, Last Name, Password, email -->
-              <form class=" " id="signup_form" action="">
+              <form class=" " id="signup_form" th:action="@{/s/signup}" th:object="${userSignup}" method="post">
                 <div class="form-group">
                   <label for="userfirst">First name:</label>
-                  <input
-                    class="form-control"
-                    type="text"
-                    id="userfirst"
-                    name="userfirst"
-                    required
-                  />
+                  <input class="form-control" type="text" id="userfirst" name="userfirst" th:field="*{firstName}"/>
                 </div>
                 <div class="form-group">
                   <label for="userlast">Last name:</label>
-                  <input
-                    class="form-control"
-                    type="text"
-                    id="userlast"
-                    name="userlast"
-                    required
-                  />
+                  <input class="form-control" type="text" id="userlast" name="userlast" th:field="*{lastName}"/>
                 </div>
                 <div class="form-group">
                   <label for="sign_email">Email:</label>
-                  <input
-                    class="form-control"
-                    type="email"
-                    id="sign_email"
-                    name="sign_email"
-                    required
-                  />
+                  <input class="form-control" type="email" id="sign_email" name="sign_email" th:field="*{username}"/>
                 </div>
                 <div class="form-group">
                   <label for="sign_pass">Password:</label>
-                  <input
-                    class="form-control"
-                    type="password"
-                    id="sign_pass"
-                    name="sign_pass"
-                    required
-                  />
-                  <!-- <label for="userpass_v" class="for">Verify Password:</label>
-                  <input
-                    class="form-control"
-                    type="password"
-                    id="sign_pass_ver"
-                    required
-                  /> -->
+                  <input class="form-control" type="password" id="sign_pass" name="sign_pass" th:field="*{password}"/>
                 </div>
-                <button
-                  id="signup_button"
-                  type="submit"
-                  class="btn btn-primary ml-auto"
-                >
-                  Sign Up
-                </button>
+                <button id="signup_button" type="submit" class="btn btn-primary ml-auto">Sign Up</button>
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">
-                Close
-              </button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
       </div>
+
 
       <div id="login_div" class="modal fade" role="dialog">
         <div class="modal-dialog">
@@ -144,35 +85,23 @@
               </button>
               <h4 class="modal-title">Log In Form</h4>
             </div>
+
+
             <div class="modal-body">
-              <form id="login_form" action="">
+              <form th:action="@{/user-dash}" th:object="${login}" method="post" id="login_form">
                 <div class="form-group">
-                  <label for="log_email">Email</label>
-                  <input
-                    class="form-control"
-                    type="text"
-                    name="log_email"
-                    id="log_email"
-                  />
+                  <label for="username">Email</label>
+                  <input class="form-control" type="text" name="username" id="username" th:field="*{username}"/>
                 </div>
                 <div class="form-group">
-                  <label for="log_pass">Password:</label>
-                  <input
-                    class="form-control"
-                    type="password"
-                    name="log_pass"
-                    id="log_pass"
-                  />
+                  <label for="password">Password</label>
+                  <input class="form-control" type="password" name="password" id="password" th:field="*{password}"/>
                 </div>
-                <button
-                  id="login_button"
-                  type="submit"
-                  class="btn btn-primary ml-auto"
-                >
-                  Log In
-                </button>
+                <button id="login_button" type="submit" class="btn btn-primary ml-auto">Log In</button>
               </form>
             </div>
+
+
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">
                 Close
@@ -199,6 +128,6 @@
       crossorigin="anonymous"
     ></script>
 
-    <script src="script/main.js" type="module"></script>
+    <script src="../static/script/main.js" type="module"></script>
   </body>
 </html>
