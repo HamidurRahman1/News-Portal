@@ -44,8 +44,8 @@
 
                         table.appendChild(tr);
                     }
-                    document.getElementById("all-articles").innerHTML = "";
-                    document.getElementById("all-articles").appendChild(table);
+                    document.getElementById("results").innerHTML = "";
+                    document.getElementById("results").appendChild(table);
                 }
                 else{
                     if(key === 1) alert("failed to load all articles");
@@ -80,11 +80,49 @@
 
                         table.appendChild(tr);
                     }
-                    document.getElementById("all-comments").innerHTML = "";
-                    document.getElementById("all-comments").appendChild(table);
+                    document.getElementById("results").innerHTML = "";
+                    document.getElementById("results").appendChild(table);
                 }
                 else{
                     alert("failed to load all articles");
+                }
+            }
+        }
+
+        function loadCommentsByArticleId() {
+            var r = new XMLHttpRequest();
+            var articleId = document.getElementById("articleId").value;
+            console.log(articleId);
+            r.open("GET", "http://localhost:8080/blogs/api/v1/public/article/"+ articleId + "/comments");
+            r.send();
+            r.onload = function() {
+                if(r.status === 200)
+                {
+                    var json_data = JSON.parse((r.response));
+                    var table = document.createElement('table');
+
+                    for (var i in json_data){
+                        var tr = document.createElement('tr');
+
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+
+                        var text1 = document.createTextNode(json_data[i]['commentId']);
+                        var text2 = document.createTextNode(json_data[i]['comment']);
+
+                        td1.appendChild(text1);
+                        td2.appendChild(text2);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+
+                        table.appendChild(tr);
+                    }
+                    document.getElementById("results").innerHTML = "";
+                    document.getElementById("results").appendChild(table);
+                }
+                else{
+                    var error = JSON.parse((r.response));
+                    alert("failed to load comments with articleId="+articleId+"\nMessage: "+error['errorMessage']);
                 }
             }
         }
@@ -98,14 +136,16 @@
       <li><button onclick="loadArticles(1)">All Articles</button></li>
       <li><button onclick="loadArticles(2)">All Articles with No Author</button></li>
       <li><button onclick="loadAllComments()">All Comments</button></li>
-      <li><button>All Comments by Article Id</button><input onsubmit="" type="number" id="articleId" name="articleId" min="0"/><input type="submit"></li>
+      <li>
+          <label for="articleId">All Comments by Article Id</label>
+          <input type="number" id="articleId" name="articleId" min="0"/>
+          <button onclick="loadCommentsByArticleId()">submit</button>
+      </li>
     </ul>
 
     <hr>
 
-    <div id="all-articles"></div>
-    <div id="all-comments"></div>
-    <div id="all-articles-no-author"></div>
+    <div id="results"></div>
   </div>
   </body>
 </html>
