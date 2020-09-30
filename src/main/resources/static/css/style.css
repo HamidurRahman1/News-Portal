@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Galada&display=swap');
+
 body{
-  background-color: #046b8a;
+  background-color: whitesmoke;
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
 }
