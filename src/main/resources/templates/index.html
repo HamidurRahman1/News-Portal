@@ -151,12 +151,43 @@
                 }
             };
         }
+
+        function r_getAuthors() {
+            var token_;
+            var userName = "user1";
+            var passWord = "123Admin";
+            var caspioTokenUrl = "http://localhost:8080/blogs/api/v1/r/authors";
+            var request = new XMLHttpRequest();
+
+            function getToken(url, clientID, clientSecret) {
+                var key;
+                request.open("GET", url, true);
+                request.setRequestHeader("Content-type", "application/json");
+                request.send("grant_type=client_credentials&client_id="+clientID+"&"+"client_secret="+clientSecret);
+                request.onreadystatechange = function () {
+                    if (request.readyState === request.DONE) {
+                        var response = request.responseText;
+                        var obj = JSON.parse(response);
+                        key = obj.access_token;
+                        token_ = key;
+                        console.log(response.toString());
+                        alert(response.toString());
+                    }
+                    else {
+                        console.log(request.response.toString());
+                        alert(request.response.toString());
+                    }
+                }
+            }
+            getToken(caspioTokenUrl, userName, passWord);
+        }
     </script>
   </head>
 
   <body>
 
   <div id="public-api">
+    <div>Public APIs</div>
     <ul>
       <li><button onclick="loadArticles(1)">All Articles</button></li>
       <li><button onclick="loadArticles(2)">All Articles with No Author</button></li>
@@ -179,6 +210,16 @@
     <hr>
 
     <div id="results"></div>
+  </div>
+
+  <div id="protected-api">
+    <div id="p-get">
+      <ul>
+        <li>
+          <button onclick="r_getAuthors()">All Authors</button>
+        </li>
+      </ul>
+    </div>
   </div>
   </body>
 </html>

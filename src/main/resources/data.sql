@@ -19,7 +19,7 @@ insert into roles (role) values
 ('USER');
 
 insert into users_roles (user_id, role_id) values
-(1, 1), (1, 2), (1, 3), (1, 5),
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5),
 (2, 2), (2, 4), (2, 5),
 (3, 3), (3, 4), (3, 5),
 (4, 5),
