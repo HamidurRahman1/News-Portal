@@ -157,34 +157,39 @@
             };
         }
 
-        function r_getAuthors() {
-            var token_;
-            var userName = "user1";
-            var passWord = "123Admin";
-            var caspioTokenUrl = "http://localhost:8080/blogs/api/v1/r/authors";
-            var request = new XMLHttpRequest();
+        function checkLogin() {
+            var userName = document.getElementById("p-username").value;
+            var passWord = document.getElementById("p-password").value;
+            if(userName.length < 5 || passWord.length < 5)
+            {
+                alert("please use right credentials to make the call");
+                return false;
+            }
+            return [userName, passWord];
+        }
 
-            function getToken(url, clientID, clientSecret) {
-                var key;
+        function r_getAuthors() {
+            var fields = checkLogin();
+            if(fields === true)
+            {
+                var url = "http://localhost:8080/blogs/api/v1/r/authors";
+                var request = new XMLHttpRequest();
+
                 request.open("GET", url, true);
                 request.setRequestHeader("Content-type", "application/json");
-                request.send("grant_type=client_credentials&client_id="+clientID+"&"+"client_secret="+clientSecret);
-                request.onreadystatechange = function () {
+                request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+                request.send();
+                request.onload = function () {
                     if (request.readyState === request.DONE) {
                         var response = request.responseText;
                         var obj = JSON.parse(response);
-                        key = obj.access_token;
-                        token_ = key;
                         console.log(response.toString());
-                        alert(response.toString());
                     }
                     else {
-                        console.log(request.response.toString());
                         alert(request.response.toString());
                     }
-                }
+                };
             }
-            getToken(caspioTokenUrl, userName, passWord);
         }
     </script>
   </head>
@@ -262,6 +267,11 @@
       <ul>
         <li>
           <button onclick="r_getAuthors()">All Authors</button>
+        </li>
+        <li>
+          <label for="bodyContains">Article body contains: </label>
+          <input id="bodyContains" type="text">
+          <button onclick="r_bodyContains()">Submit</button>
         </li>
       </ul>
     </div>
