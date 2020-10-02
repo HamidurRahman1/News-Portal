@@ -10,14 +10,17 @@
 	</parent>
 
 	<groupId>com.hamidur</groupId>
-	<artifactId>springSecurity</artifactId>
+	<artifactId>np</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>springSecurity</name>
-	<description>Demo project for Spring Security with Spring Boot</description>
+	<name>News Portal</name>
+	<description>News Portal - Demo project for Spring Security with Spring Boot</description>
 
 	<properties>
 		<java.version>1.8</java.version>
 		<mysql.version>8.0.16</mysql.version>
+		<maven.compiler.target>9</maven.compiler.target>
+		<maven.compiler.source>9</maven.compiler.source>
+		<junit.jupiter.version>5.4.2</junit.jupiter.version>
 	</properties>
 
 	<dependencies>
@@ -65,6 +68,52 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>2.3.3.RELEASE</version>
+		</dependency>
+
+		<!--Test-->
+		<dependency>
+			<!--JUnit5 platform-->
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<!--Jupiter API to run tests-->
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<!--For ParameterizedTest-->
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.21.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<version>2.23.4</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
