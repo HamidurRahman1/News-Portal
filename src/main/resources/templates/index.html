@@ -3,7 +3,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>News Portal App 📖🗞</title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
         table, tr, td, th {
             border: 1px solid black;
@@ -170,7 +169,7 @@
 
         function r_getAuthors() {
             var fields = checkLogin();
-            if(fields === true)
+            if(fields !== false)
             {
                 var url = "http://localhost:8080/blogs/api/v1/r/authors";
                 var request = new XMLHttpRequest();
@@ -189,6 +188,43 @@
                         alert(request.response.toString());
                     }
                 };
+            }
+        }
+
+        function r_bodyContains()
+        {
+            var fields = checkLogin();
+            if(fields !== false)
+            {
+                var queryString = document.getElementById("bodyContains").value;
+
+                if(queryString.length < 1 || !queryString.match(/^[A-Za-z ]+$/))
+                {
+                    alert("string must be alphabetic characters");
+                    return;
+                }
+                else
+                {
+                    var url = "http://localhost:8080/blogs/api/v1/r/authors";
+                    var request = new XMLHttpRequest();
+
+                    request.open("GET", url, true);
+                    request.setRequestHeader("Content-type", "application/json");
+                    request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+                    request.send();
+                    request.onload = function () {
+                        if (request.readyState === request.DONE) {
+                            var response = request.responseText;
+                            var obj = JSON.parse(response);
+                            console.log(response.toString());
+                            alert(response.toString());
+                        }
+                        else {
+                            console.log(request.response.toString());
+                            alert(request.response.toString());
+                        }
+                    }
+                }
             }
         }
     </script>
