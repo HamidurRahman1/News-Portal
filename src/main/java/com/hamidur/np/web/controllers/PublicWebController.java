@@ -11,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +27,6 @@ public class PublicWebController
     public PublicWebController(final DaoAuthenticationProvider daoAuthenticationProvider, final ModelMapper modelMapper) {
         this.daoAuthenticationProvider = daoAuthenticationProvider;
         this.modelMapper = modelMapper;
-    }
-
-    @GetMapping(value = {"/", "/index.html", "/home", "/index"})
-    public String index(Model model)
-    {
-        model.addAttribute("login", new LoginDTO());
-        model.addAttribute("userSignup", new UserDTO());
-        return "index";
     }
 
     @PostMapping(value = "/user-dash")
