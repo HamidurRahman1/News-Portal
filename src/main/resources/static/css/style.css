@@ -5,27 +5,8 @@ body{
   font-size: 18px;
 }
 
-.welcome_div{
-  width: 100vh;
-  height: 80vh;
-  margin: 0 auto;
-  text-align: center;
-}
-
-
-.line-1{
-  position: relative;
-  top: 50%;  
-  width: 24em;
-  margin: 0 auto;
-  border-right: 2px solid rgba(255,255,255,.75);
-  font-family: 'Galada', cursive;
-  color: white;
-  font-size: 300%;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  transform: translateY(-50%);    
+table, tr, td, th {
+  border: 1px solid black;
 }
 
 /* Animation */
