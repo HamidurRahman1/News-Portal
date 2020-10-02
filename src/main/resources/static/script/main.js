@@ -188,14 +188,14 @@ function r_bodyContains()
     {
         var queryString = document.getElementById("bodyContains").value;
 
-        if(queryString.length < 1 || !queryString.match(/^[A-Za-z ]+$/))
+        if(queryString.length < 1 || !queryString.match(/^[A-Za-z0-9]+$/))
         {
             alert("string must be alphabetic characters");
             return;
         }
         else
         {
-            var url = "http://localhost:8080/blogs/api/v1/r/authors";
+            var url = "http://localhost:8080/blogs/api/v1/r/articles/text?bodyContains="+queryString;
             var request = new XMLHttpRequest();
 
             request.open("GET", url, true);
