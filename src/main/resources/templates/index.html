@@ -4,6 +4,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>News Portal App 📖🗞</title>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        table, tr, td, th {
+            border: 1px solid black;
+        }
+    </style>
     <script>
         function loadArticles(key) {
             var r = new XMLHttpRequest();
@@ -213,6 +218,46 @@
   </div>
 
   <div id="protected-api">
+    <div id="logins">
+      <table>
+        <tr>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Roles</th>
+        </tr>
+        <tr>
+          <td>user1</td>
+          <td>123Admin</td>
+          <td>ADMIN,PUBLISHER,EDITOR,AUTHOR,USER</td>
+        </tr>
+        <tr>
+          <td>user2</td>
+          <td>123Publisher</td>
+          <td>PUBLISHER,USER</td>
+        </tr>
+        <tr>
+          <td>user3</td>
+          <td>123Editor</td>
+          <td>EDITOR,AUTHOR,USER</td>
+        </tr>
+        <tr>
+          <td>user4</td>
+          <td>123Author</td>
+          <td>AUTHOR,USER</td>
+        </tr>
+        <tr>
+          <td>user5</td>
+          <td>123User</td>
+          <td>USER</td>
+        </tr>
+      </table>
+    </div>
+    &nbsp;
+    <div>
+      <label for="p-username">Username:</label><input type="text" id="p-username">
+      <label for="p-password">Password:</label><input type="text" id="p-password">
+    </div>
+    &nbsp;
     <div id="p-get">
       <ul>
         <li>
