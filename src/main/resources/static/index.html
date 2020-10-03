@@ -16,7 +16,7 @@
         <li><button onclick="loadAllComments()">All Comments</button></li>
         <li>
             <label for="articleId">All Comments by Article Id</label>
-            <input type="number" id="articleId" name="articleId" min="0"/>
+            <input type="number" id="articleId" name="articleId" min="0" required />
             <button onclick="loadCommentsByArticleId()">submit</button>
         </li>
         <li>
@@ -82,13 +82,13 @@
           </li>
           <li>
             <label for="bodyContains">Article body contains: </label>
-            <input id="bodyContains" type="text">
+            <input id="bodyContains" type="text" required />
             <button onclick="r_bodyContains()">Submit</button>
           </li>
           <li>
-            <label for="authorId">All Articles by Author Id</label>
-            <input type="number" id="authorId" name="authorId" min="0"/>
-            <button onclick="loadArticlesByAuthorId()">submit</button>
+            <label for="authorId">Author Info by Author Id: </label>
+            <input type="number" id="authorId" name="authorId" min="0" required />
+            <button onclick="loadAuthorByAuthorId()">submit</button>
           </li>
         </ul>
       </div>
