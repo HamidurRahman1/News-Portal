@@ -191,74 +191,6 @@ function loadArticlesByAuthorId() {
     }
 }
 
-function loadAuthorByAuthorId()
-{
-    var fields = validateLoginFields();
-    if(fields !== false)
-    {
-        var authorId = document.getElementById("authorId").value.trim();
-        if(!validateIdField(authorId))
-        {
-            alert("Invalid input found in the ID field found=" + authorId);
-            return;
-        }
-        var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/blogs/api/v1/r/author/"+ authorId);
-        request.setRequestHeader("Content-type", "application/json");
-        request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
-        request.send();
-        request.onload = function()
-        {
-            if(request.status === 200)
-            {
-                var json_data = JSON.parse((request.response));
-
-                console.log(json_data);
-
-                var table = document.createElement('table');
-
-                var tr = document.createElement('tr');
-
-                var td1 = document.createElement('td');
-                var td2 = document.createElement('td');
-                var td3 = document.createElement('td');
-                var td4 = document.createElement('td');
-
-                var text1 = document.createTextNode(json_data['userId']);
-                var text2 = document.createTextNode(json_data['firstName']);
-                var text3 = document.createTextNode(json_data['lastName']);
-                var text4 = document.createTextNode(json_data['enabled']);
-
-                td1.appendChild(text1);
-                td2.appendChild(text2);
-                td3.appendChild(text3);
-                td4.appendChild(text4);
-                tr.appendChild(td1);
-                tr.appendChild(td2);
-                tr.appendChild(td3);
-                tr.appendChild(td4);
-
-                table.appendChild(tr);
-                document.getElementById("results").innerHTML = "";
-                document.getElementById("results").appendChild(table);
-
-                var rolesTable = getRolesTable(json_data['roles']);
-                document.getElementById("results").appendChild(document.createElement("p"));
-                document.getElementById("results").appendChild(rolesTable);
-                document.getElementById("results").appendChild(document.createElement("p"));
-                var articleTable = authorSpecificArticles(json_data["articles"]);
-                if(articleTable !== undefined) document.getElementById("results").appendChild(articleTable);
-            }
-            else
-            {
-                var error = JSON.parse((request.response));
-                alert("failed to load author info with authorId="+authorId+"\n\nMessage: "
-                    +error['errorMessage']+"\nTime: "+error['timestamp']+"\nStatus: "+error['status']);
-            }
-        }
-    }
-}
-
 function doLogin() {
     var email = document.getElementById("loginEmail").value;
     var password = document.getElementById("loginPassword").value;
@@ -340,18 +272,111 @@ function r_bodyContains()
             request.setRequestHeader("Content-type", "application/json");
             request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
             request.send();
-            request.onload = function () {
-                if (request.readyState === request.DONE) {
+            request.onload = function ()
+            {
+                if (request.readyState === request.DONE)
+                {
                     var response = request.responseText;
                     var obj = JSON.parse(response);
                     console.log(response.toString());
                     alert(response.toString());
                 }
-                else {
-                    console.log(request.response.toString());
-                    alert(request.response.toString());
-                }
+                else alert(request.response.toString());
             }
+        }
+    }
+}
+
+function r_authorInfoByAuthorId()
+{
+    var fields = validateLoginFields();
+    if(fields !== false)
+    {
+        var authorId = document.getElementById("authorIdForInfo").value.trim();
+        if(!validateIdField(authorId))
+        {
+            alert("Invalid input found in the ID field found=" + authorId);
+            return;
+        }
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:8080/blogs/api/v1/r/author/"+ authorId);
+        request.setRequestHeader("Content-type", "application/json");
+        request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+        request.send();
+        request.onload = function()
+        {
+            if(request.status === 200)
+            {
+                var json_data = JSON.parse((request.response));
+
+                var table = document.createElement('table');
+
+                var tr = document.createElement('tr');
+
+                var td1 = document.createElement('td');
+                var td2 = document.createElement('td');
+                var td3 = document.createElement('td');
+                var td4 = document.createElement('td');
+
+                var text1 = document.createTextNode(json_data['userId']);
+                var text2 = document.createTextNode(json_data['firstName']);
+                var text3 = document.createTextNode(json_data['lastName']);
+                var text4 = document.createTextNode(json_data['enabled']);
+
+                td1.appendChild(text1);
+                td2.appendChild(text2);
+                td3.appendChild(text3);
+                td4.appendChild(text4);
+                tr.appendChild(td1);
+                tr.appendChild(td2);
+                tr.appendChild(td3);
+                tr.appendChild(td4);
+
+                table.appendChild(tr);
+                document.getElementById("results").innerHTML = "";
+                document.getElementById("results").appendChild(table);
+
+                var rolesTable = getRolesTable(json_data['roles']);
+                document.getElementById("results").appendChild(document.createElement("p"));
+                document.getElementById("results").appendChild(rolesTable);
+                document.getElementById("results").appendChild(document.createElement("p"));
+                var articleTable = authorSpecificArticles(json_data["articles"]);
+                if(articleTable !== undefined) document.getElementById("results").appendChild(articleTable);
+            }
+            else alert(request.response.toString());
+        }
+    }
+}
+
+function r_authorArticlesByAuthorId()
+{
+    // var fields = validateLoginFields();
+    var fields = ['user1', '123Admin'];
+    if(fields !== false)
+    {
+        var authorId = document.getElementById("authorIdForArticles").value.trim();
+        if(!validateIdField(authorId))
+        {
+            alert("Invalid input found in the ID field found=" + authorId);
+            return;
+        }
+        var request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:8080/blogs/api/v1/r/author/"+ authorId +"/articles");
+        request.setRequestHeader("Content-type", "application/json");
+        request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+        request.send();
+        request.onload = function()
+        {
+            if(request.status === 200)
+            {
+                var json_data = JSON.parse((request.response));
+
+                var table = authorSpecificArticles(json_data);
+
+                document.getElementById("results").innerHTML = "";
+                document.getElementById("results").appendChild(table);
+            }
+            else alert(request.response.toString());
         }
     }
 }
