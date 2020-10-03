@@ -11,20 +11,20 @@
     <div id="public-api">
       <div>Public APIs</div>
       <ul>
-        <li><button onclick="loadArticles(1)">All Articles</button></li>
-        <li><button onclick="loadArticles(2)">All Articles with No Author</button></li>
-        <li><button onclick="loadAllComments()">All Comments</button></li>
+        <li><button onclick="p_loadArticles(1)">All Articles</button></li>
+        <li><button onclick="p_loadArticles(2)">All Articles with No Author</button></li>
+        <li><button onclick="p_loadAllComments()">All Comments</button></li>
         <li>
-            <label for="articleId">All Comments by Article Id</label>
-            <input type="number" id="articleId" name="articleId" min="0" required />
-            <button onclick="loadCommentsByArticleId()">submit</button>
+            <label for="commentsByArticleId">All Comments by Article Id</label>
+            <input type="number" id="commentsByArticleId" name="commentsByArticleId" min="0" required />
+            <button onclick="p_loadCommentsByArticleId()">submit</button>
         </li>
         <li>
           <div>
-            <p>Login</p>
-              <label for="loginEmail">Email:</label><input type="text" name="loginEmail" id="loginEmail">
+            <p>Login Test</p>
+              <label for="loginUsername">Email:</label><input type="text" name="loginUsername" id="loginUsername">
               <label for="loginPassword">Password:</label><input type="password" id="loginPassword">
-              <input type="submit" onclick="doLogin()">
+              <input type="submit" onclick="p_doLogin()">
           </div>
         </li>
       </ul>
@@ -35,7 +35,7 @@
     </div>
 
     <div id="protected-api">
-      <div id="logins">
+      <div id="auth_logins">
         <table>
           <tr>
             <th>Username</th>
