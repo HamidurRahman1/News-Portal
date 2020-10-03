@@ -350,8 +350,7 @@ function r_authorInfoByAuthorId()
 
 function r_authorArticlesByAuthorId()
 {
-    // var fields = validateLoginFields();
-    var fields = ['user1', '123Admin'];
+    var fields = validateLoginFields();
     if(fields !== false)
     {
         var authorId = document.getElementById("authorIdForArticles").value.trim();
@@ -423,7 +422,7 @@ function authorSpecificArticles(jsonArticles)
             var text1 = document.createTextNode(jsonArticles[i]['articleId']);
             var text2 = document.createTextNode(jsonArticles[i]['title']);
             var text3 = document.createTextNode(jsonArticles[i]['body']);
-            var text4 = document.createTextNode(jsonArticles[i]['timestamp']);
+            var text4 = document.createTextNode(timestampToDateAMPM(jsonArticles[i]['timestamp']));
             var text5 = document.createTextNode(jsonArticles[i]['published']);
 
             td1.appendChild(text1);
@@ -441,4 +440,17 @@ function authorSpecificArticles(jsonArticles)
         }
         return table;
     }
+}
+
+function timestampToDateAMPM(timestamp)
+{
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var date = new Date(parseInt(timestamp) * 1000);
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return months[date.getMonth()] + " " + date.getDay() + ", " + hours + ':' + minutes + ':' + date.getSeconds() + ' ' + ampm;
 }
