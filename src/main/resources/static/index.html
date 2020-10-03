@@ -86,12 +86,12 @@
             <button onclick="r_bodyContains()">Submit</button>
           </li>
           <li>
-            <label for="authorIdForInfo">Author Info by Author Id: </label>
+            <label for="authorIdForInfo">Author Info by Author Id (same as User Id): -- NI --</label>
             <input type="number" id="authorIdForInfo" name="authorIdForInfo" min="0" required />
             <button onclick="r_authorInfoByAuthorId()">submit</button>
           </li>
           <li>
-            <label for="authorIdForArticles">All Articles by Author Id: </label>
+            <label for="authorIdForArticles">All Articles by Author Id (same as User Id): -- NI --</label>
             <input type="number" id="authorIdForArticles" name="authorIdForArticles" min="0" required />
             <button onclick="r_authorArticlesByAuthorId()">submit</button>
           </li>
@@ -99,6 +99,11 @@
             <label for="deleteCommentById">Delete a Comment by Comment Id: </label>
             <input type="number" id="deleteCommentById" name="deleteCommentById" min="0" required />
             <button onclick="r_deleteCommentByCommentId()">submit</button>
+          </li>
+          <li>
+            <label for="deleteUserById">Delete a User by User Id: </label>
+            <input type="number" id="deleteUserById" name="deleteUserById" min="0" required />
+            <button onclick="r_deleteUserByUserId()">submit</button>
           </li>
         </ul>
       </div>

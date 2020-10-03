@@ -388,7 +388,7 @@ function r_deleteCommentByCommentId()
         var commentId = document.getElementById("deleteCommentById").value.trim();
         if(!validateIdField(commentId))
         {
-            alert("Invalid input found in the ID field found=" + authorId);
+            alert("Invalid input found in the ID field found=" + commentId);
             return;
         }
         var request = new XMLHttpRequest();
@@ -399,6 +399,30 @@ function r_deleteCommentByCommentId()
         request.onload = function()
         {
             if(request.status === 200) alert("comment with id="+commentId+" has successfully been deleted.");
+            else alert(request.response.toString());
+        }
+    }
+}
+
+function r_deleteUserByUserId()
+{
+    var fields = validateLoginFields();
+    if(fields !== false)
+    {
+        var userId = document.getElementById("deleteUserById").value.trim();
+        if(!validateIdField(userId))
+        {
+            alert("Invalid input found in the ID field found=" + userId);
+            return;
+        }
+        var request = new XMLHttpRequest();
+        request.open("DELETE", "http://localhost:8080/blogs/api/v1/r/delete/user/"+ userId);
+        request.setRequestHeader("Content-type", "application/json");
+        request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+        request.send();
+        request.onload = function()
+        {
+            if(request.status === 200) alert("User with id="+userId+" has successfully been deleted.");
             else alert(request.response.toString());
         }
     }
