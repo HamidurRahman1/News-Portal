@@ -191,15 +191,15 @@ function loadArticlesByAuthorId() {
     }
 }
 
-function loadAuthorByAuthorId() {
-    // var fields = validateLoginFields();
-    var fields = ["user1", "123Admin"];
+function loadAuthorByAuthorId()
+{
+    var fields = validateLoginFields();
     if(fields !== false)
     {
         var authorId = document.getElementById("authorId").value.trim();
         if(!validateIdField(authorId))
         {
-            alert("Invalid input entered in the id field=" + authorId);
+            alert("Invalid input found in the ID field found=" + authorId);
             return;
         }
         var request = new XMLHttpRequest();
@@ -207,11 +207,14 @@ function loadAuthorByAuthorId() {
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
-        request.onload = function() {
+        request.onload = function()
+        {
             if(request.status === 200)
             {
                 var json_data = JSON.parse((request.response));
+
                 console.log(json_data);
+
                 var table = document.createElement('table');
 
                 var tr = document.createElement('tr');
@@ -242,10 +245,13 @@ function loadAuthorByAuthorId() {
                 var rolesTable = getRolesTable(json_data['roles']);
                 document.getElementById("results").appendChild(document.createElement("p"));
                 document.getElementById("results").appendChild(rolesTable);
+                document.getElementById("results").appendChild(document.createElement("p"));
+                var articleTable = authorSpecificArticles(json_data["articles"]);
+                if(articleTable !== undefined) document.getElementById("results").appendChild(articleTable);
             }
-            else{
+            else
+            {
                 var error = JSON.parse((request.response));
-                console.log(error);
                 alert("failed to load author info with authorId="+authorId+"\n\nMessage: "
                     +error['errorMessage']+"\nTime: "+error['timestamp']+"\nStatus: "+error['status']);
             }
@@ -371,4 +377,43 @@ function getRolesTable(jsonRoles)
         table.appendChild(tr);
     }
     return table;
+}
+
+function authorSpecificArticles(jsonArticles)
+{
+    if(jsonArticles.length !== 0)
+    {
+        var table = document.createElement('table');
+
+        for (var i in jsonArticles)
+        {
+            var tr = document.createElement('tr');
+
+            var td1 = document.createElement('td');
+            var td2 = document.createElement('td');
+            var td3 = document.createElement('td');
+            var td4 = document.createElement('td');
+            var td5 = document.createElement('td');
+
+            var text1 = document.createTextNode(jsonArticles[i]['articleId']);
+            var text2 = document.createTextNode(jsonArticles[i]['title']);
+            var text3 = document.createTextNode(jsonArticles[i]['body']);
+            var text4 = document.createTextNode(jsonArticles[i]['timestamp']);
+            var text5 = document.createTextNode(jsonArticles[i]['published']);
+
+            td1.appendChild(text1);
+            td2.appendChild(text2);
+            td3.appendChild(text3);
+            td4.appendChild(text4);
+            td5.appendChild(text5);
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tr.appendChild(td4);
+            tr.appendChild(td5);
+
+            table.appendChild(tr);
+        }
+        return table;
+    }
 }
