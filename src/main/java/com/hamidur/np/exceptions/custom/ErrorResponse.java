@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class ErrorResponse
 {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:np")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss a")
     private LocalDateTime timestamp;
     private String errorMessage;
     private int status;

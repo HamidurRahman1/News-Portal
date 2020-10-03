@@ -245,7 +245,9 @@ function loadAuthorByAuthorId() {
             }
             else{
                 var error = JSON.parse((request.response));
-                alert("failed to load author info with authorId="+authorId+"\nMessage: "+error['errorMessage']);
+                console.log(error);
+                alert("failed to load author info with authorId="+authorId+"\n\nMessage: "
+                    +error['errorMessage']+"\nTime: "+error['timestamp']+"\nStatus: "+error['status']);
             }
         }
     }
