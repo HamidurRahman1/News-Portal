@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.2.RELEASE</version>
+		<version>2.3.1.RELEASE</version>
 		<relativePath/>
 	</parent>
 
 	<groupId>com.hamidur</groupId>
-	<artifactId>np</artifactId>
+	<artifactId>NewsPortal</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>News Portal</name>
 	<description>News Portal - Demo project for Spring Security with Spring Boot</description>
@@ -21,14 +21,39 @@
 		<maven.compiler.target>9</maven.compiler.target>
 		<maven.compiler.source>9</maven.compiler.source>
 		<junit.jupiter.version>5.4.2</junit.jupiter.version>
+		<h2.version>1.4.200</h2.version>
+		<modelmapper.version>2.3.7</modelmapper.version>
+		<mockito.junit.jupiter.version>2.23.4</mockito.junit.jupiter.version>
+		<mockito.core.version>2.21.0</mockito.core.version>
+		<javax.validation.version>2.0.1.Final</javax.validation.version>
 	</properties>
 
 	<dependencies>
 
 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			<version>${h2.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>2.3.7</version>
+			<version>${modelmapper.version}</version>
+		</dependency>
+
+		<!--needed since 2.3.0-->
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax.validation.version}</version>
 		</dependency>
 
 		<dependency>
@@ -49,30 +74,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-			<version>1.4.200</version>
-		</dependency>
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>${mysql.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<version>2.3.3.RELEASE</version>
 		</dependency>
 
 		<!--Test-->
@@ -103,14 +104,14 @@
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.21.0</version>
+			<version>${mockito.core.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>2.23.4</version>
+			<version>${mockito.junit.jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 

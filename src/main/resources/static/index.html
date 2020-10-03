@@ -1,0 +1,102 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css">
+    <script src="script/main.js"></script>
+    <title>News Portal App 📖🗞</title>
+  </head>
+  <body>
+
+    <div id="public-api">
+      <div>Public APIs</div>
+      <ul>
+        <li><button onclick="loadArticles(1)">All Articles</button></li>
+        <li><button onclick="loadArticles(2)">All Articles with No Author</button></li>
+        <li><button onclick="loadAllComments()">All Comments</button></li>
+        <li>
+            <label for="articleId">All Comments by Article Id</label>
+            <input type="number" id="articleId" name="articleId" min="0" required />
+            <button onclick="loadCommentsByArticleId()">submit</button>
+        </li>
+        <li>
+          <div>
+            <p>Login</p>
+              <label for="loginEmail">Email:</label><input type="text" name="loginEmail" id="loginEmail">
+              <label for="loginPassword">Password:</label><input type="password" id="loginPassword">
+              <input type="submit" onclick="doLogin()">
+          </div>
+        </li>
+      </ul>
+
+      <hr>
+
+      <div id="results"></div>
+    </div>
+
+    <div id="protected-api">
+      <div id="logins">
+        <table>
+          <tr>
+            <th>Username</th>
+            <th>Password</th>
+            <th>Roles</th>
+          </tr>
+          <tr>
+            <td>user1</td>
+            <td>123Admin</td>
+            <td>ADMIN,PUBLISHER,EDITOR,AUTHOR,USER</td>
+          </tr>
+          <tr>
+            <td>user2</td>
+            <td>123Publisher</td>
+            <td>PUBLISHER,USER</td>
+          </tr>
+          <tr>
+            <td>user3</td>
+            <td>123Editor</td>
+            <td>EDITOR,AUTHOR,USER</td>
+          </tr>
+          <tr>
+            <td>user4</td>
+            <td>123Author</td>
+            <td>AUTHOR,USER</td>
+          </tr>
+          <tr>
+            <td>user5</td>
+            <td>123User</td>
+            <td>USER</td>
+          </tr>
+        </table>
+      </div>
+      &nbsp;
+      <div>
+        <label for="p-username">Username:</label><input type="text" id="p-username">
+        <label for="p-password">Password:</label><input type="text" id="p-password">
+      </div>
+      &nbsp;
+      <div id="p-get">
+        <ul>
+          <li>
+            <button onclick="r_getAuthors()">All Authors</button>
+          </li>
+          <li>
+            <label for="bodyContains">Article body contains: </label>
+            <input id="bodyContains" type="text" required />
+            <button onclick="r_bodyContains()">Submit</button>
+          </li>
+          <li>
+            <label for="authorIdForInfo">Author Info by Author Id: </label>
+            <input type="number" id="authorIdForInfo" name="authorIdForInfo" min="0" required />
+            <button onclick="r_authorInfoByAuthorId()">submit</button>
+          </li>
+          <li>
+            <label for="authorIdForArticles">All Author Articles by Author Id: </label>
+            <input type="number" id="authorIdForArticles" name="authorIdForArticles" min="0" required />
+            <button onclick="r_authorArticlesByAuthorId()">submit</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
