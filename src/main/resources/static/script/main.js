@@ -22,7 +22,7 @@ function loadArticles(key) {
                 var text1 = document.createTextNode(json_data[i]['articleId']);
                 var text2 = document.createTextNode(json_data[i]['title']);
                 var text3 = document.createTextNode(json_data[i]['body']);
-                var text4 = document.createTextNode(json_data[i]['timestamp']);
+                var text4 = document.createTextNode(timestampToDateAMPM(json_data[i]['timestamp']));
                 var text5 = document.createTextNode(json_data[i]['published']);
 
                 td1.appendChild(text1);
@@ -375,6 +375,30 @@ function r_authorArticlesByAuthorId()
                 document.getElementById("results").innerHTML = "";
                 document.getElementById("results").appendChild(table);
             }
+            else alert(request.response.toString());
+        }
+    }
+}
+
+function r_deleteCommentByCommentId()
+{
+    var fields = validateLoginFields();
+    if(fields !== false)
+    {
+        var commentId = document.getElementById("deleteCommentById").value.trim();
+        if(!validateIdField(commentId))
+        {
+            alert("Invalid input found in the ID field found=" + authorId);
+            return;
+        }
+        var request = new XMLHttpRequest();
+        request.open("DELETE", "http://localhost:8080/blogs/api/v1/r/delete/comment/"+ commentId);
+        request.setRequestHeader("Content-type", "application/json");
+        request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
+        request.send();
+        request.onload = function()
+        {
+            if(request.status === 200) alert("comment with id="+commentId+" has successfully been deleted.");
             else alert(request.response.toString());
         }
     }
