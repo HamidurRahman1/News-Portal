@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -25,6 +26,16 @@
               <label for="loginUsername">Email:</label><input type="text" name="loginUsername" id="loginUsername">
               <label for="loginPassword">Password:</label><input type="password" id="loginPassword">
               <input type="submit" onclick="p_doLogin()">
+          </div>
+        </li>
+        <li>
+          <div>
+            <p>Sign Up</p>
+            <label for="signUpFirstName">First Name:</label><input type="text" id="signUpFirstName" maxlength="50" minlength="2" required ><br>
+            <label for="signUpLastName">Last Name:</label><input type="text" id="signUpLastName" maxlength="50" minlength="2" required ><br>
+            <label for="signUpUsername">Email/Username:</label><input type="text" id="signUpUsername" minlength="5" maxlength="60" required ><br>
+            <label for="signUpPassword">Password:</label><input type="password" id="signUpPassword" minlength="5" maxlength="15" required ><br>
+            <button onclick="p_doSignUp()">Submit</button>
           </div>
         </li>
       </ul>

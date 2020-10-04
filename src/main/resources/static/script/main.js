@@ -5,6 +5,11 @@ var LOGIN_PASSWORD_LOC = "loginPassword";
 var AUTH_USERNAME_LOC = "p-username";
 var AUTH_PASSWORD_LOC = "p-password";
 
+var SIGN_UP_FN_LOC = "signUpFirstName";
+var SIGN_UP_LN_LOC = "signUpLastName";
+var SIGN_UP_USERNAME_LOC = "signUpUsername";
+var SIGN_UP_PASSWORD_LOC = "signUpPassword";
+
 var COMMENTS_BY_ARTICLE_ID_LOC = "commentsByArticleId";
 var DELETE_USER_BY_ID_LOC = "deleteUserById";
 var DELETE_COMMENT_BY_COMMENT_ID_LOC = "deleteCommentById";
@@ -163,6 +168,35 @@ function p_doLogin()
     {
         if(request.status === 200) alert("login was success");
         else alert(request.response.toString());
+    }
+}
+
+function p_doSignUp()
+{
+    var allFields = validateSignUp();
+    if(allFields !== false)
+    {
+        var data = {
+            "firstName": allFields[0],
+            "lastName": allFields[1],
+            "username": allFields[2],
+            "password": allFields[3]
+        };
+
+        var request = new XMLHttpRequest();
+        request.open("POST", "http://localhost:8080/blogs/api/v1/public/user/signup", true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.setRequestHeader('Accept', 'application/json');
+        request.send(JSON.stringify(data));
+        request.onload = function ()
+        {
+            if(request.status === 200)
+            {
+                alert("sign up was success");
+                console.log(request.response.toString());
+            }
+            else alert(request.response.toString());
+        }
     }
 }
 
@@ -460,4 +494,23 @@ function validateLoginFields(usernameLoc, passwordLoc)
         return false;
     }
     return [username, password];
+}
+
+function validateSignUp()
+{
+    var firstName = document.getElementById(SIGN_UP_FN_LOC).value.trim();
+    var lastName = document.getElementById(SIGN_UP_LN_LOC).value.trim();
+    var username = document.getElementById(SIGN_UP_USERNAME_LOC).value.trim();
+    var password = document.getElementById(SIGN_UP_PASSWORD_LOC).value.trim();
+    if(firstName.length < 2 || lastName.length < 2)
+    {
+        alert("first name, last name must have length of 2-45");
+        return false;
+    }
+    if(username.length < 5 || password.length < 5)
+    {
+        alert("username, password must have length of 5-20, 5-15");
+        return false;
+    }
+    return [firstName, lastName, username, password];
 }
