@@ -20,6 +20,11 @@ var AUTHOR_ID_FOR_INFO_LOC = "authorIdForInfo";
 var BODY_CONTAINS_LOC = "bodyContains";
 var RESULTS_LOC = "results";
 
+var ARTICLE_HEADER = ['Article ID', 'Title', 'Body', 'Date', 'Published'];
+var COMMENT_HEADER = ['Comment ID', 'Comment'];
+var USER_INFO_HEADER = ['Author ID', 'First Name', 'Last Name', 'Enabled'];
+var ROLE_HEADER = ['Role ID', 'Role'];
+
 
 function p_loadArticles(key)
 {
@@ -33,6 +38,8 @@ function p_loadArticles(key)
         {
             var json_data = JSON.parse((request.response));
             var table = document.createElement('table');
+
+            table.appendChild(headerRowForArticles());
 
             for (var i in json_data){
                 var tr = document.createElement('tr');
@@ -85,6 +92,8 @@ function p_loadAllComments()
             var json_data = JSON.parse((request.response));
             var table = document.createElement('table');
 
+            table.appendChild(headerRowForComments());
+
             for (var i in json_data){
                 var tr = document.createElement('tr');
 
@@ -125,6 +134,8 @@ function p_loadCommentsByArticleId()
         {
             var json_data = JSON.parse((request.response));
             var table = document.createElement('table');
+
+            table.appendChild(headerRowForComments());
 
             for (var i in json_data)
             {
@@ -281,6 +292,8 @@ function r_authorInfoByAuthorId()
 
                 var table = document.createElement('table');
 
+                table.appendChild(headerRowForInfo());
+
                 var tr = document.createElement('tr');
 
                 var td1 = document.createElement('td');
@@ -401,7 +414,7 @@ function r_deleteUserByUserId()
 function getRolesTable(jsonRoles)
 {
     var table = document.createElement('table');
-
+    table.appendChild(headerRowForRoles());
     for (var i in jsonRoles)
     {
         var tr = document.createElement('tr');
@@ -427,6 +440,8 @@ function tableForArticles(jsonArticles)
     if(jsonArticles.length !== 0)
     {
         var table = document.createElement('table');
+
+        table.appendChild(headerRowForArticles());
 
         for (var i in jsonArticles)
         {
@@ -509,4 +524,64 @@ function validateSignUp()
         return false;
     }
     return [firstName, lastName, username, password];
+}
+
+function headerRowForArticles()
+{
+    var headerRow = document.createElement("tr");
+
+    for(var i = 0; i < 5; i++)
+    {
+        var thr = document.createElement("th");
+        var text = document.createTextNode(ARTICLE_HEADER[i]);
+        thr.appendChild(text);
+        headerRow.appendChild(thr);
+    }
+
+    return headerRow;
+}
+
+function headerRowForComments()
+{
+    var headerRow = document.createElement("tr");
+
+    for(var i = 0; i < 2; i++)
+    {
+        var thr = document.createElement("th");
+        var text = document.createTextNode(COMMENT_HEADER[i]);
+        thr.appendChild(text);
+        headerRow.appendChild(thr);
+    }
+
+    return headerRow;
+}
+
+function headerRowForRoles()
+{
+    var headerRow = document.createElement("tr");
+
+    for(var i = 0; i < 2; i++)
+    {
+        var thr = document.createElement("th");
+        var text = document.createTextNode(ROLE_HEADER[i]);
+        thr.appendChild(text);
+        headerRow.appendChild(thr);
+    }
+
+    return headerRow;
+}
+
+function headerRowForInfo()
+{
+    var headerRow = document.createElement("tr");
+
+    for(var i = 0; i < 4; i++)
+    {
+        var thr = document.createElement("th");
+        var text = document.createTextNode(USER_INFO_HEADER[i]);
+        thr.appendChild(text);
+        headerRow.appendChild(thr);
+    }
+
+    return headerRow;
 }

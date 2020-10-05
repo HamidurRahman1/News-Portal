@@ -1,5 +1,4 @@
 
-
 .parent
 {
   display: flex;
@@ -24,7 +23,7 @@
 
 body{
   background-color: whitesmoke;
-  font-family: 'Montserrat', sans-serif;
+  font-family: Georgia, 'Montserrat', sans-serif;
   font-size: 18px;
 }
 
