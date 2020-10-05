@@ -1,102 +1,143 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css">
     <script src="script/main.js"></script>
-    <title>News Portal App 📖🗞</title>
+    <title>News Portal API demo 📖🗞</title>
   </head>
   <body>
 
-    <div id="public-api">
-      <div>Public APIs</div>
-      <ul>
-        <li><button onclick="loadArticles(1)">All Articles</button></li>
-        <li><button onclick="loadArticles(2)">All Articles with No Author</button></li>
-        <li><button onclick="loadAllComments()">All Comments</button></li>
-        <li>
-            <label for="articleId">All Comments by Article Id</label>
-            <input type="number" id="articleId" name="articleId" min="0" required />
-            <button onclick="loadCommentsByArticleId()">submit</button>
-        </li>
-        <li>
-          <div>
-            <p>Login</p>
-              <label for="loginEmail">Email:</label><input type="text" name="loginEmail" id="loginEmail">
-              <label for="loginPassword">Password:</label><input type="password" id="loginPassword">
-              <input type="submit" onclick="doLogin()">
-          </div>
-        </li>
-      </ul>
+  <div><h2><u>News Portal API DEMO</u></h2></div>
+  <h3>
+    This is a demo of the News Portal API. The code is available on
+    <a href="https://github.com/HamidurRahman1/News-Portal" target="_blank">GitHub</a>.
+    Checkout my <a href="https://github.com/HamidurRahman1" target="_blank">GitHub profile</a> for more demo projects.
+  </h3>
 
-      <hr>
+  <br>
 
-      <div id="results"></div>
-    </div>
-
-    <div id="protected-api">
-      <div id="logins">
-        <table>
-          <tr>
-            <th>Username</th>
-            <th>Password</th>
-            <th>Roles</th>
-          </tr>
-          <tr>
-            <td>user1</td>
-            <td>123Admin</td>
-            <td>ADMIN,PUBLISHER,EDITOR,AUTHOR,USER</td>
-          </tr>
-          <tr>
-            <td>user2</td>
-            <td>123Publisher</td>
-            <td>PUBLISHER,USER</td>
-          </tr>
-          <tr>
-            <td>user3</td>
-            <td>123Editor</td>
-            <td>EDITOR,AUTHOR,USER</td>
-          </tr>
-          <tr>
-            <td>user4</td>
-            <td>123Author</td>
-            <td>AUTHOR,USER</td>
-          </tr>
-          <tr>
-            <td>user5</td>
-            <td>123User</td>
-            <td>USER</td>
-          </tr>
-        </table>
-      </div>
-      &nbsp;
-      <div>
-        <label for="p-username">Username:</label><input type="text" id="p-username">
-        <label for="p-password">Password:</label><input type="text" id="p-password">
-      </div>
-      &nbsp;
-      <div id="p-get">
+  <div class="parent">
+      <div id="public-api">
+        <h2><u>Public APIs</u></h2>
         <ul>
+          <li><button onclick="p_loadArticles(1)">All Articles</button></li>
+          <li><button onclick="p_loadArticles(2)">All Articles with No Author</button></li>
+          <li><button onclick="p_loadAllComments()">All Comments</button></li>
           <li>
-            <button onclick="r_getAuthors()">All Authors</button>
+            <label for="commentsByArticleId">All Comments by Article Id</label>
+            <input type="number" id="commentsByArticleId" name="commentsByArticleId" min="0" required />
+            <button onclick="p_loadCommentsByArticleId()">submit</button>
           </li>
           <li>
-            <label for="bodyContains">Article body contains: </label>
-            <input id="bodyContains" type="text" required />
-            <button onclick="r_bodyContains()">Submit</button>
+            <div>
+              <p>Login Test</p>
+              <label for="loginUsername">Email:</label><input type="text" name="loginUsername" id="loginUsername">
+              <label for="loginPassword">Password:</label><input type="password" id="loginPassword">
+              <input type="submit" onclick="p_doLogin()">
+            </div>
           </li>
           <li>
-            <label for="authorIdForInfo">Author Info by Author Id: </label>
-            <input type="number" id="authorIdForInfo" name="authorIdForInfo" min="0" required />
-            <button onclick="r_authorInfoByAuthorId()">submit</button>
-          </li>
-          <li>
-            <label for="authorIdForArticles">All Author Articles by Author Id: </label>
-            <input type="number" id="authorIdForArticles" name="authorIdForArticles" min="0" required />
-            <button onclick="r_authorArticlesByAuthorId()">submit</button>
+            <div>
+              <p>Sign Up</p>
+              <label for="signUpFirstName">First Name:</label><input type="text" id="signUpFirstName" maxlength="50" minlength="2" required ><br>
+              <label for="signUpLastName">Last Name:</label><input type="text" id="signUpLastName" maxlength="50" minlength="2" required ><br>
+              <label for="signUpUsername">Email/Username:</label><input type="text" id="signUpUsername" minlength="5" maxlength="60" required ><br>
+              <label for="signUpPassword">Password:</label><input type="password" id="signUpPassword" minlength="5" maxlength="15" required ><br>
+              <button onclick="p_doSignUp()">Submit</button>
+            </div>
           </li>
         </ul>
       </div>
+
+      <div id="protected-api">
+        <h2><u>Protected APIs</u></h2>
+        <div id="auth_logins">
+          <h3><u>Users in the database (required for all protected API call)</u></h3>
+          <h4>Please <a href="https://github.com/HamidurRahman1/News-Portal/blob/master/README.md" target="_blank">check
+            this</a> for more information on roles and protected APIs</h4>
+          <table>
+            <tr>
+              <th>Username</th>
+              <th>Password</th>
+              <th>Roles</th>
+            </tr>
+            <tr>
+              <td>user1</td>
+              <td>123Admin</td>
+              <td>ADMIN,PUBLISHER,EDITOR,AUTHOR,USER</td>
+            </tr>
+            <tr>
+              <td>user2</td>
+              <td>123Publisher</td>
+              <td>PUBLISHER,USER</td>
+            </tr>
+            <tr>
+              <td>user3</td>
+              <td>123Editor</td>
+              <td>EDITOR,AUTHOR,USER</td>
+            </tr>
+            <tr>
+              <td>user4</td>
+              <td>123Author</td>
+              <td>AUTHOR,USER</td>
+            </tr>
+            <tr>
+              <td>user5</td>
+              <td>123User</td>
+              <td>USER</td>
+            </tr>
+          </table>
+        </div>
+        &nbsp;
+        <div>
+          <label for="p-username">Username:</label><input type="text" id="p-username">
+          <label for="p-password">Password:</label><input type="text" id="p-password">
+        </div>
+        &nbsp;
+        <div id="p-get">
+          <ul>
+            <li>
+              <button onclick="r_getAuthors()">All Authors -- NI -- </button>
+            </li>
+            <li>
+              <label for="bodyContains">Article body contains: -- NI --</label>
+              <input id="bodyContains" type="text" required />
+              <button onclick="r_bodyContains()">Submit</button>
+            </li>
+            <li>
+              <label for="authorIdForInfo">Author Info by Author Id (same as User Id): </label>
+              <input type="number" id="authorIdForInfo" name="authorIdForInfo" min="0" required />
+              <button onclick="r_authorInfoByAuthorId()">submit</button>
+            </li>
+            <li>
+              <label for="authorIdForArticles">All Articles by Author Id (same as User Id): </label>
+              <input type="number" id="authorIdForArticles" name="authorIdForArticles" min="0" required />
+              <button onclick="r_authorArticlesByAuthorId()">submit</button>
+            </li>
+            <li>
+              <label for="deleteCommentById">Delete a Comment by Comment Id: </label>
+              <input type="number" id="deleteCommentById" name="deleteCommentById" min="0" required />
+              <button onclick="r_deleteCommentByCommentId()">submit</button>
+            </li>
+            <li>
+              <label for="deleteUserById">Delete a User by User Id: </label>
+              <input type="number" id="deleteUserById" name="deleteUserById" min="0" required />
+              <button onclick="r_deleteUserByUserId()">submit</button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+
+  <br>
+
+  <div id="top-results">
+    <h3><u>RESULTS:</u></h3>
+    <br>
+    <div id="results"></div>
+    <br>
+  </div>
   </body>
 </html>
