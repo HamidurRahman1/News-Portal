@@ -190,11 +190,7 @@ function p_doSignUp()
         request.send(JSON.stringify(data));
         request.onload = function ()
         {
-            if(request.status === 200)
-            {
-                alert("sign up was success");
-                console.log(request.response.toString());
-            }
+            if(request.status === 200) alert("sign up was success.\n"+request.response.toString());
             else alert(request.response.toString());
         }
     }

@@ -1,4 +1,27 @@
 
+
+.parent
+{
+  display: flex;
+}
+
+#public-api
+{
+  flex: 1;
+  border-style: solid;
+  border-color: green;
+}
+
+#protected-api{
+  border-color: chocolate;
+  border-style: solid;
+}
+
+#top-results{
+  border-color: black;
+  border-style: solid;
+}
+
 body{
   background-color: whitesmoke;
   font-family: 'Montserrat', sans-serif;
