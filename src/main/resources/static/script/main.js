@@ -29,8 +29,8 @@ var ROLE_HEADER = ['Role ID', 'Role'];
 function p_loadArticles(key)
 {
     var request = new XMLHttpRequest();
-    if(key === 1) request.open("GET", "http://localhost:8080/blogs/api/v1/public/articles");
-    else request.open("GET", "http://localhost:8080/blogs/api/v1/public/articles/no-author");
+    if(key === 1) request.open("GET", "http://localhost:8080/news-portal/api/v1/public/articles");
+    else request.open("GET", "http://localhost:8080/news-portal/api/v1/public/articles/no-author");
     request.send();
     request.onload = function()
     {
@@ -83,7 +83,7 @@ function p_loadArticles(key)
 function p_loadAllComments()
 {
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/blogs/api/v1/public/comments");
+    request.open("GET", "http://localhost:8080/news-portal/api/v1/public/comments");
     request.send();
     request.onload = function()
     {
@@ -126,7 +126,7 @@ function p_loadCommentsByArticleId()
         return;
     }
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/blogs/api/v1/public/article/"+ articleId + "/comments");
+    request.open("GET", "http://localhost:8080/news-portal/api/v1/public/article/"+ articleId + "/comments");
     request.send();
     request.onload = function()
     {
@@ -171,7 +171,7 @@ function p_doLogin()
     };
 
     var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:8080/blogs/api/v1/public/login", true);
+    request.open("POST", "http://localhost:8080/news-portal/api/v1/public/login", true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.setRequestHeader('Accept', 'application/json');
     request.send(JSON.stringify(data));
@@ -195,7 +195,7 @@ function p_doSignUp()
         };
 
         var request = new XMLHttpRequest();
-        request.open("POST", "http://localhost:8080/blogs/api/v1/public/user/signup", true);
+        request.open("POST", "http://localhost:8080/news-portal/api/v1/public/user/signup", true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.setRequestHeader('Accept', 'application/json');
         request.send(JSON.stringify(data));
@@ -212,7 +212,7 @@ function r_getAuthors()
     var fields = validateLoginFields(AUTH_USERNAME_LOC, AUTH_PASSWORD_LOC);
     if(fields !== false)
     {
-        var url = "http://localhost:8080/blogs/api/v1/r/authors";
+        var url = "http://localhost:8080/news-portal/api/v1/r/authors";
         var request = new XMLHttpRequest();
 
         request.open("GET", url, true);
@@ -225,7 +225,37 @@ function r_getAuthors()
             {
                 var response = request.responseText;
                 var obj = JSON.parse(response);
-                console.log(response.toString());
+                var table = document.createElement('table');
+
+                table.appendChild(headerRowForInfo());
+
+                for(var i in obj)
+                {
+                    var tr = document.createElement('tr');
+
+                    var td1 = document.createElement('td');
+                    var td2 = document.createElement('td');
+                    var td3 = document.createElement('td');
+                    var td4 = document.createElement('td');
+
+                    var text1 = document.createTextNode(obj[i]['userId']);
+                    var text2 = document.createTextNode(obj[i]['firstName']);
+                    var text3 = document.createTextNode(obj[i]['lastName']);
+                    var text4 = document.createTextNode(obj[i]['enabled']);
+
+                    td1.appendChild(text1);
+                    td2.appendChild(text2);
+                    td3.appendChild(text3);
+                    td4.appendChild(text4);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+
+                    table.appendChild(tr);
+                }
+                document.getElementById(RESULTS_LOC).innerHTML = "";
+                document.getElementById(RESULTS_LOC).appendChild(table);
             }
             else alert(request.response.toString());
         };
@@ -246,7 +276,7 @@ function r_bodyContains()
         }
         else
         {
-            var url = "http://localhost:8080/blogs/api/v1/r/articles/text?bodyContains="+queryString;
+            var url = "http://localhost:8080/news-portal/api/v1/r/articles/text?bodyContains="+queryString;
             var request = new XMLHttpRequest();
 
             request.open("GET", url, true);
@@ -258,9 +288,41 @@ function r_bodyContains()
                 if (request.readyState === request.DONE)
                 {
                     var response = request.responseText;
-                    var obj = JSON.parse(response);
-                    console.log(response.toString());
-                    alert(response.toString());
+                    var json_data = JSON.parse(response);
+                    var table = document.createElement('table');
+
+                    table.appendChild(headerRowForArticles());
+
+                    for (var i in json_data){
+                        var tr = document.createElement('tr');
+
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        var td4 = document.createElement('td');
+                        var td5 = document.createElement('td');
+
+                        var text1 = document.createTextNode(json_data[i]['articleId']);
+                        var text2 = document.createTextNode(json_data[i]['title']);
+                        var text3 = document.createTextNode(json_data[i]['body']);
+                        var text4 = document.createTextNode(timestampToDateAMPM(json_data[i]['timestamp']));
+                        var text5 = document.createTextNode(json_data[i]['published']);
+
+                        td1.appendChild(text1);
+                        td2.appendChild(text2);
+                        td3.appendChild(text3);
+                        td4.appendChild(text4);
+                        td5.appendChild(text5);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+                        tr.appendChild(td5);
+
+                        table.appendChild(tr);
+                    }
+                    document.getElementById(RESULTS_LOC).innerHTML = "";
+                    document.getElementById(RESULTS_LOC).appendChild(table);
                 }
                 else alert(request.response.toString());
             }
@@ -280,7 +342,7 @@ function r_authorInfoByAuthorId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/blogs/api/v1/r/author/"+ authorId);
+        request.open("GET", "http://localhost:8080/news-portal/api/v1/r/author/"+ authorId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -343,7 +405,7 @@ function r_authorArticlesByAuthorId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/blogs/api/v1/r/author/"+ authorId +"/articles");
+        request.open("GET", "http://localhost:8080/news-portal/api/v1/r/author/"+ authorId +"/articles");
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -375,7 +437,7 @@ function r_deleteCommentByCommentId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("DELETE", "http://localhost:8080/blogs/api/v1/r/delete/comment/"+ commentId);
+        request.open("DELETE", "http://localhost:8080/news-portal/api/v1/r/delete/comment/"+ commentId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -399,7 +461,7 @@ function r_deleteUserByUserId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("DELETE", "http://localhost:8080/blogs/api/v1/r/delete/user/"+ userId);
+        request.open("DELETE", "http://localhost:8080/news-portal/api/v1/r/delete/user/"+ userId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -479,14 +541,14 @@ function tableForArticles(jsonArticles)
 function timestampToDateAMPM(timestamp)
 {
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var date = new Date(parseInt(timestamp) * 1000);
+    var date = new Date(parseInt(timestamp));
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
     minutes = minutes < 10 ? '0' + minutes : minutes;
-    return months[date.getMonth()] + " " + date.getDay() + ", " + hours + ':' + minutes + ':' + date.getSeconds() + ' ' + ampm;
+    return months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear() + " " + hours + ':' + minutes + ':' + date.getSeconds() + ' ' + ampm;
 }
 
 function validateIdField(value)

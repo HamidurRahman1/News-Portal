@@ -1,4 +1,4 @@
-## Spring Boot REST API with Spring Security
+## News Portal - REST API
 
 ## What this project is about:
 This project is about building mini news portal. Only subscribed user can read, comment on articles. 
