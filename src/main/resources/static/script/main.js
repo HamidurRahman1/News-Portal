@@ -225,7 +225,37 @@ function r_getAuthors()
             {
                 var response = request.responseText;
                 var obj = JSON.parse(response);
-                console.log(response.toString());
+                var table = document.createElement('table');
+
+                table.appendChild(headerRowForInfo());
+
+                for(var i in obj)
+                {
+                    var tr = document.createElement('tr');
+
+                    var td1 = document.createElement('td');
+                    var td2 = document.createElement('td');
+                    var td3 = document.createElement('td');
+                    var td4 = document.createElement('td');
+
+                    var text1 = document.createTextNode(obj[i]['userId']);
+                    var text2 = document.createTextNode(obj[i]['firstName']);
+                    var text3 = document.createTextNode(obj[i]['lastName']);
+                    var text4 = document.createTextNode(obj[i]['enabled']);
+
+                    td1.appendChild(text1);
+                    td2.appendChild(text2);
+                    td3.appendChild(text3);
+                    td4.appendChild(text4);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+                    tr.appendChild(td4);
+
+                    table.appendChild(tr);
+                }
+                document.getElementById(RESULTS_LOC).innerHTML = "";
+                document.getElementById(RESULTS_LOC).appendChild(table);
             }
             else alert(request.response.toString());
         };
@@ -258,9 +288,41 @@ function r_bodyContains()
                 if (request.readyState === request.DONE)
                 {
                     var response = request.responseText;
-                    var obj = JSON.parse(response);
-                    console.log(response.toString());
-                    alert(response.toString());
+                    var json_data = JSON.parse(response);
+                    var table = document.createElement('table');
+
+                    table.appendChild(headerRowForArticles());
+
+                    for (var i in json_data){
+                        var tr = document.createElement('tr');
+
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        var td4 = document.createElement('td');
+                        var td5 = document.createElement('td');
+
+                        var text1 = document.createTextNode(json_data[i]['articleId']);
+                        var text2 = document.createTextNode(json_data[i]['title']);
+                        var text3 = document.createTextNode(json_data[i]['body']);
+                        var text4 = document.createTextNode(timestampToDateAMPM(json_data[i]['timestamp']));
+                        var text5 = document.createTextNode(json_data[i]['published']);
+
+                        td1.appendChild(text1);
+                        td2.appendChild(text2);
+                        td3.appendChild(text3);
+                        td4.appendChild(text4);
+                        td5.appendChild(text5);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+                        tr.appendChild(td5);
+
+                        table.appendChild(tr);
+                    }
+                    document.getElementById(RESULTS_LOC).innerHTML = "";
+                    document.getElementById(RESULTS_LOC).appendChild(table);
                 }
                 else alert(request.response.toString());
             }
