@@ -39,8 +39,11 @@ public class ModelConverter
     public Set<UserDTO> usersToDTOUsers(Set<User> users)
     {
         return users.stream().map(obj ->
-                new UserDTO(obj.getUserId(), obj.getFirstName(), obj.getLastName(), null, null, null, null))
-                .collect(Collectors.toSet());
+        {
+            UserDTO userDTO = new UserDTO(obj.getUserId(), obj.getFirstName(), obj.getLastName(), null, null, null, null);
+            userDTO.setEnabled(obj.getEnabled());
+            return userDTO;
+        }).collect(Collectors.toSet());
     }
 
     public UserDTO authorToDTOAuthor(User user)
