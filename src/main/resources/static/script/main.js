@@ -541,14 +541,14 @@ function tableForArticles(jsonArticles)
 function timestampToDateAMPM(timestamp)
 {
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var date = new Date(parseInt(timestamp) * 1000);
+    var date = new Date(parseInt(timestamp));
     var hours = date.getHours();
     var minutes = date.getMinutes();
     var ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
     minutes = minutes < 10 ? '0' + minutes : minutes;
-    return months[date.getMonth()] + " " + date.getDay() + ", " + hours + ':' + minutes + ':' + date.getSeconds() + ' ' + ampm;
+    return months[date.getMonth()] + " " + date.getDay() + ", " + date.getFullYear() + " " + hours + ':' + minutes + ':' + date.getSeconds() + ' ' + ampm;
 }
 
 function validateIdField(value)
