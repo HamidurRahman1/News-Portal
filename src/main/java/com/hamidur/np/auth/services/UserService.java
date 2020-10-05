@@ -51,7 +51,7 @@ public class UserService
     {
         try
         {
-            user.setEnabled(false);
+            user.setEnabled(true);
             userRepository.signUpWithUserRole(user.getFirstName(), user.getLastName(), user.getUsername(), passwordEncoder.encode(user.getPassword()), user.getEnabled());
             return userRepository.getUserByUsername(user.getUsername());
         }
