@@ -29,8 +29,8 @@ var ROLE_HEADER = ['Role ID', 'Role'];
 function p_loadArticles(key)
 {
     var request = new XMLHttpRequest();
-    if(key === 1) request.open("GET", "http://localhost:8080/news-portal/api/v1/public/articles");
-    else request.open("GET", "http://localhost:8080/news-portal/api/v1/public/articles/no-author");
+    if(key === 1) request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/articles");
+    else request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/articles/no-author");
     request.send();
     request.onload = function()
     {
@@ -83,7 +83,7 @@ function p_loadArticles(key)
 function p_loadAllComments()
 {
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/news-portal/api/v1/public/comments");
+    request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/comments");
     request.send();
     request.onload = function()
     {
@@ -126,7 +126,7 @@ function p_loadCommentsByArticleId()
         return;
     }
     var request = new XMLHttpRequest();
-    request.open("GET", "http://localhost:8080/news-portal/api/v1/public/article/"+ articleId + "/comments");
+    request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/article/"+ articleId + "/comments");
     request.send();
     request.onload = function()
     {
@@ -171,7 +171,7 @@ function p_doLogin()
     };
 
     var request = new XMLHttpRequest();
-    request.open("POST", "http://localhost:8080/news-portal/api/v1/public/login", true);
+    request.open("POST", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/login", true);
     request.setRequestHeader('Content-Type', 'application/json');
     request.setRequestHeader('Accept', 'application/json');
     request.send(JSON.stringify(data));
@@ -195,7 +195,7 @@ function p_doSignUp()
         };
 
         var request = new XMLHttpRequest();
-        request.open("POST", "http://localhost:8080/news-portal/api/v1/public/user/signup", true);
+        request.open("POST", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/public/user/signup", true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.setRequestHeader('Accept', 'application/json');
         request.send(JSON.stringify(data));
@@ -212,7 +212,7 @@ function r_getAuthors()
     var fields = validateLoginFields(AUTH_USERNAME_LOC, AUTH_PASSWORD_LOC);
     if(fields !== false)
     {
-        var url = "http://localhost:8080/news-portal/api/v1/r/authors";
+        var url = "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/authors";
         var request = new XMLHttpRequest();
 
         request.open("GET", url, true);
@@ -276,7 +276,7 @@ function r_bodyContains()
         }
         else
         {
-            var url = "http://localhost:8080/news-portal/api/v1/r/articles/text?bodyContains="+queryString;
+            var url = "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/articles/text?bodyContains="+queryString;
             var request = new XMLHttpRequest();
 
             request.open("GET", url, true);
@@ -342,7 +342,7 @@ function r_authorInfoByAuthorId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/news-portal/api/v1/r/author/"+ authorId);
+        request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/author/"+ authorId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -405,7 +405,7 @@ function r_authorArticlesByAuthorId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:8080/news-portal/api/v1/r/author/"+ authorId +"/articles");
+        request.open("GET", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/author/"+ authorId +"/articles");
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -437,7 +437,7 @@ function r_deleteCommentByCommentId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("DELETE", "http://localhost:8080/news-portal/api/v1/r/delete/comment/"+ commentId);
+        request.open("DELETE", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/delete/comment/"+ commentId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
@@ -461,7 +461,7 @@ function r_deleteUserByUserId()
             return;
         }
         var request = new XMLHttpRequest();
-        request.open("DELETE", "http://localhost:8080/news-portal/api/v1/r/delete/user/"+ userId);
+        request.open("DELETE", "http://news-portal-demo-app.herokuapp.com/news-portal/api/v1/r/delete/user/"+ userId);
         request.setRequestHeader("Content-type", "application/json");
         request.setRequestHeader("Authorization", "Basic " + btoa(fields[0] + ":" + fields[1]));
         request.send();
