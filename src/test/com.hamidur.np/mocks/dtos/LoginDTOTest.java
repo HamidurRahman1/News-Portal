@@ -10,6 +10,11 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/*
+    Not the best practice of Mockito as Class under test should not be mocked only the dependencies of them.
+    LoginDTO does not have any.
+ */
 public class LoginDTOTest
 {
     @Mock
